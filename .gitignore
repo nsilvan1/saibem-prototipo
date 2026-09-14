@@ -1,0 +1,6 @@
+.playwright-mcp/
+*.log
+shot-*.png
+home.png
+.DS_Store
+Thumbs.db
