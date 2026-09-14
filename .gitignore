@@ -4,3 +4,5 @@ shot-*.png
 home.png
 .DS_Store
 Thumbs.db
+_*.png
+_icon.html

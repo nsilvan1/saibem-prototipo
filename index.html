@@ -1,4 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Saibem</title>
+<meta name="description" content="Mande uma selfie e receba as fotos em que você aparece. Corrida, campeonato, formatura ou festa.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#082423">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Saibem">
+<meta name="mobile-web-app-capable" content="yes">
+<meta property="og:title" content="Saibem — você saiu bem">
+<meta property="og:description" content="Você não procura sua foto. Ela acha você.">
+<meta property="og:image" content="icon-512.png">
+<meta property="og:type" content="website">
 <style>
 /* ==========================================================================
    Saibem — site navegável (SPA, rotas por hash)
@@ -358,7 +376,111 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
   background:linear-gradient(180deg,rgba(8,36,35,.6),rgba(8,36,35,.05) 42%,rgba(8,36,35,.86))}
 .story h4{color:#fff; font-size:17px; font-weight:800; line-height:1.15}
 .wabubble{background:var(--green-soft); color:var(--body); border-radius:11px 11px 11px 3px; padding:11px 13px; font-size:13px; max-width:430px}
+
+/* ==========================================================================
+   CARROSSEL DE CAPA — tratamento de landing fotográfica
+   A foto manda: full-bleed, scrim para legibilidade, texto no terço inferior,
+   Ken Burns lento no slide ativo e filmstrip dos próximos.
+   ========================================================================== */
+.hcar{position:relative; overflow:hidden; background:var(--petrol); touch-action:pan-y}
+.hcar-track{display:flex; transition:transform .62s cubic-bezier(.16,1,.3,1); will-change:transform}
+.hslide{position:relative; flex:0 0 100%; height:clamp(410px, 66vh, 580px); overflow:hidden}
+.hslide img{width:100%; height:100%; object-fit:cover; object-position:50% 38%; transform:scale(1.03); transition:transform 8s linear}
+.hslide.on img{transform:scale(1.13)}
+.hslide::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(180deg, rgba(8,36,35,.62) 0%, rgba(8,36,35,.12) 32%, rgba(8,36,35,.55) 62%, rgba(8,36,35,.94) 100%)}
+.hslide-c{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:0 20px 30px}
+.hslide-in{max-width:1160px; margin:0 auto; display:flex; flex-direction:column; gap:11px; align-items:flex-start}
+.hslide-in h2{color:#fff; font-size:clamp(26px,4.4vw,40px); font-weight:800; letter-spacing:-.03em; line-height:1.05;
+  max-width:15ch; text-shadow:0 2px 24px rgba(8,36,35,.55)}
+.hslide-in .meta{display:flex; gap:14px; flex-wrap:wrap; color:rgba(255,255,255,.85); font-size:13px; font-weight:600}
+.hslide-in .meta span{display:inline-flex; align-items:center; gap:6px}
+.hslide-in .cta{display:flex; gap:9px; flex-wrap:wrap; margin-top:4px}
+.hbars{position:absolute; top:0; left:0; right:0; z-index:3; display:flex; gap:5px; padding:14px 20px 0}
+.hbar{flex:1; height:3px; border-radius:2px; background:rgba(255,255,255,.26); overflow:hidden; cursor:pointer; border:0; padding:0}
+.hbar i{display:block; height:100%; width:0; background:var(--lime); border-radius:2px}
+.hbar.done i{width:100%}
+.hbar.on i{animation:hfill 6.4s linear forwards}
+@keyframes hfill{from{width:0}to{width:100%}}
+.hcar.paused .hbar.on i{animation-play-state:paused}
+.harrow{position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:42px; height:42px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.3); background:rgba(8,36,35,.4); color:#fff; cursor:pointer;
+  display:grid; place-items:center; backdrop-filter:blur(4px); transition:background .14s}
+.harrow:hover{background:rgba(8,36,35,.75)}
+.harrow.prev{left:16px} .harrow.next{right:16px}
+.hstrip{position:absolute; right:20px; bottom:30px; z-index:3; display:flex; gap:8px; align-items:flex-end}
+.hthumb{width:64px; height:44px; border-radius:8px; overflow:hidden; border:2px solid rgba(255,255,255,.35);
+  cursor:pointer; padding:0; background:0; opacity:.72; transition:opacity .16s, border-color .16s, transform .16s}
+.hthumb img{width:100%; height:100%; object-fit:cover}
+.hthumb:hover{opacity:1; transform:translateY(-2px)}
+.hthumb.on{border-color:var(--lime); opacity:1}
+.hcount{position:absolute; right:20px; top:26px; z-index:3; font-size:11.5px; font-weight:700; letter-spacing:.1em;
+  color:rgba(255,255,255,.7); font-variant-numeric:tabular-nums}
+@media(max-width:860px){
+  .harrow{display:none}
+  .hstrip{display:none}
+  .hcount{right:20px; top:26px}
+  .hslide-c{padding-bottom:24px}
+}
+@media(prefers-reduced-motion:reduce){
+  .hcar-track{transition:none}
+  .hslide img,.hslide.on img{transition:none; transform:none}
+  .hbar.on i{animation:none; width:100%}
+}
+
+/* trilho horizontal com snap — vitrine de eventos */
+.railhead{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.rbtns{display:flex; gap:7px}
+.rbtn{width:34px; height:34px; border-radius:999px; border:1px solid var(--line-2); background:var(--surface);
+  color:var(--label); cursor:pointer; display:grid; place-items:center}
+.rbtn:hover{background:var(--surface-2); color:var(--ink)}
+@media(max-width:700px){.rbtns{display:none}}
+.rail{display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
+  scrollbar-width:none; padding:2px 2px 6px; margin:0 -2px}
+.rail::-webkit-scrollbar{display:none}
+.rail > .ev{flex:0 0 clamp(232px, 78vw, 288px); scroll-snap-align:start}
+
+/* ==========================================================================
+   CHROME DE APP (PWA)
+   ========================================================================== */
+body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
+.tabbar{position:fixed; left:10px; right:10px; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:70;
+  background:var(--surface); border:1px solid var(--line); border-radius:15px;
+  box-shadow:0 8px 22px rgba(8,36,35,.18); padding:4px; display:none; justify-content:space-around}
+.tb{flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:2px;
+  padding:9px 3px 7px; border-radius:13px; border:1.5px solid transparent; background:0; cursor:pointer;
+  color:var(--meta); font-size:9.5px; font-weight:600}
+.tb .i{width:18px; height:18px}
+.tb.on{background:var(--petrol); border-color:var(--lime); color:var(--lime)}
+.tb .badge-n{position:absolute; transform:translate(12px,-4px); min-width:16px; height:16px; padding:0 4px;
+  border-radius:999px; background:var(--danger); color:#fff; font-size:9px; font-weight:800; display:grid; place-items:center}
+@media(max-width:880px){
+  .tabbar{display:flex}
+  body{padding-bottom:86px}
+  .ftr{margin-bottom:0}
+}
+@media(display-mode:standalone){
+  .hdr{padding-top:env(safe-area-inset-top)}
+  .ftr .wrap{padding-block:22px 18px}
+}
+.installbar{position:fixed; left:12px; right:12px; bottom:calc(84px + env(safe-area-inset-bottom)); z-index:75;
+  background:var(--hero); color:#fff; border-radius:var(--r-card); box-shadow:var(--sh-modal);
+  padding:12px 14px; display:none; gap:12px; align-items:center; max-width:520px; margin:0 auto}
+.installbar.on{display:flex}
+@media(min-width:881px){.installbar{bottom:16px}}
+.installbar .ic{width:38px; height:38px; border-radius:11px; background:rgba(67,232,135,.16);
+  border:1px solid rgba(67,232,135,.4); color:var(--lime); display:grid; place-items:center; flex-shrink:0}
+.installbar .tx{flex:1; min-width:0}
+.installbar .tt{font-size:13px; font-weight:700}
+.installbar .tm{font-size:11.5px; color:rgba(255,255,255,.78)}
+.installbar .x{background:0; border:0; color:rgba(255,255,255,.6); cursor:pointer; padding:4px}
+.offchip{position:fixed; top:calc(var(--header-h) + 10px); left:50%; transform:translateX(-50%) translateY(-16px); z-index:80;
+  background:var(--warn); color:#3B2401; font-size:12px; font-weight:700; padding:7px 14px; border-radius:999px;
+  box-shadow:var(--sh-pop); opacity:0; pointer-events:none; transition:opacity .2s, transform .2s}
+.offchip.on{opacity:1; transform:translateX(-50%) translateY(0)}
 </style>
+</head>
+<body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
@@ -470,6 +592,24 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
     </div>
   </div>
 </div>
+
+<nav class="tabbar" id="tabbar" aria-label="Navegação principal">
+  <button class="tb" data-tab="/" data-nav="/"><svg class="i"><use href="#ic-image"/></svg><span>Início</span></button>
+  <button class="tb" data-tab="/eventos" data-nav="/eventos"><svg class="i"><use href="#ic-search"/></svg><span>Eventos</span></button>
+  <button class="tb" data-tab="/selfie" data-nav="/e/cerrado10k/selfie"><svg class="i"><use href="#ic-cam"/></svg><span>Selfie</span></button>
+  <button class="tb" data-tab="/sacola" data-nav="/sacola"><svg class="i"><use href="#ic-bag"/></svg><span>Sacola</span><span class="badge-n" id="tabn" style="display:none">0</span></button>
+  <button class="tb" data-tab="/app" data-nav="/app/painel"><svg class="i"><use href="#ic-chart"/></svg><span>Fotógrafo</span></button>
+</nav>
+
+<div class="installbar" id="installbar" role="dialog" aria-label="Instalar aplicativo">
+  <span class="ic"><svg class="i i-lg"><use href="#ic-down"/></svg></span>
+  <div class="tx"><div class="tt">Instalar o Saibem</div>
+    <div class="tm">Abre em tela cheia e funciona mesmo com internet ruim no evento.</div></div>
+  <button class="btn on-dark btn-sm" id="doinstall">Instalar</button>
+  <button class="x" id="noinstall" aria-label="Agora não"><svg class="i i-sm"><use href="#ic-x"/></svg></button>
+</div>
+
+<div class="offchip" id="offchip" role="status">Sem conexão · mostrando o que já foi baixado</div>
 
 <div class="toasts" id="toasts"></div>
 
@@ -633,31 +773,60 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
      ========================================================= */
   var V = {};
 
+  /* carrossel de capa — os eventos em destaque, tratados como capa de revista */
+  var FEAT = ['cerrado10k','copa-goias-jj','formatura-med-ufg','festival-verao'];
+  function carousel(){
+    var evs = FEAT.map(eventBySlug);
+    var slides = evs.map(function(ev, k){
+      return '<div class="hslide' + (k === 0 ? ' on' : '') + '" data-slide="' + k + '" aria-hidden="' + (k !== 0) + '">'
+        + '<img src="' + POOL[ev.capa] + '" alt="' + ev.nome + '" ' + (k ? 'loading="lazy"' : '') + '>'
+        + '<div class="hslide-c"><div class="hslide-in">'
+        + (ev.live ? '<span class="badge live" style="background:var(--lime);color:var(--petrol)"><span class="dot"></span>fotos entrando ao vivo</span>'
+                   : '<span class="badge" style="background:rgba(255,255,255,.16);color:#fff">' + ev.cat + '</span>')
+        + '<h2>' + ev.nome + '</h2>'
+        + '<div class="meta">'
+        + '<span><svg class="i i-sm"><use href="#ic-pin"/></svg>' + ev.local + ', ' + ev.cidade + '</span>'
+        + '<span><svg class="i i-sm"><use href="#ic-clock"/></svg>' + ev.data + '</span>'
+        + '<span><svg class="i i-sm"><use href="#ic-image"/></svg>' + ev.nFotos.toLocaleString('pt-BR') + ' fotos · a partir de ' + brl(ev.preco) + '</span>'
+        + '</div>'
+        + '<div class="cta">'
+        + '<button class="btn on-dark btn-lg" data-nav="/e/' + ev.slug + '/selfie"><svg class="i"><use href="#ic-cam"/></svg>Achar minhas fotos</button>'
+        + '<button class="btn btn-ghost on-dark btn-lg" data-nav="/e/' + ev.slug + '">Ver a galeria</button>'
+        + '</div></div></div></div>';
+    }).join('');
+    return '<section class="hcar" id="hcar" aria-roledescription="carrossel" aria-label="Eventos em destaque">'
+      + '<div class="hbars">' + evs.map(function(_, k){
+          return '<button class="hbar' + (k === 0 ? ' on' : '') + '" data-go-slide="' + k + '" aria-label="Ir para o destaque ' + (k + 1) + '"><i></i></button>';
+        }).join('') + '</div>'
+      + '<div class="hcar-track" id="hcar-track">' + slides + '</div>'
+      + '<button class="harrow prev" data-step="-1" aria-label="Destaque anterior"><svg class="i"><use href="#ic-left"/></svg></button>'
+      + '<button class="harrow next" data-step="1" aria-label="Próximo destaque"><svg class="i"><use href="#ic-right"/></svg></button>'
+      + '<span class="hcount" id="hcount">01 / 0' + evs.length + '</span>'
+      + '<div class="hstrip">' + evs.map(function(ev, k){
+          return '<button class="hthumb' + (k === 0 ? ' on' : '') + '" data-go-slide="' + k + '" aria-label="' + ev.nome + '"><img src="' + POOL[ev.capa] + '" alt="" loading="lazy"></button>';
+        }).join('') + '</div>'
+      + '</section>';
+  }
+
   V.home = function(){
     var live = EVENTS.filter(function(e){ return e.live; });
-    return hero(
-        '<div style="display:grid; grid-template-columns:1.2fr .8fr; gap:26px; align-items:center" class="hgrid">'
-      + '<div style="display:flex; flex-direction:column; gap:14px">'
-      + '<span class="over">Fotos de evento · você saiu bem</span>'
-      + '<h1 style="font-size:34px">Você não procura sua foto.<br>Ela acha você.</h1>'
-      + '<p class="sub" style="font-size:14px; max-width:480px">Mande uma selfie e receba, em segundos, só as fotos em que você aparece. Corrida, campeonato, formatura ou festa.</p>'
-      + '<div class="row" style="gap:9px">'
-      + '<button class="btn on-dark btn-lg" data-nav="/e/cerrado10k/selfie"><svg class="i"><use href="#ic-cam"/></svg>Buscar pelo meu rosto</button>'
-      + '<button class="btn btn-ghost on-dark btn-lg" data-nav="/eventos">Ver eventos</button></div>'
-      + '<div class="row" style="gap:16px; margin-top:6px">'
-      + '<span class="sub" style="color:rgba(255,255,255,.75)"><b style="color:#fff">28.161</b> fotos no ar</span>'
-      + '<span class="sub" style="color:rgba(255,255,255,.75)"><b style="color:#fff">184</b> eventos</span>'
-      + '<span class="sub" style="color:rgba(255,255,255,.75)"><b style="color:#fff">3</b> cidades</span></div>'
-      + '</div>'
-      + '<div style="border-radius:var(--r-card); overflow:hidden; box-shadow:var(--sh-modal)">'
-      + '<img src="' + POOL[13] + '" alt="Corredores em prova de rua" style="aspect-ratio:4/3; object-fit:cover">'
-      + '</div></div>')
+    return carousel()
     + '<div class="wrap sec stack">'
-    + (live.length ? '<div class="between"><div><h2>Acontecendo agora</h2><p class="sub">As fotos entram no ar durante o evento.</p></div>'
+    + '<div class="between" style="gap:20px">'
+    + '<div style="max-width:560px"><h1 style="font-size:27px">Você não procura sua foto. Ela acha você.</h1>'
+    + '<p class="sub" style="font-size:14px; margin-top:8px">Mande uma selfie e receba, em segundos, só as fotos em que você aparece. Sem número do peito, sem rolar cinco mil fotos.</p></div>'
+    + '<div class="row" style="gap:18px">'
+    + '<div><div style="font-size:22px; font-weight:800; color:var(--ink)" class="num">28.161</div><div class="sub">fotos no ar</div></div>'
+    + '<div><div style="font-size:22px; font-weight:800; color:var(--ink)" class="num">184</div><div class="sub">eventos</div></div>'
+    + '<div><div style="font-size:22px; font-weight:800; color:var(--ink)" class="num">5 s</div><div class="sub">para se achar</div></div>'
+    + '</div></div>'
+    + (live.length ? '<div class="between" style="margin-top:6px"><div><h2>Acontecendo agora</h2><p class="sub">As fotos entram no ar durante o evento.</p></div>'
         + '<button class="btn btn-ghost btn-sm" data-nav="/eventos">Ver todos</button></div>'
         + '<div class="evgrid">' + live.map(evCard).join('') + '</div>' : '')
-    + '<div class="between" style="margin-top:10px"><div><h2>Eventos recentes</h2><p class="sub">' + EVENTS.length + ' eventos publicados</p></div></div>'
-    + '<div class="evgrid">' + EVENTS.slice(0, 6).map(evCard).join('') + '</div>'
+    + '<div class="railhead" style="margin-top:10px"><div><h2>Eventos recentes</h2><p class="sub">Arraste para o lado · ' + EVENTS.length + ' eventos publicados</p></div>'
+    + '<div class="rbtns"><button class="rbtn" data-rail="-1" aria-label="Anterior"><svg class="i i-sm"><use href="#ic-left"/></svg></button>'
+    + '<button class="rbtn" data-rail="1" aria-label="Próximo"><svg class="i i-sm"><use href="#ic-right"/></svg></button></div></div>'
+    + '<div class="rail" id="rail">' + EVENTS.map(evCard).join('') + '</div>'
     + '<div class="grid-2" style="margin-top:14px">'
     + '<div class="card pad stack" style="gap:10px"><span class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--green-soft);color:var(--green-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-shield"/></svg></span>'
     + '<h3>Sua selfie não fica guardada</h3><p class="sub">Ela é comparada com os rostos do evento e apagada logo depois. Não vira foto pública nem treina modelo nenhum. <button class="linkish" data-nav="/privacidade" style="background:0;border:0;color:var(--green-ink);font-weight:600;cursor:pointer;padding:0">Como funciona</button></p></div>'
@@ -1205,6 +1374,19 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
       var el = document.getElementById(id);
       if (el) el.addEventListener('click', function(){ state.busca = ''; state.cat = ''; state.cidade = ''; render(); });
     });
+    /* carrossel de capa */
+    if (document.getElementById('hcar')) initCarousel();
+    /* trilho com snap */
+    var rail = document.getElementById('rail');
+    if (rail){
+      document.querySelectorAll('[data-rail]').forEach(function(b){
+        b.addEventListener('click', function(){
+          var card = rail.querySelector('.ev');
+          var step = card ? card.offsetWidth + 14 : 300;
+          rail.scrollBy({ left: step * (+b.dataset.rail), behavior: 'smooth' });
+        });
+      });
+    }
     /* progresso simulado do upload */
     var faces = document.getElementById('faces');
     if (faces){
@@ -1216,6 +1398,76 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
         if (n >= 4812) clearInterval(t);
       }, 700);
     }
+  }
+
+  /* =========================================================
+     CARROSSEL DE CAPA
+     ========================================================= */
+  var carTimer = null;
+  function initCarousel(){
+    var car = document.getElementById('hcar'), track = document.getElementById('hcar-track');
+    if (!car || !track) return;
+    var slides = track.querySelectorAll('.hslide');
+    var bars = car.querySelectorAll('.hbar');
+    var thumbs = car.querySelectorAll('.hthumb');
+    var count = document.getElementById('hcount');
+    var n = slides.length, idx = 0;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function paint(){
+      track.style.transform = 'translateX(' + (-idx * 100) + '%)';
+      slides.forEach(function(s, k){
+        s.classList.toggle('on', k === idx);
+        s.setAttribute('aria-hidden', String(k !== idx));
+      });
+      bars.forEach(function(b, k){
+        b.classList.remove('on', 'done');
+        if (k < idx) b.classList.add('done');
+        if (k === idx){ void b.offsetWidth; b.classList.add('on'); }
+      });
+      thumbs.forEach(function(t, k){ t.classList.toggle('on', k === idx); });
+      count.textContent = ('0' + (idx + 1)).slice(-2) + ' / ' + ('0' + n).slice(-2);
+    }
+    function go(i){ idx = (i + n) % n; paint(); restart(); }
+    function restart(){
+      clearInterval(carTimer);
+      if (reduced) return;
+      carTimer = setInterval(function(){ idx = (idx + 1) % n; paint(); }, 6400);
+    }
+
+    car.querySelectorAll('[data-step]').forEach(function(b){
+      b.addEventListener('click', function(){ go(idx + (+b.dataset.step)); });
+    });
+    car.querySelectorAll('[data-go-slide]').forEach(function(b){
+      b.addEventListener('click', function(){ go(+b.dataset.goSlide); });
+    });
+
+    /* pausa quando o ponteiro está em cima ou a aba sai de foco */
+    car.addEventListener('mouseenter', function(){ car.classList.add('paused'); clearInterval(carTimer); });
+    car.addEventListener('mouseleave', function(){ car.classList.remove('paused'); restart(); });
+    car.addEventListener('focusin', function(){ car.classList.add('paused'); clearInterval(carTimer); });
+    document.addEventListener('visibilitychange', function(){
+      if (document.hidden) clearInterval(carTimer); else if (document.getElementById('hcar')) restart();
+    });
+
+    /* swipe */
+    var x0 = null, y0 = null;
+    car.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive:true });
+    car.addEventListener('touchend', function(e){
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) go(idx + (dx < 0 ? 1 : -1));
+      x0 = y0 = null;
+    }, { passive:true });
+
+    /* setas do teclado quando o foco está no carrossel */
+    car.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowRight'){ e.preventDefault(); go(idx + 1); }
+      if (e.key === 'ArrowLeft'){ e.preventDefault(); go(idx - 1); }
+    });
+
+    paint();
+    restart();
   }
 
   function drawChart(){
@@ -1387,6 +1639,72 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
   document.getElementById('theme-m').addEventListener('click', toggleTheme);
   document.getElementById('theme-f').addEventListener('click', toggleTheme);
 
+  /* =========================================================
+     PWA — service worker, instalação, offline, barra de abas
+     ========================================================= */
+  function paintTabs(){
+    var seg = parse(), page = '/' + (seg[0] || '');
+    if (seg[0] === 'e' && seg[2] === 'selfie') page = '/selfie';
+    if (seg[0] === 'app') page = '/app';
+    document.querySelectorAll('.tb').forEach(function(t){
+      t.classList.toggle('on', t.dataset.tab === page);
+    });
+    var n = state.cart.length, el = document.getElementById('tabn');
+    el.textContent = n; el.style.display = n ? 'grid' : 'none';
+  }
+  var _paintBag = paintBag;
+  paintBag = function(){ _paintBag(); paintTabs(); };
+  window.addEventListener('hashchange', paintTabs);
+
+  /* service worker */
+  if ('serviceWorker' in navigator){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js').then(function(reg){
+        reg.addEventListener('updatefound', function(){
+          var sw = reg.installing;
+          if (!sw) return;
+          sw.addEventListener('statechange', function(){
+            if (sw.state === 'installed' && navigator.serviceWorker.controller){
+              toast('Nova versão disponível', 'Recarregue para atualizar o app');
+            }
+          });
+        });
+      }).catch(function(){ /* protocolo file:// ou navegador sem suporte */ });
+    });
+  }
+
+  /* convite para instalar */
+  var deferred = null, bar = document.getElementById('installbar');
+  function dismissed(){ try { return localStorage.getItem('saibem.noinstall') === '1'; } catch(e){ return false; } }
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); deferred = e;
+    if (!dismissed()) setTimeout(function(){ bar.classList.add('on'); }, 2600);
+  });
+  document.getElementById('doinstall').addEventListener('click', function(){
+    bar.classList.remove('on');
+    if (!deferred) return;
+    deferred.prompt();
+    deferred.userChoice.then(function(r){
+      if (r.outcome === 'accepted') toast('Instalando o Saibem', 'O atalho vai aparecer na sua tela inicial');
+      deferred = null;
+    });
+  });
+  document.getElementById('noinstall').addEventListener('click', function(){
+    bar.classList.remove('on');
+    try { localStorage.setItem('saibem.noinstall', '1'); } catch(e){}
+  });
+  window.addEventListener('appinstalled', function(){
+    bar.classList.remove('on');
+    toast('Saibem instalado', 'Agora abre direto da tela inicial');
+  });
+
+  /* estado da conexão */
+  var chip = document.getElementById('offchip');
+  function conn(){ chip.classList.toggle('on', !navigator.onLine); }
+  window.addEventListener('online', function(){ conn(); toast('De volta à internet', 'Buscas liberadas'); });
+  window.addEventListener('offline', conn);
+  conn();
+
   window.addEventListener('hashchange', render);
   paintBag();
   render();
@@ -1402,3 +1720,5 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
   h1{font-size:23px}
 }
 </style>
+</body>
+</html>
