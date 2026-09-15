@@ -40,11 +40,19 @@ Nenhuma dependência, nenhum build: HTML, CSS e JavaScript puro. Abre no navegad
 #/pedido                  downloads
 #/fotografos              landing de captação + calculadora de repasse
 #/privacidade             política de dados biométricos
+#/entrar                  login do fotógrafo
+#/criar-conta             cadastro sem documento
 #/app/painel              área do fotógrafo — KPIs, gráfico, eventos
+#/app/eventos             meus eventos e transições de estado
+#/app/extrato             lançamentos, saldo e exportação CSV
+#/app/saque               KYC no primeiro saque, depois saque direto
 #/app/novo                criar evento
 #/app/upload              upload e pipeline de processamento
 #/app/kit                 kit de divulgação (QR, WhatsApp, story)
 ```
+
+Tudo sob `#/app/` exige sessão: sem conta, a rota cai na tela de entrar e volta
+para onde você queria ir depois do login.
 
 ### O que já funciona de verdade
 
@@ -59,10 +67,14 @@ Nenhuma dependência, nenhum build: HTML, CSS e JavaScript puro. Abre no navegad
 
 ## Design system
 
-Construído sobre o **Synvia Design System v2**:
-petróleo `#082423` na estrutura, primário `#0F5C4E`, verde `#21A84E`,
-limão `#43E887` como primário sobre fundo escuro.
+Estrutura herdada do **Synvia Design System v2**, com a paleta trocada para azul:
+navy `#07182E` na estrutura (gradiente até `#12325A`), primário `#1A5FC4`,
+marca `#2B7FE8` e ciano `#4DD0FF` como primário sobre fundo escuro.
 Raios 7 (campos) / 9 (botões) / 11 (ícones) / 14 (cards) / 16 (toasts) / 18 (modais).
+
+**Verde continua existindo, mas só como semântica.** `--ok` marca sucesso — evento
+no ar, pacote aplicado, venda no extrato. Cor de marca e cor de estado são coisas
+diferentes, e misturar as duas é o que faz um painel perder a leitura rápida.
 
 ## Arquitetura pretendida (produção)
 
@@ -82,10 +94,10 @@ um único evento), e o original nunca servido antes do pagamento.
 
 ## Próximos passos
 
-- [ ] Login e conta do fotógrafo
-- [ ] KYC no primeiro saque (CPF/CNPJ e chave PIX do mesmo titular)
-- [ ] Estados do evento: rascunho → processando → no ar → encerrado → arquivado
-- [ ] Extrato financeiro e saque
+- [x] Login e conta do fotógrafo
+- [x] KYC no primeiro saque (CPF/CNPJ e chave PIX do mesmo titular)
+- [x] Estados do evento: rascunho → processando → no ar → encerrado → arquivado
+- [x] Extrato financeiro e saque
 - [ ] Perfil público do fotógrafo
 - [ ] Busca por número do peito (OCR)
 - [ ] Paginação real da galeria

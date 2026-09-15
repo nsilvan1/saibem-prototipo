@@ -6,7 +6,7 @@
 <title>Saibem</title>
 <meta name="description" content="Mande uma selfie e receba as fotos em que você aparece. Corrida, campeonato, formatura ou festa.">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#082423">
+<meta name="theme-color" content="#07182E">
 <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,48 +20,51 @@
 <style>
 /* ==========================================================================
    Saibem — site navegável (SPA, rotas por hash)
-   Base: Synvia Design System v2 — petróleo #082423 · primário #0F5C4E
-         verde #21A84E · limão on-dark #43E887
+   Base: Synvia Design System v2 — petróleo #07182E · primário #1A5FC4
+         verde #2B7FE8 · limão on-dark #4DD0FF
    Raio 7 campos / 9 botões / 11 ícones / 14 cards / 16 toast / 18 modal
    ========================================================================== */
 :root{
   --bg:#F2F4F3; --surface:#FFFFFF; --surface-2:#F5F7F6; --chip:#EEF1F0;
   --line:#E6E8EB; --line-2:#D7DEDB;
   --ink:#1A1918; --body:#374641; --label:#54606B; --meta:#637282;
-  --petrol:#082423; --petrol-2:#0D3331; --petrol-3:#143F3D;
-  --hero:linear-gradient(135deg,#082423 0%,#0D3331 60%,#143F3D 100%);
-  --primary:#0F5C4E; --primary-hv:#0B453A; --on-primary:#FFFFFF;
-  --green:#21A84E; --green-ink:#0E7F3C; --green-soft:#EAF9F0; --lime:#43E887;
+  --navy:#07182E; --navy-2:#0C2544; --navy-3:#12325A;
+  --hero:linear-gradient(135deg,#07182E 0%,#0C2544 60%,#12325A 100%);
+  --primary:#1A5FC4; --primary-hv:#154C9E; --on-primary:#FFFFFF;
+  --brand:#2B7FE8; --brand-ink:#1A5FC4; --brand-soft:#E8F1FD; --accent:#4DD0FF;
   --danger:#DF3D11; --danger-ink:#C0330F; --warn:#E8912A; --warn-ink:#8A4E08;
-  --info:#2D6FE8; --info-ink:#2159C4; --chart-1:#21A84E; --chart-empty:#C3CDD7;
-  --sh-card:0 1px 2px rgba(8,36,35,.05);
-  --sh-pop:0 12px 32px -10px rgba(8,36,35,.20);
-  --sh-modal:0 24px 64px rgba(8,36,35,.28);
+  --info:#2D6FE8; --info-ink:#2159C4; --chart-1:#2B7FE8; --chart-empty:#C3CDD7;
+  --ok:#1E9E4A; --ok-ink:#12763A; --ok-soft:#E6F6EC;
+  --sh-card:0 1px 2px rgba(7,24,46,.05);
+  --sh-pop:0 12px 32px -10px rgba(7,24,46,.20);
+  --sh-modal:0 24px 64px rgba(7,24,46,.28);
   --r-fld:7px; --r-btn:9px; --r-ic:11px; --r-card:14px; --r-toast:16px; --r-modal:18px;
   --header-h:60px;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#071A19; --surface:#0D2523; --surface-2:#0F2B29; --chip:#153733;
-    --line:#1C3D39; --line-2:#28524C;
-    --ink:#F1F5F3; --body:#CFDED8; --label:#AABFB7; --meta:#93A9A0;
-    --primary:#43E887; --primary-hv:#66F0A0; --on-primary:#062120;
-    --green:#3FD07E; --green-ink:#6BE3A2; --green-soft:#0F2E24;
+    --bg:#050F1E; --surface:#0B1C33; --surface-2:#0E2340; --chip:#142E4D;
+    --line:#1A3454; --line-2:#2A4A75;
+    --ink:#EFF3F8; --body:#C9D6E8; --label:#A2B4CC; --meta:#8B9FBA;
+    --primary:#4DD0FF; --primary-hv:#7FDCFF; --on-primary:#04121F;
+    --brand:#5AB0FF; --brand-ink:#8CC7FF; --brand-soft:#10233C;
     --danger:#FF7A57; --danger-ink:#FF9273; --warn:#E8B15E; --warn-ink:#EFC98F;
-    --info:#6C9BFF; --info-ink:#93B6FF; --chart-1:#3FD07E; --chart-empty:#2A4744;
+    --info:#6C9BFF; --info-ink:#93B6FF; --chart-1:#5AB0FF; --chart-empty:#2A3A55;
+    --ok:#35C06E; --ok-ink:#5FD892; --ok-soft:#0C2A1B;
     --sh-card:0 1px 2px rgba(0,0,0,.35);
     --sh-pop:0 12px 32px -10px rgba(0,0,0,.6);
     --sh-modal:0 24px 64px rgba(0,0,0,.65);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#071A19; --surface:#0D2523; --surface-2:#0F2B29; --chip:#153733;
-  --line:#1C3D39; --line-2:#28524C;
-  --ink:#F1F5F3; --body:#CFDED8; --label:#AABFB7; --meta:#93A9A0;
-  --primary:#43E887; --primary-hv:#66F0A0; --on-primary:#062120;
-  --green:#3FD07E; --green-ink:#6BE3A2; --green-soft:#0F2E24;
+  --bg:#050F1E; --surface:#0B1C33; --surface-2:#0E2340; --chip:#142E4D;
+  --line:#1A3454; --line-2:#2A4A75;
+  --ink:#EFF3F8; --body:#C9D6E8; --label:#A2B4CC; --meta:#8B9FBA;
+  --primary:#4DD0FF; --primary-hv:#7FDCFF; --on-primary:#04121F;
+  --brand:#5AB0FF; --brand-ink:#8CC7FF; --brand-soft:#10233C;
   --danger:#FF7A57; --danger-ink:#FF9273; --warn:#E8B15E; --warn-ink:#EFC98F;
-  --info:#6C9BFF; --info-ink:#93B6FF; --chart-1:#3FD07E; --chart-empty:#2A4744;
+  --info:#6C9BFF; --info-ink:#93B6FF; --chart-1:#5AB0FF; --chart-empty:#2A3A55;
+  --ok:#35C06E; --ok-ink:#5FD892; --ok-soft:#0C2A1B;
   --sh-card:0 1px 2px rgba(0,0,0,.35);
   --sh-pop:0 12px 32px -10px rgba(0,0,0,.6);
   --sh-modal:0 24px 64px rgba(0,0,0,.65);
@@ -78,12 +81,12 @@ h1,h2,h3,h4{margin:0; color:var(--ink); line-height:1.18; letter-spacing:-.015em
 h1{font-size:26px; font-weight:800}
 h2{font-size:19px; font-weight:700}
 h3{font-size:15px; font-weight:700}
-a{color:var(--green-ink); text-decoration:none}
+a{color:var(--brand-ink); text-decoration:none}
 a:hover{text-decoration:underline}
 button{color:inherit}
 .i{width:16px; height:16px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
 .i-sm{width:14px;height:14px} .i-lg{width:19px;height:19px}
-:focus-visible{outline:2px solid var(--green); outline-offset:2px}
+:focus-visible{outline:2px solid var(--brand); outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
 .over{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--meta)}
 .sub{font-size:12.5px; font-weight:500; color:var(--meta)}
@@ -91,14 +94,14 @@ button{color:inherit}
 .hide{display:none!important}
 
 /* ---------- header ---------- */
-.hdr{position:sticky; top:0; z-index:60; background:var(--petrol); color:#fff}
+.hdr{position:sticky; top:0; z-index:60; background:var(--navy); color:#fff}
 .hdr-in{max-width:1160px; margin:0 auto; padding:0 20px; height:var(--header-h);
   display:flex; align-items:center; gap:14px}
 .brand{display:flex; align-items:center; gap:9px; cursor:pointer; background:0; border:0; padding:0}
-.brand .mk{width:26px; height:26px; border-radius:8px; background:var(--lime); color:var(--petrol); display:grid; place-items:center}
+.brand .mk{width:26px; height:26px; border-radius:8px; background:var(--accent); color:var(--navy); display:grid; place-items:center}
 .brand .mk svg{width:15px; height:15px; stroke-width:2.6}
 .brand .wm{color:#fff; font-size:16.5px; font-weight:800; letter-spacing:-.025em}
-.brand .wm i{font-style:normal; color:var(--lime)}
+.brand .wm i{font-style:normal; color:var(--accent)}
 .hsearch{display:flex; align-items:center; gap:8px; height:36px; padding:0 12px; border-radius:var(--r-btn);
   border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.08); flex:1; max-width:420px}
 .hsearch input{flex:1; min-width:0; background:0; border:0; outline:0; color:#fff; font-size:13px}
@@ -108,12 +111,12 @@ button{color:inherit}
 .hlink{background:0; border:0; color:rgba(255,255,255,.82); font-size:13px; font-weight:600;
   padding:7px 11px; border-radius:var(--r-btn); cursor:pointer; white-space:nowrap}
 .hlink:hover{background:rgba(255,255,255,.1); color:#fff}
-.hlink[aria-current="page"]{color:var(--lime)}
+.hlink[aria-current="page"]{color:var(--accent)}
 .bag{position:relative; display:inline-flex; align-items:center; gap:7px; height:36px; padding:0 13px;
   border-radius:var(--r-btn); background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.28);
   color:#fff; font-size:13px; font-weight:700; cursor:pointer}
 .bag:hover{background:rgba(255,255,255,.15)}
-.bag .n{min-width:19px; height:19px; padding:0 5px; border-radius:999px; background:var(--lime); color:var(--petrol);
+.bag .n{min-width:19px; height:19px; padding:0 5px; border-radius:999px; background:var(--accent); color:var(--navy);
   font-size:11px; font-weight:800; display:grid; place-items:center}
 .burger{display:none; background:0; border:1px solid rgba(255,255,255,.24); color:#fff; width:36px; height:36px;
   border-radius:var(--r-btn); cursor:pointer; place-items:center}
@@ -122,7 +125,7 @@ button{color:inherit}
   .hnav .hlink{display:none}
   .burger{display:grid}
 }
-.mmenu{background:var(--petrol-2); border-top:1px solid rgba(255,255,255,.1); padding:8px 20px 14px;
+.mmenu{background:var(--navy-2); border-top:1px solid rgba(255,255,255,.1); padding:8px 20px 14px;
   display:flex; flex-direction:column; gap:2px}
 .mmenu button{background:0; border:0; text-align:left; color:rgba(255,255,255,.85); font-size:14px; font-weight:600;
   padding:10px 8px; border-radius:8px; cursor:pointer}
@@ -156,8 +159,8 @@ button{color:inherit}
 .btn-ghost:hover{background:var(--surface-2)}
 .btn-lg{height:46px; padding:0 22px; font-size:15px}
 .btn-sm{height:32px; padding:0 12px; font-size:12.5px}
-.on-dark.btn{background:var(--lime); color:var(--petrol)}
-.on-dark.btn:hover{background:#66F0A0}
+.on-dark.btn{background:var(--accent); color:var(--navy)}
+.on-dark.btn:hover{background:#7FDCFF}
 .on-dark.btn-ghost{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.32); color:#fff}
 .on-dark.btn-ghost:hover{background:rgba(255,255,255,.15)}
 
@@ -166,17 +169,18 @@ button{color:inherit}
 .fld label{font-size:11.5px; font-weight:600; color:var(--label)}
 .fld input,.fld select{width:100%; height:42px; padding:0 12px; border:1px solid var(--line-2); border-radius:var(--r-fld);
   font-size:14px; color:var(--body); background:var(--surface); outline:0; transition:border-color .12s, box-shadow .12s}
-.fld input:focus,.fld select:focus{border-color:var(--green); box-shadow:0 0 0 1px var(--green)}
+.fld input:focus,.fld select:focus{border-color:var(--brand); box-shadow:0 0 0 1px var(--brand)}
 .fld .hint{font-size:11px; color:var(--meta)}
 .check{display:flex; gap:9px; align-items:flex-start; font-size:13px; cursor:pointer}
-.check input{accent-color:var(--green); margin-top:3px; flex-shrink:0}
+.check input{accent-color:var(--brand); margin-top:3px; flex-shrink:0}
 
 /* ---------- badges / chips ---------- */
 .badge{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; padding:3px 9px;
   border-radius:6px; background:var(--chip); color:var(--label); white-space:nowrap}
 .badge .dot{width:6px; height:6px; border-radius:50%; background:currentColor}
-.badge.green{background:var(--green-soft); color:var(--green-ink)}
+.badge.brand{background:var(--brand-soft); color:var(--brand-ink)}
 .badge.amber{background:rgba(232,145,42,.14); color:var(--warn-ink)}
+.badge.ok{background:var(--ok-soft); color:var(--ok-ink)}
 .badge.red{background:rgba(223,61,17,.12); color:var(--danger-ink)}
 .badge.blue{background:rgba(45,111,232,.12); color:var(--info-ink)}
 .badge.live .dot{animation:pulse 1.6s ease-in-out infinite}
@@ -186,7 +190,7 @@ button{color:inherit}
 .chipf{border:1px solid var(--line-2); background:var(--surface); color:var(--label); font-size:12.5px; font-weight:600;
   padding:6px 13px; border-radius:999px; cursor:pointer}
 .chipf:hover{background:var(--surface-2); color:var(--ink)}
-.chipf[aria-pressed="true"]{background:var(--petrol); border-color:var(--petrol); color:#fff}
+.chipf[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:#fff}
 
 /* ---------- cartão de evento ---------- */
 .evgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(252px,1fr)); gap:16px}
@@ -196,10 +200,10 @@ button{color:inherit}
 .ev:hover{transform:translateY(-3px); box-shadow:var(--sh-pop); border-color:var(--line-2)}
 .ev-th{position:relative}
 .ev-th img{aspect-ratio:16/9; object-fit:cover; width:100%}
-.ev-th .badge{position:absolute; top:9px; left:9px; box-shadow:0 2px 8px rgba(8,36,35,.35)}
+.ev-th .badge{position:absolute; top:9px; left:9px; box-shadow:0 2px 8px rgba(7,24,46,.35)}
 .ev-b{padding:13px 14px 15px; display:flex; flex-direction:column; gap:4px}
 .ev-b .t{font-size:14.5px; font-weight:700; color:var(--ink)}
-.ev-b .price{margin-top:5px; font-size:12.5px; font-weight:700; color:var(--green-ink)}
+.ev-b .price{margin-top:5px; font-size:12.5px; font-weight:700; color:var(--brand-ink)}
 
 /* ---------- galeria ---------- */
 .sheet{display:grid; grid-template-columns:repeat(auto-fill,minmax(164px,1fr)); gap:11px}
@@ -212,14 +216,14 @@ button{color:inherit}
   font-weight:800; letter-spacing:.28em; color:rgba(255,255,255,.6); transform:rotate(-20deg); text-shadow:0 1px 3px rgba(0,0,0,.5)}
 .frame figcaption{position:absolute; left:0; right:0; bottom:0; display:flex; justify-content:space-between;
   padding:18px 8px 6px; font-size:10px; font-weight:600; color:#fff; font-variant-numeric:tabular-nums;
-  background:linear-gradient(transparent,rgba(8,36,35,.78))}
+  background:linear-gradient(transparent,rgba(7,24,46,.78))}
 .frame .add{position:absolute; top:7px; right:7px; width:26px; height:26px; border-radius:999px; border:1.5px solid rgba(255,255,255,.9);
-  background:rgba(8,36,35,.4); display:grid; place-items:center; color:#fff}
+  background:rgba(7,24,46,.4); display:grid; place-items:center; color:#fff}
 .frame .add .i{width:14px; height:14px}
-.frame.in{box-shadow:0 0 0 2.5px var(--green), var(--sh-card)}
-.frame.in .add{background:var(--green); border-color:var(--green)}
+.frame.in{box-shadow:0 0 0 2.5px var(--brand), var(--sh-card)}
+.frame.in .add{background:var(--brand); border-color:var(--brand)}
 .frame .match{position:absolute; top:7px; left:7px; font-size:10px; font-weight:700; padding:2px 7px; border-radius:999px;
-  background:rgba(8,36,35,.85); color:var(--lime); font-variant-numeric:tabular-nums}
+  background:rgba(7,24,46,.85); color:var(--accent); font-variant-numeric:tabular-nums}
 
 /* ---------- barra fixa ---------- */
 .stickybar{position:sticky; bottom:14px; z-index:30; margin-top:16px; background:var(--surface); border:1px solid var(--line);
@@ -234,7 +238,7 @@ thead th{text-align:left; font-size:11.5px; font-weight:600; color:var(--ink); p
   background:var(--surface-2); white-space:nowrap}
 td{padding:12px 13px; border-bottom:1px solid var(--line); color:var(--label); white-space:nowrap; vertical-align:middle}
 tbody tr:last-child td{border-bottom:0}
-tbody tr:hover{background:var(--green-soft)}
+tbody tr:hover{background:var(--brand-soft)}
 .t-main{font-weight:600; color:var(--ink)}
 .t-sub{font-size:11px; color:var(--meta); margin-top:2px}
 td.n{text-align:right; font-variant-numeric:tabular-nums}
@@ -244,19 +248,19 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
 .kpi{display:flex; align-items:center; gap:12px; border:1px solid var(--line); background:var(--surface);
   border-radius:var(--r-card); padding:15px 16px; box-shadow:var(--sh-card)}
 .kpi .ic{width:44px; height:44px; border-radius:12px; display:grid; place-items:center; flex-shrink:0;
-  background:rgba(33,168,78,.1); color:var(--green)}
+  background:rgba(43,127,232,.1); color:var(--brand)}
 .kpi .ic .i{width:20px;height:20px}
 .kpi-l{font-size:11.5px; font-weight:600; color:var(--label)}
 .kpi-v{font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--ink); line-height:1.1; font-variant-numeric:tabular-nums}
 .kpi-f{font-size:11px; color:var(--meta)}
-.kpi-f.up{color:var(--green-ink); font-weight:600}
+.kpi-f.up{color:var(--brand-ink); font-weight:600}
 
 /* ---------- alert ---------- */
 .alert{display:flex; gap:12px; padding:14px 16px; border-radius:11px; border:1px solid}
 .alert .at{font-size:13px; font-weight:700}
 .alert .ad{font-size:12.5px; margin-top:2px; color:var(--label); line-height:1.45}
 .alert.info{background:rgba(45,111,232,.06); border-color:rgba(45,111,232,.22); color:var(--info-ink)}
-.alert.success{background:rgba(33,168,78,.07); border-color:rgba(33,168,78,.26); color:var(--green-ink)}
+.alert.success{background:var(--ok-soft); border-color:rgba(30,158,74,.3); color:var(--ok-ink)}
 .alert.warning{background:rgba(232,145,42,.09); border-color:rgba(232,145,42,.3); color:var(--warn-ink)}
 
 /* ---------- tabs ---------- */
@@ -264,17 +268,17 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
 .tab{padding:11px 15px; font-size:13.5px; font-weight:600; color:var(--meta); cursor:pointer; background:0; border:0;
   border-bottom:2px solid transparent; margin-bottom:-1px; white-space:nowrap}
 .tab:hover{color:var(--ink)}
-.tab[aria-selected="true"]{color:var(--green-ink); border-bottom-color:var(--green)}
+.tab[aria-selected="true"]{color:var(--brand-ink); border-bottom-color:var(--brand)}
 
 /* ---------- câmera ---------- */
-.cam{position:relative; border-radius:var(--r-card); overflow:hidden; aspect-ratio:1; background:var(--petrol); display:grid; place-items:center}
+.cam{position:relative; border-radius:var(--r-card); overflow:hidden; aspect-ratio:1; background:var(--navy); display:grid; place-items:center}
 .cam img{width:100%; height:100%; object-fit:cover}
 .reticle{position:absolute; width:46%; aspect-ratio:3/4; border:2px solid rgba(255,255,255,.9);
-  border-radius:42% 42% 38% 38%; box-shadow:0 0 0 9999px rgba(8,36,35,.45)}
-.scan{position:absolute; left:0; right:0; height:2px; background:var(--lime); box-shadow:0 0 16px 3px rgba(67,232,135,.8);
+  border-radius:42% 42% 38% 38%; box-shadow:0 0 0 9999px rgba(7,24,46,.45)}
+.scan{position:absolute; left:0; right:0; height:2px; background:var(--accent); box-shadow:0 0 16px 3px rgba(77,208,255,.8);
   animation:scan 1.8s ease-in-out infinite}
 @keyframes scan{0%,100%{top:12%}50%{top:86%}}
-.cam.busy .reticle{border-color:var(--lime)}
+.cam.busy .reticle{border-color:var(--accent)}
 @media(prefers-reduced-motion:reduce){.scan{animation:none; top:50%}}
 
 /* ---------- PIX ---------- */
@@ -295,11 +299,11 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
 .step{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:13px 14px;
   display:flex; flex-direction:column; gap:3px; box-shadow:var(--sh-card); position:relative; overflow:hidden}
 .step::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:transparent}
-.step.done::before{background:var(--green)}
-.step.now::before{background:var(--lime)}
+.step.done::before{background:var(--brand)}
+.step.now::before{background:var(--accent)}
 .step .v{font-size:17px; font-weight:800; color:var(--ink); font-variant-numeric:tabular-nums}
 .track{display:block; height:6px; background:var(--chip); border-radius:999px; overflow:hidden}
-.track i{display:block; height:100%; background:var(--green); border-radius:999px; transition:width .4s ease}
+.track i{display:block; height:100%; background:var(--brand); border-radius:999px; transition:width .4s ease}
 .drop{border:1.5px dashed var(--line-2); border-radius:var(--r-card); padding:26px 20px; text-align:center;
   display:flex; flex-direction:column; gap:9px; align-items:center; background:var(--surface-2)}
 
@@ -309,18 +313,18 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
 .bar:hover{opacity:.78}
 .grid-line{stroke:var(--line); stroke-width:1}
 .axis-lbl{fill:var(--meta); font-size:10px; font-weight:600}
-.tip{position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-118%); background:var(--petrol);
+.tip{position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-118%); background:var(--navy);
   color:#fff; border-radius:8px; padding:6px 10px; font-size:11.5px; font-weight:600; white-space:nowrap;
   box-shadow:var(--sh-pop); transition:opacity .12s; z-index:5}
-.tip b{color:var(--lime)}
+.tip b{color:var(--accent)}
 
 /* ---------- lightbox / modal ---------- */
-.lb{position:fixed; inset:0; z-index:120; display:none; place-items:center; padding:20px; background:rgba(8,36,35,.75)}
+.lb{position:fixed; inset:0; z-index:120; display:none; place-items:center; padding:20px; background:rgba(7,24,46,.75)}
 .lb[open]{display:grid}
 .lb-box{background:var(--surface); border-radius:var(--r-modal); box-shadow:var(--sh-modal); overflow:hidden;
   max-width:900px; width:100%; max-height:92vh; display:grid; grid-template-columns:1fr 272px}
 @media(max-width:760px){.lb-box{grid-template-columns:1fr; max-height:90vh; overflow-y:auto}}
-.lb-img{position:relative; background:var(--petrol); display:grid; place-items:center; min-height:220px}
+.lb-img{position:relative; background:var(--navy); display:grid; place-items:center; min-height:220px}
 .lb-img img{width:100%; max-height:72vh; object-fit:contain}
 .lb-img .wm{position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; font-size:26px;
   font-weight:800; letter-spacing:.4em; color:rgba(255,255,255,.32); transform:rotate(-20deg)}
@@ -330,10 +334,10 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
 .lb-meta .r{display:flex; justify-content:space-between; gap:10px}
 .lb-meta .r b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums}
 .lb-x{position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:999px; border:0;
-  background:rgba(8,36,35,.65); color:#fff; cursor:pointer; display:grid; place-items:center}
+  background:rgba(7,24,46,.65); color:#fff; cursor:pointer; display:grid; place-items:center}
 .lb-nav{position:absolute; top:50%; transform:translateY(-50%); width:38px; height:38px; border-radius:999px; border:0;
-  background:rgba(8,36,35,.6); color:#fff; cursor:pointer; display:grid; place-items:center}
-.lb-nav:hover{background:rgba(8,36,35,.85)}
+  background:rgba(7,24,46,.6); color:#fff; cursor:pointer; display:grid; place-items:center}
+.lb-nav:hover{background:rgba(7,24,46,.85)}
 .lb-prev{left:10px} .lb-next{right:10px}
 
 /* ---------- toast ---------- */
@@ -341,10 +345,10 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
   flex-direction:column; align-items:center; gap:10px; pointer-events:none}
 .toast{pointer-events:auto; display:flex; align-items:center; gap:12px; width:340px; max-width:calc(100vw - 40px);
   padding:12px 13px; border-radius:var(--r-toast); background:var(--hero); color:#fff;
-  box-shadow:0 4px 24px rgba(8,36,35,.3); transform:translateY(16px) scale(.98); opacity:0;
+  box-shadow:0 4px 24px rgba(7,24,46,.3); transform:translateY(16px) scale(.98); opacity:0;
   transition:transform .3s cubic-bezier(.16,1,.3,1), opacity .24s}
 .toast.show{transform:none; opacity:1}
-.toast .tic{width:30px; height:30px; border-radius:9px; display:grid; place-items:center; background:var(--lime); color:var(--petrol); flex-shrink:0}
+.toast .tic{width:30px; height:30px; border-radius:9px; display:grid; place-items:center; background:var(--accent); color:var(--navy); flex-shrink:0}
 .toast .tt{font-size:13px; font-weight:700}
 .toast .tm{font-size:11.5px; color:rgba(255,255,255,.82)}
 
@@ -353,7 +357,7 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
 .empty .ic{width:52px; height:52px; border-radius:14px; background:var(--chip); color:var(--meta); display:grid; place-items:center}
 
 /* ---------- footer ---------- */
-.ftr{background:var(--petrol); color:rgba(255,255,255,.7); margin-top:40px}
+.ftr{background:var(--navy); color:rgba(255,255,255,.7); margin-top:40px}
 .ftr .wrap{padding-block:30px 26px; display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:24px}
 @media(max-width:760px){.ftr .wrap{grid-template-columns:1fr 1fr}}
 .ftr h4{color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; margin-bottom:10px}
@@ -365,55 +369,55 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
 /* ---------- pitch / landing fotógrafo ---------- */
 .pitch{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px}
 .pitch .card{padding:17px; display:flex; flex-direction:column; gap:7px}
-.pitch .ic{width:36px; height:36px; border-radius:var(--r-ic); display:grid; place-items:center; background:var(--green-soft); color:var(--green-ink)}
+.pitch .ic{width:36px; height:36px; border-radius:var(--r-ic); display:grid; place-items:center; background:var(--brand-soft); color:var(--brand-ink)}
 .calc-out{background:var(--hero); border-radius:var(--r-card); padding:17px 18px; color:#fff; display:flex; flex-direction:column; gap:3px}
 .calc-out .v{font-size:30px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
 .calc-out .l{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:rgba(255,255,255,.62)}
 .calc-out .d{font-size:12px; color:rgba(255,255,255,.78)}
-.story{width:190px; aspect-ratio:9/16; border-radius:var(--r-card); overflow:hidden; position:relative; background:var(--petrol)}
+.story{width:190px; aspect-ratio:9/16; border-radius:var(--r-card); overflow:hidden; position:relative; background:var(--navy)}
 .story img{width:100%; height:100%; object-fit:cover}
 .story .ov{position:absolute; inset:0; padding:14px; color:#fff; display:flex; flex-direction:column; justify-content:space-between;
-  background:linear-gradient(180deg,rgba(8,36,35,.6),rgba(8,36,35,.05) 42%,rgba(8,36,35,.86))}
+  background:linear-gradient(180deg,rgba(7,24,46,.6),rgba(7,24,46,.05) 42%,rgba(7,24,46,.86))}
 .story h4{color:#fff; font-size:17px; font-weight:800; line-height:1.15}
-.wabubble{background:var(--green-soft); color:var(--body); border-radius:11px 11px 11px 3px; padding:11px 13px; font-size:13px; max-width:430px}
+.wabubble{background:var(--brand-soft); color:var(--body); border-radius:11px 11px 11px 3px; padding:11px 13px; font-size:13px; max-width:430px}
 
 /* ==========================================================================
    CARROSSEL DE CAPA — tratamento de landing fotográfica
    A foto manda: full-bleed, scrim para legibilidade, texto no terço inferior,
    Ken Burns lento no slide ativo e filmstrip dos próximos.
    ========================================================================== */
-.hcar{position:relative; overflow:hidden; background:var(--petrol); touch-action:pan-y}
+.hcar{position:relative; overflow:hidden; background:var(--navy); touch-action:pan-y}
 .hcar-track{display:flex; transition:transform .62s cubic-bezier(.16,1,.3,1); will-change:transform}
 .hslide{position:relative; flex:0 0 100%; height:clamp(410px, 66vh, 580px); overflow:hidden}
 .hslide img{width:100%; height:100%; object-fit:cover; object-position:50% 38%; transform:scale(1.03); transition:transform 8s linear}
 .hslide.on img{transform:scale(1.13)}
 .hslide::after{content:""; position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(180deg, rgba(8,36,35,.62) 0%, rgba(8,36,35,.12) 32%, rgba(8,36,35,.55) 62%, rgba(8,36,35,.94) 100%)}
+  background:linear-gradient(180deg, rgba(7,24,46,.62) 0%, rgba(7,24,46,.12) 32%, rgba(7,24,46,.55) 62%, rgba(7,24,46,.94) 100%)}
 .hslide-c{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:0 20px 30px}
 .hslide-in{max-width:1160px; margin:0 auto; display:flex; flex-direction:column; gap:11px; align-items:flex-start}
 .hslide-in h2{color:#fff; font-size:clamp(26px,4.4vw,40px); font-weight:800; letter-spacing:-.03em; line-height:1.05;
-  max-width:15ch; text-shadow:0 2px 24px rgba(8,36,35,.55)}
+  max-width:15ch; text-shadow:0 2px 24px rgba(7,24,46,.55)}
 .hslide-in .meta{display:flex; gap:14px; flex-wrap:wrap; color:rgba(255,255,255,.85); font-size:13px; font-weight:600}
 .hslide-in .meta span{display:inline-flex; align-items:center; gap:6px}
 .hslide-in .cta{display:flex; gap:9px; flex-wrap:wrap; margin-top:4px}
 .hbars{position:absolute; top:0; left:0; right:0; z-index:3; display:flex; gap:5px; padding:14px 20px 0}
 .hbar{flex:1; height:3px; border-radius:2px; background:rgba(255,255,255,.26); overflow:hidden; cursor:pointer; border:0; padding:0}
-.hbar i{display:block; height:100%; width:0; background:var(--lime); border-radius:2px}
+.hbar i{display:block; height:100%; width:0; background:var(--accent); border-radius:2px}
 .hbar.done i{width:100%}
 .hbar.on i{animation:hfill 6.4s linear forwards}
 @keyframes hfill{from{width:0}to{width:100%}}
 .hcar.paused .hbar.on i{animation-play-state:paused}
 .harrow{position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:42px; height:42px; border-radius:999px;
-  border:1px solid rgba(255,255,255,.3); background:rgba(8,36,35,.4); color:#fff; cursor:pointer;
+  border:1px solid rgba(255,255,255,.3); background:rgba(7,24,46,.4); color:#fff; cursor:pointer;
   display:grid; place-items:center; backdrop-filter:blur(4px); transition:background .14s}
-.harrow:hover{background:rgba(8,36,35,.75)}
+.harrow:hover{background:rgba(7,24,46,.75)}
 .harrow.prev{left:16px} .harrow.next{right:16px}
 .hstrip{position:absolute; right:20px; bottom:30px; z-index:3; display:flex; gap:8px; align-items:flex-end}
 .hthumb{width:64px; height:44px; border-radius:8px; overflow:hidden; border:2px solid rgba(255,255,255,.35);
   cursor:pointer; padding:0; background:0; opacity:.72; transition:opacity .16s, border-color .16s, transform .16s}
 .hthumb img{width:100%; height:100%; object-fit:cover}
 .hthumb:hover{opacity:1; transform:translateY(-2px)}
-.hthumb.on{border-color:var(--lime); opacity:1}
+.hthumb.on{border-color:var(--accent); opacity:1}
 .hcount{position:absolute; right:20px; top:26px; z-index:3; font-size:11.5px; font-weight:700; letter-spacing:.1em;
   color:rgba(255,255,255,.7); font-variant-numeric:tabular-nums}
 @media(max-width:860px){
@@ -446,12 +450,12 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
 body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
 .tabbar{position:fixed; left:10px; right:10px; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:70;
   background:var(--surface); border:1px solid var(--line); border-radius:15px;
-  box-shadow:0 8px 22px rgba(8,36,35,.18); padding:4px; display:none; justify-content:space-around}
+  box-shadow:0 8px 22px rgba(7,24,46,.18); padding:4px; display:none; justify-content:space-around}
 .tb{flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:2px;
   padding:9px 3px 7px; border-radius:13px; border:1.5px solid transparent; background:0; cursor:pointer;
   color:var(--meta); font-size:9.5px; font-weight:600}
 .tb .i{width:18px; height:18px}
-.tb.on{background:var(--petrol); border-color:var(--lime); color:var(--lime)}
+.tb.on{background:var(--navy); border-color:var(--accent); color:var(--accent)}
 .tb .badge-n{position:absolute; transform:translate(12px,-4px); min-width:16px; height:16px; padding:0 4px;
   border-radius:999px; background:var(--danger); color:#fff; font-size:9px; font-weight:800; display:grid; place-items:center}
 @media(max-width:880px){
@@ -468,8 +472,8 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
   padding:12px 14px; display:none; gap:12px; align-items:center; max-width:520px; margin:0 auto}
 .installbar.on{display:flex}
 @media(min-width:881px){.installbar{bottom:16px}}
-.installbar .ic{width:38px; height:38px; border-radius:11px; background:rgba(67,232,135,.16);
-  border:1px solid rgba(67,232,135,.4); color:var(--lime); display:grid; place-items:center; flex-shrink:0}
+.installbar .ic{width:38px; height:38px; border-radius:11px; background:rgba(77,208,255,.16);
+  border:1px solid rgba(77,208,255,.4); color:var(--accent); display:grid; place-items:center; flex-shrink:0}
 .installbar .tx{flex:1; min-width:0}
 .installbar .tt{font-size:13px; font-weight:700}
 .installbar .tm{font-size:11.5px; color:rgba(255,255,255,.78)}
@@ -522,6 +526,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       <button class="hlink" data-nav="/eventos">Eventos</button>
       <button class="hlink" data-nav="/fotografos">Para fotógrafos</button>
       <button class="hlink" data-nav="/privacidade">Privacidade</button>
+      <button class="hlink" id="acct" data-nav="/entrar">Entrar</button>
       <button class="bag" data-nav="/sacola"><svg class="i i-sm"><use href="#ic-bag"/></svg>Sacola <span class="n" id="bagn">0</span></button>
       <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><svg class="i"><use href="#ic-menu"/></svg></button>
     </nav>
@@ -530,6 +535,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
     <button data-nav="/eventos">Eventos</button>
     <button data-nav="/fotografos">Para fotógrafos</button>
     <button data-nav="/app/painel">Área do fotógrafo</button>
+    <button data-nav="/entrar">Entrar / criar conta</button>
     <button data-nav="/privacidade">Privacidade e dados</button>
     <button id="theme-m">Trocar tema</button>
   </div>
@@ -541,7 +547,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
   <div class="wrap">
     <div>
       <div class="row" style="gap:9px; margin-bottom:9px">
-        <span style="width:26px;height:26px;border-radius:8px;background:var(--lime);color:var(--petrol);display:grid;place-items:center">
+        <span style="width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--navy);display:grid;place-items:center">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
         <span style="color:#fff; font-size:16px; font-weight:800; letter-spacing:-.025em">Saibem.</span>
       </div>
@@ -556,6 +562,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       <button data-nav="/fotografos">Por que o Saibem</button>
       <button data-nav="/app/novo">Criar evento</button>
       <button data-nav="/app/painel">Painel de vendas</button>
+      <button data-nav="/app/extrato">Extrato e saques</button>
       <button data-nav="/fotografos">Taxas</button></div>
     <div><h4>Ajuda</h4>
       <button data-nav="/privacidade">LGPD e biometria</button>
@@ -688,6 +695,102 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
   function eventBySlug(s){ for (var k = 0; k < EVENTS.length; k++) if (EVENTS[k].slug === s) return EVENTS[k]; return EVENTS[0]; }
 
   /* =========================================================
+     CONTA DO FOTÓGRAFO — sessão, KYC e carteira
+     ========================================================= */
+  var conta = null;
+  try { conta = JSON.parse(localStorage.getItem('saibem.conta') || 'null'); } catch(e){}
+  function saveConta(){ try { localStorage.setItem('saibem.conta', JSON.stringify(conta)); } catch(e){} }
+  function logado(){ return !!conta; }
+
+  /* estados possíveis de um evento e o que cada um permite */
+  var ESTADOS = {
+    rascunho:   { rotulo:'rascunho',   cls:'',      dica:'Só você vê. Publique para começar a vender.' },
+    processando:{ rotulo:'processando',cls:'amber', dica:'Indexando rostos. As fotos já indexadas estão à venda.' },
+    no_ar:      { rotulo:'no ar',      cls:'ok',    dica:'Vendendo normalmente.' },
+    encerrado:  { rotulo:'encerrado',  cls:'',      dica:'Não recebe mais fotos, mas continua vendendo.' },
+    arquivado:  { rotulo:'arquivado',  cls:'red',   dica:'Fora do ar. Quem já comprou mantém o download.' }
+  };
+  var TRANSICOES = {
+    rascunho:    [['publicar','processando']],
+    processando: [['publicar agora','no_ar']],
+    no_ar:       [['encerrar','encerrado']],
+    encerrado:   [['reabrir','no_ar'], ['arquivar','arquivado']],
+    arquivado:   [['reativar','encerrado']]
+  };
+
+  /* eventos do fotógrafo logado (dados de demonstração) */
+  var MEUS = [
+    { slug:'cerrado10k', nome:'Corrida do Cerrado 10K', quando:'14 set · Goiânia', estado:'processando',
+      fotos:4812, visitas:2104, vendas:177, liquido:1911.60, conv:8.4 },
+    { slug:'copa-goias-jj', nome:'Copa Goiás de Jiu-Jítsu', quando:'07 set · Ginásio Rio Vermelho', estado:'no_ar',
+      fotos:3140, visitas:1512, vendas:96, liquido:1036.80, conv:6.3 },
+    { slug:'formatura-med-ufg', nome:'Formatura Medicina UFG', quando:'30 ago · Teatro Goiânia', estado:'no_ar',
+      fotos:1988, visitas:874, vendas:61, liquido:823.50, conv:7.0 },
+    { slug:'enduro-serra', nome:'Enduro Serra Dourada', quando:'17 ago · Serra Dourada', estado:'encerrado',
+      fotos:2657, visitas:1033, vendas:88, liquido:950.40, conv:8.5 },
+    { slug:'volta-pampulha', nome:'Volta da Pampulha', quando:'03 ago · Belo Horizonte', estado:'encerrado',
+      fotos:5607, visitas:3288, vendas:241, liquido:2602.80, conv:7.3 }
+  ];
+  try {
+    var est = JSON.parse(localStorage.getItem('saibem.estados') || '{}');
+    MEUS.forEach(function(m){ if (est[m.slug]) m.estado = est[m.slug]; });
+  } catch(e){}
+  function saveEstados(){
+    var o = {}; MEUS.forEach(function(m){ o[m.slug] = m.estado; });
+    try { localStorage.setItem('saibem.estados', JSON.stringify(o)); } catch(e){}
+  }
+
+  /* extrato — lançamentos mais recentes primeiro */
+  var LEDGER = [
+    { d:'14/09', t:'venda',    ev:'Corrida do Cerrado 10K', bruto:39.00, taxa:3.90, v:35.10, st:'liberado' },
+    { d:'14/09', t:'venda',    ev:'Corrida do Cerrado 10K', bruto:12.00, taxa:1.20, v:10.80, st:'liberado' },
+    { d:'14/09', t:'venda',    ev:'Corrida do Cerrado 10K', bruto:39.00, taxa:3.90, v:35.10, st:'a liberar' },
+    { d:'13/09', t:'venda',    ev:'Copa Goiás de Jiu-Jítsu', bruto:32.00, taxa:3.20, v:28.80, st:'liberado' },
+    { d:'13/09', t:'reembolso',ev:'Copa Goiás de Jiu-Jítsu', bruto:-10.00, taxa:1.00, v:-9.00, st:'liberado' },
+    { d:'12/09', t:'saque',    ev:'PIX 62 9 9631-2200', bruto:-820.00, taxa:0, v:-820.00, st:'liberado' },
+    { d:'11/09', t:'venda',    ev:'Formatura Medicina UFG', bruto:59.00, taxa:5.90, v:53.10, st:'liberado' },
+    { d:'10/09', t:'venda',    ev:'Volta da Pampulha', bruto:39.00, taxa:3.90, v:35.10, st:'liberado' },
+    { d:'09/09', t:'venda',    ev:'Enduro Serra Dourada', bruto:12.00, taxa:1.20, v:10.80, st:'liberado' }
+  ];
+  function carteira(){
+    var disp = 1284.50, aLiberar = 0;
+    LEDGER.forEach(function(l){ if (l.st === 'a liberar') aLiberar += l.v; });
+    return { disponivel: disp, aLiberar: aLiberar };
+  }
+
+  /* validação real de CPF e CNPJ — dígitos verificadores */
+  function validaCPF(s){
+    s = (s || '').replace(/\D/g, '');
+    if (s.length !== 11 || /^(\d)\1{10}$/.test(s)) return false;
+    var i, soma = 0, r;
+    for (i = 0; i < 9; i++) soma += +s[i] * (10 - i);
+    r = (soma * 10) % 11; if (r === 10) r = 0;
+    if (r !== +s[9]) return false;
+    soma = 0;
+    for (i = 0; i < 10; i++) soma += +s[i] * (11 - i);
+    r = (soma * 10) % 11; if (r === 10) r = 0;
+    return r === +s[10];
+  }
+  function validaCNPJ(s){
+    s = (s || '').replace(/\D/g, '');
+    if (s.length !== 14 || /^(\d)\1{13}$/.test(s)) return false;
+    function dig(base){
+      var p = base.length === 12 ? [5,4,3,2,9,8,7,6,5,4,3,2] : [6,5,4,3,2,9,8,7,6,5,4,3,2];
+      var soma = 0;
+      for (var i = 0; i < base.length; i++) soma += +base[i] * p[i];
+      var r = soma % 11;
+      return r < 2 ? 0 : 11 - r;
+    }
+    return dig(s.slice(0, 12)) === +s[12] && dig(s.slice(0, 13)) === +s[13];
+  }
+  function validaDoc(s){
+    var n = (s || '').replace(/\D/g, '');
+    if (n.length === 11) return validaCPF(n);
+    if (n.length === 14) return validaCNPJ(n);
+    return false;
+  }
+
+  /* =========================================================
      ESTADO
      ========================================================= */
   var state = { cart: [], busca: '', cat: '', cidade: '', found: {} };
@@ -729,8 +832,8 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
   function evCard(ev){
     return '<button class="ev" data-nav="/e/' + ev.slug + '">'
       + '<div class="ev-th"><img src="' + POOL[ev.capa] + '" alt="" loading="lazy">'
-      + (ev.live ? '<span class="badge live" style="background:var(--lime);color:var(--petrol)"><span class="dot"></span>ao vivo</span>'
-                 : '<span class="badge" style="background:rgba(8,36,35,.78);color:#fff">encerrado</span>')
+      + (ev.live ? '<span class="badge live" style="background:var(--accent);color:var(--navy)"><span class="dot"></span>ao vivo</span>'
+                 : '<span class="badge" style="background:rgba(7,24,46,.78);color:#fff">encerrado</span>')
       + '</div><div class="ev-b"><span class="t">' + ev.nome + '</span>'
       + '<span class="sub">' + ev.data + ' · ' + ev.local + '</span>'
       + '<span class="sub num">' + ev.nFotos.toLocaleString('pt-BR') + ' fotos · ' + ev.cidade + '</span>'
@@ -781,7 +884,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       return '<div class="hslide' + (k === 0 ? ' on' : '') + '" data-slide="' + k + '" aria-hidden="' + (k !== 0) + '">'
         + '<img src="' + POOL[ev.capa] + '" alt="' + ev.nome + '" ' + (k ? 'loading="lazy"' : '') + '>'
         + '<div class="hslide-c"><div class="hslide-in">'
-        + (ev.live ? '<span class="badge live" style="background:var(--lime);color:var(--petrol)"><span class="dot"></span>fotos entrando ao vivo</span>'
+        + (ev.live ? '<span class="badge live" style="background:var(--accent);color:var(--navy)"><span class="dot"></span>fotos entrando ao vivo</span>'
                    : '<span class="badge" style="background:rgba(255,255,255,.16);color:#fff">' + ev.cat + '</span>')
         + '<h2>' + ev.nome + '</h2>'
         + '<div class="meta">'
@@ -828,10 +931,10 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
     + '<button class="rbtn" data-rail="1" aria-label="Próximo"><svg class="i i-sm"><use href="#ic-right"/></svg></button></div></div>'
     + '<div class="rail" id="rail">' + EVENTS.map(evCard).join('') + '</div>'
     + '<div class="grid-2" style="margin-top:14px">'
-    + '<div class="card pad stack" style="gap:10px"><span class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--green-soft);color:var(--green-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-shield"/></svg></span>'
-    + '<h3>Sua selfie não fica guardada</h3><p class="sub">Ela é comparada com os rostos do evento e apagada logo depois. Não vira foto pública nem treina modelo nenhum. <button class="linkish" data-nav="/privacidade" style="background:0;border:0;color:var(--green-ink);font-weight:600;cursor:pointer;padding:0">Como funciona</button></p></div>'
-    + '<div class="card pad stack" style="gap:10px"><span class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--green-soft);color:var(--green-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-cam"/></svg></span>'
-    + '<h3>Fotografa eventos?</h3><p class="sub">Publique seu evento em um minuto, receba no PIX no mesmo dia e pague 10% só quando vender. <button data-nav="/fotografos" style="background:0;border:0;color:var(--green-ink);font-weight:600;cursor:pointer;padding:0">Ver como funciona</button></p></div>'
+    + '<div class="card pad stack" style="gap:10px"><span class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-shield"/></svg></span>'
+    + '<h3>Sua selfie não fica guardada</h3><p class="sub">Ela é comparada com os rostos do evento e apagada logo depois. Não vira foto pública nem treina modelo nenhum. <button class="linkish" data-nav="/privacidade" style="background:0;border:0;color:var(--brand-ink);font-weight:600;cursor:pointer;padding:0">Como funciona</button></p></div>'
+    + '<div class="card pad stack" style="gap:10px"><span class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-cam"/></svg></span>'
+    + '<h3>Fotografa eventos?</h3><p class="sub">Publique seu evento em um minuto, receba no PIX no mesmo dia e pague 10% só quando vender. <button data-nav="/fotografos" style="background:0;border:0;color:var(--brand-ink);font-weight:600;cursor:pointer;padding:0">Ver como funciona</button></p></div>'
     + '</div></div>';
   };
 
@@ -870,7 +973,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
     return hero(crumb([{t:'Início', to:'/'}, {t:'Eventos', to:'/eventos'}, {t:ev.nome}])
       + '<div class="between" style="align-items:flex-end">'
       + '<div style="display:flex; flex-direction:column; gap:8px; min-width:260px">'
-      + (ev.live ? '<span class="badge live" style="background:rgba(67,232,135,.16);color:var(--lime);width:fit-content"><span class="dot"></span>fotos chegando ao vivo</span>'
+      + (ev.live ? '<span class="badge live" style="background:rgba(77,208,255,.16);color:var(--accent);width:fit-content"><span class="dot"></span>fotos chegando ao vivo</span>'
                  : '<span class="badge" style="background:rgba(255,255,255,.12);color:#fff;width:fit-content">evento encerrado</span>')
       + '<h1>' + ev.nome + '</h1>'
       + '<p class="sub"><svg class="i i-sm" style="vertical-align:-2px"><use href="#ic-pin"/></svg> ' + ev.local + ', ' + ev.cidade + ' · ' + ev.data + '</p>'
@@ -878,7 +981,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '<p class="sub num">' + ev.nFotos.toLocaleString('pt-BR') + ' fotos · ' + ev.pessoas.toLocaleString('pt-BR') + ' pessoas identificadas</p></div>'
       + '<div style="display:flex; flex-direction:column; gap:10px; align-items:flex-start">'
       + '<div><span class="over">Foto avulsa</span><div class="num" style="font-size:30px; font-weight:800; color:#fff">' + brl(ev.preco) + '</div>'
-      + '<p class="sub">Todas as suas por <b style="color:var(--lime)">' + brl(ev.pacote) + '</b></p></div>'
+      + '<p class="sub">Todas as suas por <b style="color:var(--accent)">' + brl(ev.pacote) + '</b></p></div>'
       + '<button class="btn on-dark btn-lg" data-nav="/e/' + ev.slug + '/selfie"><svg class="i"><use href="#ic-cam"/></svg>Achar minhas fotos</button>'
       + '</div></div>')
       + '<div class="wrap sec stack">'
@@ -903,15 +1006,15 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '<div class="cam" id="cam"><img src="' + POOL[5] + '" alt="Prévia da câmera frontal"><div class="reticle"></div><div class="scan"></div></div>'
       + '<div class="stack">'
       + '<div class="card pad stack" style="gap:12px">'
-      + '<div class="row" style="gap:10px"><span style="width:36px;height:36px;border-radius:11px;background:var(--green-soft);color:var(--green-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-shield"/></svg></span><h3>O que acontece com a sua selfie</h3></div>'
+      + '<div class="row" style="gap:10px"><span style="width:36px;height:36px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-shield"/></svg></span><h3>O que acontece com a sua selfie</h3></div>'
       + '<p>Ela é comparada com os rostos deste evento e <b>apagada em seguida</b>. Não vira foto pública, não fica guardada e não é usada para treinar nada.</p>'
-      + '<label class="check" for="lgpd"><input type="checkbox" id="lgpd"><span>Autorizo o uso da minha imagem <b>somente para encontrar minhas fotos neste evento</b>. Posso pedir exclusão quando quiser. <button data-nav="/privacidade" style="background:0;border:0;color:var(--green-ink);font-weight:600;cursor:pointer;padding:0">Ler a política</button></span></label>'
+      + '<label class="check" for="lgpd"><input type="checkbox" id="lgpd"><span>Autorizo o uso da minha imagem <b>somente para encontrar minhas fotos neste evento</b>. Posso pedir exclusão quando quiser. <button data-nav="/privacidade" style="background:0;border:0;color:var(--brand-ink);font-weight:600;cursor:pointer;padding:0">Ler a política</button></span></label>'
       + '</div>'
       + '<div class="row"><button class="btn btn-lg" id="dobusca" disabled><svg class="i"><use href="#ic-search"/></svg>Buscar minhas fotos</button>'
       + '<button class="btn btn-ghost btn-lg">Enviar da galeria</button></div>'
       + '<p class="sub" id="lgpdhint">Marque a autorização para liberar a busca.</p>'
       + '<div class="card pad stack" style="gap:10px"><div class="between"><h3>Receber no WhatsApp quando aparecer</h3>'
-      + '<span class="badge green"><span class="dot"></span>418 hoje</span></div>'
+      + '<span class="badge brand"><span class="dot"></span>418 hoje</span></div>'
       + '<p class="sub">O fotógrafo ainda está enviando. Avisamos assim que sua foto entrar no ar.</p>'
       + '<div class="row" style="gap:8px"><div class="fld" style="flex:1; min-width:160px"><input class="num" value="(62) 9 9812-4477" aria-label="Seu WhatsApp"></div>'
       + '<button class="btn btn-ghost" data-toast="Aviso ligado|Mandamos no WhatsApp quando sua foto entrar">Avisar</button></div></div>'
@@ -924,7 +1027,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
     return hero(crumb([{t:'Início', to:'/'}, {t:ev.nome, to:'/e/' + slug}, {t:'Minhas fotos'}])
       + '<div class="between" style="align-items:flex-end">'
       + '<div style="display:flex; flex-direction:column; gap:7px">'
-      + '<span class="badge green"><svg class="i i-sm"><use href="#ic-check"/></svg>' + fotos.length + ' fotos encontradas</span>'
+      + '<span class="badge ok"><svg class="i i-sm"><use href="#ic-check"/></svg>' + fotos.length + ' fotos encontradas</span>'
       + '<h1>Suas fotos</h1><p class="sub">' + ev.nome + ' · busca por rosto · selfie já descartada</p></div>'
       + '<div><span class="over">Pacote com as ' + fotos.length + '</span>'
       + '<div class="num" style="font-size:30px; font-weight:800; color:#fff">' + brl(ev.pacote) + '</div>'
@@ -954,7 +1057,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       var ev = eventBySlug(s), itens = t.byEv[s], soma = itens.length * ev.preco, pack = soma > ev.pacote;
       return '<div class="card pad stack" style="gap:12px">'
         + '<div class="between"><div><h3>' + ev.nome + '</h3><p class="sub">' + ev.data + ' · ' + ev.foto + '</p></div>'
-        + (pack ? '<span class="badge green">pacote aplicado</span>' : '<span class="badge">' + itens.length + ' de ' + Math.ceil(ev.pacote / ev.preco) + ' para o pacote</span>') + '</div>'
+        + (pack ? '<span class="badge ok">pacote aplicado</span>' : '<span class="badge">' + itens.length + ' de ' + Math.ceil(ev.pacote / ev.preco) + ' para o pacote</span>') + '</div>'
         + '<div class="sheet">' + itens.map(function(c){
             return '<figure class="frame" data-photo="' + c.id + '" data-ev="' + c.ev + '" tabindex="0" role="button">'
               + '<img src="' + c.src + '" alt="Foto ' + c.num + '" loading="lazy"><span class="wm">SAIBEM</span>'
@@ -973,7 +1076,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '<div class="card pad stack" style="gap:13px">'
       + '<h3>Resumo</h3>'
       + '<div><div class="line"><span>' + t.n + ' fotos</span><span class="num">' + brl(t.bruto) + '</span></div>'
-      + (t.desconto ? '<div class="line" style="color:var(--green-ink)"><span>Desconto de pacote</span><span class="num">− ' + brl(t.desconto) + '</span></div>' : '')
+      + (t.desconto ? '<div class="line" style="color:var(--brand-ink)"><span>Desconto de pacote</span><span class="num">− ' + brl(t.desconto) + '</span></div>' : '')
       + '</div>'
       + '<div class="total"><span>Total</span><span>' + brl(t.total) + '</span></div>'
       + '<button class="btn btn-lg" data-nav="/pagamento"><svg class="i"><use href="#ic-wallet"/></svg>Pagar com PIX</button>'
@@ -990,7 +1093,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
         + '<p class="sub" style="margin-top:6px">PIX aprovado em segundos · fotos reservadas por 10 minutos</p>')
       + '<div class="wrap sec"><div class="checkout">'
       + '<div class="card pad stack">'
-      + '<div class="row" style="gap:9px"><span class="badge green"><span class="dot"></span>PIX</span><span class="sub">Aprovação instantânea</span></div>'
+      + '<div class="row" style="gap:9px"><span class="badge brand"><span class="dot"></span>PIX</span><span class="sub">Aprovação instantânea</span></div>'
       + '<div class="row" style="gap:18px; align-items:flex-start">'
       + '<div class="qr" role="img" aria-label="QR Code PIX de exemplo">' + qrHTML() + '</div>'
       + '<div class="stack" style="gap:10px; flex:1; min-width:220px">'
@@ -1004,7 +1107,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '</div>'
       + '<div class="card pad stack" style="gap:13px"><h3>Resumo</h3>'
       + '<div><div class="line"><span>' + t.n + ' fotos</span><span class="num">' + brl(t.bruto) + '</span></div>'
-      + (t.desconto ? '<div class="line" style="color:var(--green-ink)"><span>Desconto de pacote</span><span class="num">− ' + brl(t.desconto) + '</span></div>' : '') + '</div>'
+      + (t.desconto ? '<div class="line" style="color:var(--brand-ink)"><span>Desconto de pacote</span><span class="num">− ' + brl(t.desconto) + '</span></div>' : '') + '</div>'
       + '<div class="total"><span>Total</span><span>' + brl(t.total) + '</span></div>'
       + '<div class="fld"><label for="mail">E-mail para receber o link</label><input id="mail" value="ana.paula@email.com"></div>'
       + '<button class="btn btn-lg" id="pago">Já paguei</button>'
@@ -1016,7 +1119,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
     var itens = state.lastOrder || [];
     return hero('<h1>Pagamento confirmado</h1><p class="sub" style="margin-top:6px">Recibo enviado para ana.paula@email.com · pedido #SB-4417</p>')
       + '<div class="wrap sec"><div class="card pad stack" style="align-items:center; text-align:center; gap:14px; padding:32px 20px">'
-      + '<span style="width:54px;height:54px;border-radius:999px;background:var(--green-soft);color:var(--green-ink);display:grid;place-items:center">'
+      + '<span style="width:54px;height:54px;border-radius:999px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center">'
       + '<svg class="i" style="width:26px;height:26px;stroke-width:2.6"><use href="#ic-check"/></svg></span>'
       + '<div><h1>' + itens.length + (itens.length === 1 ? ' foto liberada' : ' fotos liberadas') + '</h1>'
       + '<p class="sub" style="margin-top:5px">Alta resolução, sem marca d\'água</p></div>'
@@ -1062,7 +1165,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '<div class="card pad stack" style="gap:12px"><h2>Comparação de taxas</h2>'
       + '<div class="table-wrap" style="box-shadow:none"><div class="table-scroll"><table>'
       + '<thead><tr><th>Plataforma</th><th>Comissão</th><th>Upload</th><th>Saque</th></tr></thead><tbody>'
-      + '<tr><td class="t-main">Saibem</td><td><span class="badge green">10% fixo</span></td><td>não cobra</td><td>mesmo dia</td></tr>'
+      + '<tr><td class="t-main">Saibem</td><td><span class="badge ok">10% fixo</span></td><td>não cobra</td><td>mesmo dia</td></tr>'
       + '<tr><td class="t-main">Plataforma A</td><td>8% a 15%</td><td>cobra</td><td>não informado</td></tr>'
       + '<tr><td class="t-main">Plataforma B</td><td>9% a 10%</td><td>varia por plano</td><td>24 h</td></tr>'
       + '<tr><td class="t-main">Plataforma C</td><td>10% a 25%</td><td>não informado</td><td>não informado</td></tr>'
@@ -1097,18 +1200,177 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '</div>';
   };
 
+  /* ---------- entrar / criar conta ---------- */
+  V.entrar = function(){
+    return hero('<h1>Entrar como fotógrafo</h1><p class="sub" style="margin-top:6px">Sua área de vendas, eventos e saques.</p>')
+      + '<div class="wrap sec"><div style="max-width:420px; margin:0 auto" class="stack">'
+      + '<div class="card pad stack" style="gap:14px">'
+      + '<div class="fld"><label for="lg-mail">E-mail</label><input id="lg-mail" type="email" value="marina@estudio.com.br" autocomplete="email"></div>'
+      + '<div class="fld"><label for="lg-pass">Senha</label><input id="lg-pass" type="password" value="••••••••" autocomplete="current-password"></div>'
+      + '<button class="btn btn-lg" id="dologin">Entrar</button>'
+      + '<p class="sub" style="text-align:center">Protótipo: qualquer e-mail entra.</p></div>'
+      + '<div class="card pad stack" style="gap:10px; text-align:center">'
+      + '<h3>Primeira vez aqui?</h3>'
+      + '<p class="sub">Publique seu primeiro evento em um minuto. Sem mensalidade, sem contrato.</p>'
+      + '<button class="btn btn-ghost" data-nav="/criar-conta">Criar conta de fotógrafo</button></div>'
+      + '</div></div>';
+  };
+
+  V['criar-conta'] = function(){
+    return hero('<h1>Criar conta de fotógrafo</h1><p class="sub" style="margin-top:6px">Leva 30 segundos. Documento e chave PIX só no primeiro saque.</p>')
+      + '<div class="wrap sec"><div style="max-width:460px; margin:0 auto" class="stack">'
+      + '<div class="card pad stack" style="gap:14px">'
+      + '<div class="fld"><label for="cc-nome">Seu nome ou nome do estúdio</label><input id="cc-nome" placeholder="Marina Rezende Fotografia"></div>'
+      + '<div class="fld"><label for="cc-mail">E-mail</label><input id="cc-mail" type="email" placeholder="voce@email.com"></div>'
+      + '<div class="fld"><label for="cc-cidade">Cidade onde mais fotografa</label><select id="cc-cidade">'
+      + CIDADES.map(function(c){ return '<option>' + c + '</option>'; }).join('') + '<option>Outra</option></select></div>'
+      + '<label class="check" for="cc-termos"><input type="checkbox" id="cc-termos">'
+      + '<span>Declaro que sou autor das fotos que vou publicar e aceito os <button data-nav="/privacidade" style="background:0;border:0;color:var(--brand-ink);font-weight:600;cursor:pointer;padding:0">termos de uso</button>.</span></label>'
+      + '<button class="btn btn-lg" id="docriar" disabled>Criar conta e publicar evento</button>'
+      + '<p class="sub" id="cc-hint">Aceite os termos para continuar.</p>'
+      + '</div>'
+      + '<div class="alert info"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+      + '<div><div class="at">Por que não pedimos documento agora</div>'
+      + '<div class="ad">Você publica, divulga e vende antes de provar quem é. CPF ou CNPJ e chave PIX só entram quando for sacar o dinheiro.</div></div></div>'
+      + '</div></div>';
+  };
+
   /* ---------- área do fotógrafo ---------- */
   function appShell(active, inner){
-    var tabs = [['painel','Painel','/app/painel'], ['novo','Novo evento','/app/novo'],
+    var tabs = [['painel','Painel','/app/painel'], ['eventos','Meus eventos','/app/eventos'],
+                ['extrato','Extrato','/app/extrato'], ['novo','Novo evento','/app/novo'],
                 ['upload','Upload','/app/upload'], ['kit','Divulgação','/app/kit']];
+    var c = carteira();
     return hero('<div class="between" style="align-items:flex-end">'
-      + '<div><span class="over">Marina Rezende Fotografia</span><h1 style="margin-top:5px">Área do fotógrafo</h1></div>'
-      + '<div class="row"><button class="btn btn-ghost on-dark" data-nav="/app/upload"><svg class="i i-sm"><use href="#ic-upload"/></svg>Enviar fotos</button>'
+      + '<div><span class="over">' + (conta ? conta.nome : 'Fotógrafo') + '</span>'
+      + '<h1 style="margin-top:5px">Área do fotógrafo</h1>'
+      + '<p class="sub" style="margin-top:5px">'
+      + (conta && conta.verificado
+          ? '<span style="color:var(--accent)">✓ conta verificada</span> · saque liberado'
+          : 'Conta sem verificação · o documento é pedido no primeiro saque')
+      + '</p></div>'
+      + '<div class="row"><button class="btn btn-ghost on-dark" data-nav="/app/extrato">'
+      + '<svg class="i i-sm"><use href="#ic-wallet"/></svg>' + brl(c.disponivel) + '</button>'
       + '<button class="btn on-dark" data-nav="/app/novo"><svg class="i i-sm"><use href="#ic-plus"/></svg>Novo evento</button></div></div>')
       + '<div class="wrap" style="padding-top:14px"><div class="tabs">'
       + tabs.map(function(t){ return '<button class="tab" data-nav="' + t[2] + '" aria-selected="' + (active === t[0]) + '">' + t[1] + '</button>'; }).join('')
       + '</div></div><div class="wrap sec stack">' + inner + '</div>';
   }
+
+  /* ---------- meus eventos (máquina de estados) ---------- */
+  V.eventos_app = function(){
+    return appShell('eventos',
+        '<div class="between"><div><h2>Meus eventos</h2><p class="sub">O estado define o que o evento aceita: upload, venda ou nada.</p></div></div>'
+      + '<div class="stack" style="gap:12px">'
+      + MEUS.map(function(m){
+          var e = ESTADOS[m.estado];
+          return '<div class="card pad" style="display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center">'
+            + '<div style="min-width:0">'
+            + '<div class="row" style="gap:9px"><h3>' + m.nome + '</h3>'
+            + '<span class="badge ' + e.cls + '">' + (e.cls ? '<span class="dot"></span>' : '') + e.rotulo + '</span></div>'
+            + '<p class="sub" style="margin-top:3px">' + m.quando + ' · ' + e.dica + '</p>'
+            + '<div class="row" style="gap:16px; margin-top:8px">'
+            + '<span class="sub num"><b style="color:var(--ink)">' + m.fotos.toLocaleString('pt-BR') + '</b> fotos</span>'
+            + '<span class="sub num"><b style="color:var(--ink)">' + m.visitas.toLocaleString('pt-BR') + '</b> visitas</span>'
+            + '<span class="sub num"><b style="color:var(--ink)">' + m.vendas + '</b> vendas</span>'
+            + '<span class="sub num"><b style="color:var(--ink)">' + m.conv.toString().replace('.', ',') + '%</b> conversão</span>'
+            + '<span class="sub num"><b style="color:var(--brand-ink)">' + brl(m.liquido) + '</b> líquido</span>'
+            + '</div></div>'
+            + '<div class="row" style="gap:8px; justify-content:flex-end">'
+            + TRANSICOES[m.estado].map(function(t){
+                return '<button class="btn btn-ghost btn-sm" data-estado="' + m.slug + '|' + t[1] + '">' + t[0] + '</button>';
+              }).join('')
+            + '<button class="btn btn-sm" data-nav="/app/kit">Divulgar</button>'
+            + '</div></div>';
+        }).join('')
+      + '</div>'
+      + '<div class="alert info"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+      + '<div><div class="at">Encerrar não é o mesmo que arquivar</div>'
+      + '<div class="ad">Evento encerrado para de receber fotos, mas continua vendendo — a cauda longa costuma render por semanas. Arquivar tira do ar; quem já comprou mantém o download.</div></div></div>');
+  };
+
+  /* ---------- extrato ---------- */
+  V.extrato = function(){
+    var c = carteira();
+    var filtro = state.ledFiltro || '';
+    var linhas = LEDGER.filter(function(l){ return !filtro || l.t === filtro; });
+    var tipos = [['','tudo'], ['venda','vendas'], ['saque','saques'], ['reembolso','reembolsos']];
+    return appShell('extrato',
+        '<div class="kpis">'
+      + kpi('wallet','Disponível para saque', brl(c.disponivel), 'cai no PIX em minutos', '')
+      + kpi('clock','A liberar', brl(c.aLiberar), 'vendas no cartão, D+2', '')
+      + kpi('chart','Recebido em setembro','R$ 3.912','▲ 38% vs. agosto','up')
+      + kpi('users','Taxa média paga','10%','R$ 434,70 em setembro','')
+      + '</div>'
+      + '<div class="card pad between">'
+      + '<div><h3>' + brl(c.disponivel) + ' prontos para saque</h3>'
+      + '<p class="sub">' + (conta && conta.verificado
+          ? 'Chave PIX ' + conta.chave + ' · sem taxa'
+          : 'Primeiro saque exige CPF ou CNPJ e chave PIX no mesmo titular') + '</p></div>'
+      + '<button class="btn" data-nav="/app/saque">Sacar</button></div>'
+      + '<div class="card pad stack" style="gap:12px">'
+      + '<div class="between"><h2>Lançamentos</h2>'
+      + '<div class="row" style="gap:7px">'
+      + tipos.map(function(t){ return '<button class="chipf" data-led="' + t[0] + '" aria-pressed="' + (filtro === t[0]) + '">' + t[1] + '</button>'; }).join('')
+      + '<button class="btn btn-ghost btn-sm" id="csv"><svg class="i i-sm"><use href="#ic-down"/></svg>CSV</button></div></div>'
+      + '<div class="table-wrap" style="box-shadow:none"><div class="table-scroll"><table>'
+      + '<thead><tr><th>Data</th><th>Tipo</th><th>Referência</th><th>Bruto</th><th>Taxa</th><th>Valor</th><th>Situação</th></tr></thead><tbody>'
+      + linhas.map(function(l){
+          var neg = l.v < 0;
+          return '<tr><td class="num">' + l.d + '</td>'
+            + '<td><span class="badge ' + (l.t === 'venda' ? 'ok' : l.t === 'saque' ? 'brand' : 'red') + '">' + l.t + '</span></td>'
+            + '<td class="t-main">' + l.ev + '</td>'
+            + '<td class="n">' + brl(Math.abs(l.bruto)) + '</td>'
+            + '<td class="n">' + (l.taxa ? '− ' + brl(l.taxa) : '—') + '</td>'
+            + '<td class="n t-main" style="color:' + (neg ? 'var(--danger-ink)' : 'var(--ink)') + '">' + (neg ? '− ' : '') + brl(Math.abs(l.v)) + '</td>'
+            + '<td><span class="sub">' + l.st + '</span></td></tr>';
+        }).join('')
+      + '</tbody></table></div></div>'
+      + '<p class="sub">A receita é sua e a emissão de nota também. O CSV sai no formato que o contador pede.</p>'
+      + '</div>');
+  };
+
+  /* ---------- saque com KYC ---------- */
+  V.saque = function(){
+    var c = carteira();
+    if (conta && conta.verificado){
+      return appShell('extrato',
+          '<div style="max-width:460px" class="stack">'
+        + '<div class="card pad stack" style="gap:14px">'
+        + '<div><span class="over">Disponível</span><div style="font-size:32px; font-weight:800; color:var(--ink)" class="num">' + brl(c.disponivel) + '</div></div>'
+        + '<div class="fld"><label for="sq-valor">Quanto você quer sacar</label><input id="sq-valor" class="num" value="' + brl(c.disponivel) + '"></div>'
+        + '<div class="card pad" style="box-shadow:none; background:var(--surface-2)">'
+        + '<div class="sub">Enviando para</div><div class="t-main">' + conta.chave + '</div>'
+        + '<div class="sub">' + conta.titular + ' · ' + conta.doc + '</div></div>'
+        + '<button class="btn btn-lg" id="dosaque">Sacar agora</button>'
+        + '<p class="sub">Sem taxa. Costuma cair em menos de 5 minutos.</p></div></div>');
+    }
+    return appShell('extrato',
+        '<div style="max-width:520px" class="stack">'
+      + '<div class="alert warning"><svg class="i i-lg"><use href="#ic-shield"/></svg>'
+      + '<div><div class="at">Verificação do primeiro saque</div>'
+      + '<div class="ad">Precisamos confirmar quem recebe o dinheiro. A chave PIX tem que estar no mesmo CPF ou CNPJ informado — chave de terceiro é recusada.</div></div></div>'
+      + '<div class="card pad stack" style="gap:14px">'
+      + '<div class="fld"><label for="kyc-titular">Nome completo do titular</label><input id="kyc-titular" placeholder="Como está no documento"></div>'
+      + '<div class="fld"><label for="kyc-doc">CPF ou CNPJ</label><input id="kyc-doc" class="num" placeholder="000.000.000-00" inputmode="numeric">'
+      + '<span class="hint" id="kyc-doc-hint">Só números ou com pontuação, tanto faz.</span></div>'
+      + '<div class="fld"><label for="kyc-chave">Chave PIX do mesmo titular</label><input id="kyc-chave" placeholder="CPF, telefone, e-mail ou aleatória"></div>'
+      + '<label class="check" for="kyc-ok"><input type="checkbox" id="kyc-ok">'
+      + '<span>Confirmo que sou o titular desta conta e que as fotos publicadas são de minha autoria.</span></label>'
+      + '<button class="btn btn-lg" id="dokyc">Verificar e liberar saque</button>'
+      + '<p class="sub" id="kyc-hint">A verificação costuma sair na hora.</p>'
+      + '</div></div>');
+  };
+
+  V.p_kyc_ok = function(){
+    return appShell('extrato',
+        '<div class="card pad stack" style="align-items:center; text-align:center; gap:13px; padding:30px 20px; max-width:460px; margin:0 auto">'
+      + '<span style="width:52px;height:52px;border-radius:999px;background:var(--ok-soft);color:var(--ok-ink);display:grid;place-items:center">'
+      + '<svg class="i" style="width:25px;height:25px;stroke-width:2.6"><use href="#ic-check"/></svg></span>'
+      + '<h1>Conta verificada</h1>'
+      + '<p class="sub">Saque liberado. A partir de agora o dinheiro cai direto na sua chave PIX, no mesmo dia da venda.</p>'
+      + '<button class="btn btn-lg" data-nav="/app/saque">Sacar ' + brl(carteira().disponivel) + '</button></div>');
+  };
 
   var VENDAS = [['01/09',118],['02/09',96],['03/09',142],['04/09',210],['05/09',188],['06/09',264],['07/09',431],
                 ['08/09',302],['09/09',156],['10/09',172],['11/09',224],['12/09',268],['13/09',329],['14/09',612]];
@@ -1116,8 +1378,8 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
   V.painel = function(){
     var rows = [
       ['Corrida do Cerrado 10K','14 set · Goiânia','amber','processando',4812,2104,177,1911.60,'cerrado10k'],
-      ['Copa Goiás de Jiu-Jítsu','07 set · Ginásio Rio Vermelho','green','no ar',3140,1512,96,1036.80,'copa-goias-jj'],
-      ['Formatura Medicina UFG','30 ago · Teatro Goiânia','green','no ar',1988,874,61,823.50,'formatura-med-ufg'],
+      ['Copa Goiás de Jiu-Jítsu','07 set · Ginásio Rio Vermelho','ok','no ar',3140,1512,96,1036.80,'copa-goias-jj'],
+      ['Formatura Medicina UFG','30 ago · Teatro Goiânia','ok','no ar',1988,874,61,823.50,'formatura-med-ufg'],
       ['Enduro Serra Dourada','17 ago · Serra Dourada','','encerrado',2657,1033,88,950.40,'enduro-serra'],
       ['Volta da Pampulha','03 ago · Belo Horizonte','','encerrado',5607,3288,241,2602.80,'volta-pampulha']
     ];
@@ -1129,12 +1391,12 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + kpi('image','Fotos no ar','18.204','em 7 eventos','')
       + '</div>'
       + '<div class="card pad between"><div class="row" style="gap:13px">'
-      + '<span style="width:44px;height:44px;border-radius:12px;background:var(--green-soft);color:var(--green-ink);display:grid;place-items:center"><svg class="i i-lg"><use href="#ic-wallet"/></svg></span>'
+      + '<span style="width:44px;height:44px;border-radius:12px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i i-lg"><use href="#ic-wallet"/></svg></span>'
       + '<div><h3>R$ 1.284,50 prontos para saque</h3><p class="sub">Chave PIX 62 9 9631-2200 · cai em minutos, sem taxa</p></div></div>'
       + '<button class="btn" data-toast="Saque solicitado|R$ 1.284,50 a caminho da sua chave PIX">Sacar agora</button></div>'
       + '<div class="card pad stack" style="gap:14px"><div class="between">'
       + '<div><h2>Vendas dos últimos 14 dias</h2><p class="sub">Passe o mouse nas barras.</p></div>'
-      + '<span class="badge green"><svg class="i i-sm"><use href="#ic-chart"/></svg>R$ 3.912 no período</span></div>'
+      + '<span class="badge brand"><svg class="i i-sm"><use href="#ic-chart"/></svg>R$ 3.912 no período</span></div>'
       + '<div class="chart-wrap"><svg id="chart" viewBox="0 0 620 190" width="100%" height="190" role="img" aria-label="Vendas diárias dos últimos 14 dias, pico de R$ 612 em 14 de setembro"></svg><div class="tip" id="tip"></div></div></div>'
       + '<div class="card pad stack" style="gap:12px"><div class="between"><h2>Seus eventos</h2><span class="sub">7 eventos · 5 exibidos</span></div>'
       + '<div class="table-wrap" style="box-shadow:none"><div class="table-scroll"><table>'
@@ -1195,7 +1457,7 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '<div class="alert success"><svg class="i i-lg"><use href="#ic-zap"/></svg>'
       + '<div><div class="at">Já dá para divulgar</div><div class="ad">3.640 fotos estão no ar e o público já consegue se achar. Não espere terminar.</div></div></div>'
       + '<div class="card pad stack" style="gap:14px">'
-      + '<div class="drop"><span style="width:44px;height:44px;border-radius:12px;background:var(--green-soft);color:var(--green-ink);display:grid;place-items:center"><svg class="i i-lg"><use href="#ic-upload"/></svg></span>'
+      + '<div class="drop"><span style="width:44px;height:44px;border-radius:12px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i i-lg"><use href="#ic-upload"/></svg></span>'
       + '<strong style="color:var(--ink); font-size:15px">Arraste a pasta do cartão para cá</strong>'
       + '<span class="sub">JPG, PNG, HEIC ou RAW+JPG · sem limite de arquivos</span>'
       + '<button class="btn btn-ghost" data-toast="Seleção aberta|Escolha a pasta do cartão">Escolher arquivos</button></div>'
@@ -1232,9 +1494,9 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '<button class="btn btn-ghost btn-sm" data-toast="Story baixado|1080 × 1920">Baixar story</button>'
       + '<button class="btn btn-ghost btn-sm">Gerar outra versão</button></div></div></div>'
       + '<div class="card pad stack" style="gap:11px"><div class="between"><h3>Aviso automático no WhatsApp</h3>'
-      + '<span class="badge green"><span class="dot"></span>ligado</span></div>'
+      + '<span class="badge ok"><span class="dot"></span>ligado</span></div>'
       + '<p class="sub">418 pessoas mandaram selfie pelo QR durante a prova. Assim que a foto de cada uma entra no ar, a mensagem sai sozinha.</p>'
-      + '<div class="row" style="gap:9px"><span class="badge green"><svg class="i i-sm"><use href="#ic-check"/></svg>312 avisadas</span>'
+      + '<div class="row" style="gap:9px"><span class="badge ok"><svg class="i i-sm"><use href="#ic-check"/></svg>312 avisadas</span>'
       + '<span class="badge amber"><span class="dot"></span>106 aguardando</span>'
       + '<span class="badge blue"><svg class="i i-sm"><use href="#ic-chart"/></svg>taxa de compra 31%</span></div></div>'
       + '</div></div>');
@@ -1273,9 +1535,17 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
     else if (page === 'pedido') html = V.pedido();
     else if (page === 'fotografos') html = V.fotografos();
     else if (page === 'privacidade') html = V.privacidade();
+    else if (page === 'entrar') html = V.entrar();
+    else if (page === 'criar-conta') html = V['criar-conta']();
     else if (page === 'app'){
       var s = seg[1] || 'painel';
-      html = V[s] ? V[s]() : V.p404();
+      if (!logado()){
+        state.voltarPara = '/' + seg.join('/');
+        html = V.entrar();
+      }
+      else if (s === 'eventos') html = V.eventos_app();
+      else if (s === 'kyc-ok') html = V.p_kyc_ok();
+      else html = V[s] ? V[s]() : V.p404();
     }
     else html = V.p404();
 
@@ -1374,6 +1644,105 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       var el = document.getElementById(id);
       if (el) el.addEventListener('click', function(){ state.busca = ''; state.cat = ''; state.cidade = ''; render(); });
     });
+    /* ----- conta do fotógrafo ----- */
+    var dologin = document.getElementById('dologin');
+    if (dologin){
+      dologin.addEventListener('click', function(){
+        var mail = (document.getElementById('lg-mail').value || '').trim();
+        if (!mail){ toast('Informe o e-mail', 'Precisamos dele para entrar'); return; }
+        conta = conta || { nome:'Marina Rezende Fotografia', email:mail, verificado:false };
+        conta.email = mail; saveConta();
+        toast('Bem-vindo de volta', conta.nome);
+        var destino = state.voltarPara || '/app/painel';
+        state.voltarPara = null; nav(destino);
+      });
+    }
+    var termos = document.getElementById('cc-termos');
+    if (termos){
+      termos.addEventListener('change', function(){
+        document.getElementById('docriar').disabled = !termos.checked;
+        document.getElementById('cc-hint').textContent = termos.checked
+          ? 'Tudo certo. Você publica o primeiro evento em seguida.'
+          : 'Aceite os termos para continuar.';
+      });
+      document.getElementById('docriar').addEventListener('click', function(){
+        var nome = (document.getElementById('cc-nome').value || '').trim() || 'Meu Estúdio';
+        conta = { nome:nome, email:(document.getElementById('cc-mail').value || '').trim(),
+                  cidade:document.getElementById('cc-cidade').value, verificado:false };
+        saveConta();
+        toast('Conta criada', 'Agora publique seu primeiro evento');
+        nav('/app/novo');
+      });
+    }
+    /* transições de estado do evento */
+    document.querySelectorAll('[data-estado]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var p = b.dataset.estado.split('|'), alvo = p[1];
+        var m = MEUS.filter(function(x){ return x.slug === p[0]; })[0];
+        if (!m) return;
+        if (alvo === 'arquivado' && !window.confirm('Arquivar "' + m.nome + '"? As fotos saem do ar. Quem já comprou mantém o download.')) return;
+        m.estado = alvo; saveEstados();
+        toast(m.nome, 'Agora está ' + ESTADOS[alvo].rotulo);
+        render();
+      });
+    });
+    /* extrato */
+    document.querySelectorAll('[data-led]').forEach(function(b){
+      b.addEventListener('click', function(){ state.ledFiltro = b.dataset.led; render(); });
+    });
+    var csv = document.getElementById('csv');
+    if (csv){
+      csv.addEventListener('click', function(){
+        var head = 'data;tipo;referencia;bruto;taxa;valor;situacao\n';
+        var corpo = LEDGER.map(function(l){
+          return [l.d, l.t, '"' + l.ev + '"', l.bruto.toFixed(2), l.taxa.toFixed(2), l.v.toFixed(2), l.st]
+            .join(';');
+        }).join('\n');
+        var blob = new Blob([head + corpo], { type:'text/csv;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'saibem-extrato.csv';
+        document.body.appendChild(a); a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+        toast('Extrato exportado', 'saibem-extrato.csv');
+      });
+    }
+    /* KYC */
+    var dokyc = document.getElementById('dokyc');
+    if (dokyc){
+      var docEl = document.getElementById('kyc-doc');
+      docEl.addEventListener('blur', function(){
+        var hint = document.getElementById('kyc-doc-hint');
+        if (!docEl.value.trim()) return;
+        var ok = validaDoc(docEl.value);
+        hint.textContent = ok ? 'Documento válido.' : 'Esse CPF/CNPJ não confere — verifique os números.';
+        hint.style.color = ok ? 'var(--ok-ink)' : 'var(--danger-ink)';
+      });
+      dokyc.addEventListener('click', function(){
+        var titular = (document.getElementById('kyc-titular').value || '').trim();
+        var doc = (document.getElementById('kyc-doc').value || '').trim();
+        var chave = (document.getElementById('kyc-chave').value || '').trim();
+        var aceite = document.getElementById('kyc-ok').checked;
+        var hint = document.getElementById('kyc-hint');
+        hint.style.color = 'var(--danger-ink)';
+        if (titular.split(' ').length < 2){ hint.textContent = 'Informe o nome completo do titular.'; return; }
+        if (!validaDoc(doc)){ hint.textContent = 'CPF ou CNPJ inválido — confira os dígitos.'; return; }
+        if (!chave){ hint.textContent = 'Informe a chave PIX.'; return; }
+        if (!aceite){ hint.textContent = 'Confirme a titularidade para continuar.'; return; }
+        conta = conta || { nome: titular };
+        conta.verificado = true; conta.titular = titular; conta.doc = doc; conta.chave = chave;
+        saveConta();
+        toast('Conta verificada', 'Saque liberado');
+        nav('/app/kyc-ok');
+      });
+    }
+    var dosaque = document.getElementById('dosaque');
+    if (dosaque){
+      dosaque.addEventListener('click', function(){
+        toast('Saque solicitado', brl(carteira().disponivel) + ' a caminho da sua chave PIX');
+        nav('/app/extrato');
+      });
+    }
     /* carrossel de capa */
     if (document.getElementById('hcar')) initCarousel();
     /* trilho com snap */
@@ -1642,6 +2011,20 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
   /* =========================================================
      PWA — service worker, instalação, offline, barra de abas
      ========================================================= */
+  function paintConta(){
+    var b = document.getElementById('acct');
+    if (!b) return;
+    if (logado()){
+      var primeiro = (conta.nome || 'Conta').split(' ')[0];
+      b.textContent = primeiro + (conta.verificado ? ' ✓' : '');
+      b.dataset.nav = '/app/painel';
+      b.title = conta.verificado ? 'Conta verificada' : 'Conta sem verificação';
+    } else {
+      b.textContent = 'Entrar';
+      b.dataset.nav = '/entrar';
+    }
+  }
+
   function paintTabs(){
     var seg = parse(), page = '/' + (seg[0] || '');
     if (seg[0] === 'e' && seg[2] === 'selfie') page = '/selfie';
@@ -1653,8 +2036,8 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
     el.textContent = n; el.style.display = n ? 'grid' : 'none';
   }
   var _paintBag = paintBag;
-  paintBag = function(){ _paintBag(); paintTabs(); };
-  window.addEventListener('hashchange', paintTabs);
+  paintBag = function(){ _paintBag(); paintTabs(); paintConta(); };
+  window.addEventListener('hashchange', function(){ paintTabs(); paintConta(); });
 
   /* service worker */
   if ('serviceWorker' in navigator){
