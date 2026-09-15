@@ -49,6 +49,7 @@ Nenhuma dependência, nenhum build: HTML, CSS e JavaScript puro. Abre no navegad
 #/app/novo                criar evento
 #/app/upload              upload e pipeline de processamento
 #/app/kit                 kit de divulgação (QR, WhatsApp, story)
+#/app/forense             marca invisível: marcar arquivo e rastrear vazamento
 ```
 
 Tudo sob `#/app/` exige sessão: sem conta, a rota cai na tela de entrar e volta
@@ -76,6 +77,40 @@ Raios 7 (campos) / 9 (botões) / 11 (ícones) / 14 (cards) / 16 (toasts) / 18 (m
 no ar, pacote aplicado, venda no extrato. Cor de marca e cor de estado são coisas
 diferentes, e misturar as duas é o que faz um painel perder a leitura rápida.
 
+## Proteção de imagem
+
+Duas camadas, com papéis diferentes.
+
+**Marca visível (preview).** A foto do preview não é um `<img>`: é um `<canvas>` com a
+marca queimada em mosaico diagonal, sob um escudo transparente que recebe o clique
+direito e o arrastar. Três intensidades alternáveis na galeria. Nenhum `<img>` com a
+foto existe no DOM.
+
+**Marca invisível (arquivo vendido).** Em cada bloco 8×8 da luminância, a relação entre
+dois coeficientes DCT de média frequência carrega um bit. A mensagem — 5 símbolos mais
+5 bits de verificação — se repete por toda a imagem e é lida por votação majoritária.
+
+O índice de cada bit vem da **posição do bloco na grade**, nunca da contagem de blocos
+aceitos pelo filtro de variância: a recompressão faz blocos cruzarem o limiar, e um
+índice sequencial desalinharia a mensagem inteira. Essa foi a diferença entre não
+funcionar e funcionar.
+
+Robustez medida (900 px, δ=28, PSNR 42 dB):
+
+| Ataque | Resultado |
+|---|---|
+| JPEG qualidade 70 | código lido, 99% |
+| JPEG qualidade 50 | código lido, 98% |
+| Redução a 70% + JPEG | código lido, 90% (detector reancora a escala) |
+| Redução a 50% + JPEG | não legível, e o detector diz isso |
+
+Nenhuma marca invisível é inquebrável — regeneração por difusão apaga qualquer uma.
+Ela existe para o caso real: o cliente que comprou e repassou o arquivo.
+
+**O que falta para produção:** marcar no servidor (hoje o canvas recebe a foto limpa),
+URL assinada com expiração, e rate limit. Em produção isto roda em Python
+(`invisible-watermark`, `blind-watermark` ou TrustMark), não em JavaScript.
+
 ## Arquitetura pretendida (produção)
 
 ```
@@ -98,6 +133,7 @@ um único evento), e o original nunca servido antes do pagamento.
 - [x] KYC no primeiro saque (CPF/CNPJ e chave PIX do mesmo titular)
 - [x] Estados do evento: rascunho → processando → no ar → encerrado → arquivado
 - [x] Extrato financeiro e saque
+- [x] Proteção de imagem: marca visível em canvas e marca invisível rastreável
 - [ ] Perfil público do fotógrafo
 - [ ] Busca por número do peito (OCR)
 - [ ] Paginação real da galeria

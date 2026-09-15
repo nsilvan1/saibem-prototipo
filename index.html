@@ -1310,6 +1310,194 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '</div>';
   };
 
+  /* =========================================================
+     MARCA INVISÍVEL (esteganografia no domínio da frequência)
+     Em cada bloco 8x8 da luminância, força a relação entre dois
+     coeficientes DCT de média frequência. Sobrevive a recompressão
+     JPEG porque não depende do valor exato do pixel — depende de
+     qual dos dois coeficientes é maior.
+     Em produção isto roda no servidor (invisible-watermark / TrustMark);
+     aqui é a mesma ideia, em JavaScript, para você ver funcionando.
+     ========================================================= */
+  var ALFA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; /* 32 símbolos, sem I O 0 1 */
+  var LARGURA_MARCA = 900; /* toda marcação acontece nesta largura: é a âncora do detector */
+  var DELTA = 28;        /* calibrado: 42 dB de PSNR e leitura a 99% após JPEG 60 */
+  var VAR_MIN = 90;      /* blocos lisos são pulados: ali a marca apareceria */
+  var C1 = 2 * 8 + 3, C2 = 3 * 8 + 2; /* par simétrico de média frequência */
+
+  var COS = new Float32Array(64), CU = new Float32Array(8);
+  (function(){
+    for (var u = 0; u < 8; u++){
+      CU[u] = u === 0 ? Math.SQRT1_2 : 1;
+      for (var x = 0; x < 8; x++) COS[u * 8 + x] = Math.cos((2 * x + 1) * u * Math.PI / 16);
+    }
+  })();
+  function fdct(b, out){
+    var t = new Float32Array(64), y, u, x, v, s;
+    for (y = 0; y < 8; y++) for (u = 0; u < 8; u++){
+      s = 0; for (x = 0; x < 8; x++) s += b[y * 8 + x] * COS[u * 8 + x];
+      t[y * 8 + u] = .5 * CU[u] * s;
+    }
+    for (x = 0; x < 8; x++) for (v = 0; v < 8; v++){
+      s = 0; for (y = 0; y < 8; y++) s += t[y * 8 + x] * COS[v * 8 + y];
+      out[v * 8 + x] = .5 * CU[v] * s;
+    }
+  }
+  function idct(d, out){
+    var t = new Float32Array(64), y, u, x, v, s;
+    for (y = 0; y < 8; y++) for (x = 0; x < 8; x++){
+      s = 0; for (u = 0; u < 8; u++) s += CU[u] * d[y * 8 + u] * COS[u * 8 + x];
+      t[y * 8 + x] = .5 * s;
+    }
+    for (x = 0; x < 8; x++) for (y = 0; y < 8; y++){
+      s = 0; for (v = 0; v < 8; v++) s += CU[v] * t[v * 8 + x] * COS[v * 8 + y];
+      out[y * 8 + x] = .5 * s;
+    }
+  }
+
+  /* código de 5 símbolos + 5 bits de verificação = 30 bits */
+  function codigoDe(texto){
+    var h = 2166136261;
+    for (var i = 0; i < texto.length; i++){ h ^= texto.charCodeAt(i); h = (h * 16777619) >>> 0; }
+    var s = '';
+    for (var k = 0; k < 5; k++){ s += ALFA[h % 32]; h = Math.floor(h / 32) + 7; }
+    return s;
+  }
+  function paraBits(cod){
+    var bits = [], soma = 0, i, j, v;
+    for (i = 0; i < 5; i++){
+      v = ALFA.indexOf(cod[i]); if (v < 0) v = 0;
+      soma += v;
+      for (j = 4; j >= 0; j--) bits.push((v >> j) & 1);
+    }
+    var chk = soma % 32;
+    for (j = 4; j >= 0; j--) bits.push((chk >> j) & 1);
+    return bits; /* 30 bits */
+  }
+  function deBits(bits){
+    var cod = '', soma = 0, i, j, v;
+    for (i = 0; i < 5; i++){
+      v = 0; for (j = 0; j < 5; j++) v = (v << 1) | bits[i * 5 + j];
+      soma += v; cod += ALFA[v];
+    }
+    var chk = 0;
+    for (j = 0; j < 5; j++) chk = (chk << 1) | bits[25 + j];
+    return { codigo: cod, valido: chk === soma % 32 };
+  }
+
+  /* Percorre os blocos chamando fn(coeficientes, índiceDoBit).
+     O índice vem da POSIÇÃO do bloco na grade, nunca da contagem de blocos
+     aceitos: a recompressão faz blocos cruzarem o limiar de variância, e um
+     índice sequencial desalinharia a mensagem inteira. */
+  function porBloco(dados, w, h, fn){
+    var bloco = new Float32Array(64), coef = new Float32Array(64);
+    var porLinha = Math.floor(w / 8);
+    var bx, by, x, y, i, usados = 0;
+    for (by = 0; by + 8 <= h; by += 8){
+      for (bx = 0; bx + 8 <= w; bx += 8){
+        var soma = 0, soma2 = 0;
+        for (y = 0; y < 8; y++) for (x = 0; x < 8; x++){
+          i = ((by + y) * w + (bx + x)) * 4;
+          /* luminância BT.601 */
+          var lum = .299 * dados[i] + .587 * dados[i + 1] + .114 * dados[i + 2];
+          bloco[y * 8 + x] = lum;
+          soma += lum; soma2 += lum * lum;
+        }
+        var media = soma / 64, variancia = soma2 / 64 - media * media;
+        if (variancia < VAR_MIN) continue; /* área lisa: a marca apareceria */
+        usados++;
+        fdct(bloco, coef);
+        var novo = fn(coef, (by / 8) * porLinha + (bx / 8));
+        if (novo){
+          idct(coef, bloco);
+          for (y = 0; y < 8; y++) for (x = 0; x < 8; x++){
+            i = ((by + y) * w + (bx + x)) * 4;
+            var lumAntiga = .299 * dados[i] + .587 * dados[i + 1] + .114 * dados[i + 2];
+            var d = bloco[y * 8 + x] - lumAntiga;
+            dados[i]     = Math.max(0, Math.min(255, dados[i] + d));
+            dados[i + 1] = Math.max(0, Math.min(255, dados[i + 1] + d));
+            dados[i + 2] = Math.max(0, Math.min(255, dados[i + 2] + d));
+          }
+        }
+      }
+    }
+    return usados;
+  }
+
+  function embutir(ctx, w, h, codigo){
+    var img = ctx.getImageData(0, 0, w, h), bits = paraBits(codigo);
+    var usados = porBloco(img.data, w, h, function(coef, idx){
+      var bit = bits[idx % bits.length];
+      var m = (coef[C1] + coef[C2]) / 2;
+      coef[C1] = m + (bit ? DELTA / 2 : -DELTA / 2);
+      coef[C2] = m - (bit ? DELTA / 2 : -DELTA / 2);
+      return true;
+    });
+    ctx.putImageData(img, 0, 0);
+    return { blocos: usados, repeticoes: Math.floor(usados / 30) };
+  }
+
+  function lerUmaEscala(dados, w, h){
+    var votos = []; for (var k = 0; k < 30; k++) votos.push([0, 0]);
+    var total = porBloco(dados, w, h, function(coef, idx){
+      votos[idx % 30][coef[C1] > coef[C2] ? 1 : 0]++;
+      return false;
+    });
+    if (total < 60) return null;
+    var bits = [], forca = 0;
+    for (var i = 0; i < 30; i++){
+      var v = votos[i], soma = v[0] + v[1];
+      bits.push(v[1] > v[0] ? 1 : 0);
+      if (soma) forca += Math.max(v[0], v[1]) / soma;
+    }
+    var r = deBits(bits);
+    return { codigo:r.codigo, valido:r.valido, confianca: Math.round((forca / 30) * 100), blocos: total };
+  }
+
+  /* Busca de sincronização: a marca sempre foi aplicada a 900px de largura.
+     Se a imagem chegou redimensionada, a grade de blocos desalinha — então
+     testamos também a imagem trazida de volta para a largura de origem. */
+  function extrair(imgEl){
+    var tentativas = [], vistos = {};
+    [imgEl.naturalWidth, LARGURA_MARCA].forEach(function(lw){
+      if (!lw || vistos[lw]) return;
+      vistos[lw] = 1; tentativas.push(lw);
+    });
+    var melhor = null;
+    for (var t = 0; t < tentativas.length; t++){
+      var lw = tentativas[t];
+      var esc = lw / imgEl.naturalWidth;
+      var cv = document.createElement('canvas');
+      cv.width = Math.round(imgEl.naturalWidth * esc);
+      cv.height = Math.round(imgEl.naturalHeight * esc);
+      var cx = cv.getContext('2d', { willReadFrequently: true });
+      cx.drawImage(imgEl, 0, 0, cv.width, cv.height);
+      var d = cx.getImageData(0, 0, cv.width, cv.height);
+      var r = lerUmaEscala(d.data, cv.width, cv.height);
+      if (!r) continue;
+      r.escala = (esc === 1 ? 'original' : Math.round(esc * 100) + '%');
+      if (r.valido) return { ok:true, r:r };
+      if (!melhor || r.confianca > melhor.confianca) melhor = r;
+    }
+    if (!melhor) return { ok:false, motivo:'imagem pequena demais ou sem textura suficiente' };
+    return { ok:true, r:melhor };
+  }
+
+  /* registro das vendas — é o que transforma o código em prova */
+  var PEDIDOS = [
+    { id:'SB-4417', comprador:'Ana Paula Moreira', contato:'(62) 9 9812-4477', data:'14/09/2026',
+      evento:'Corrida do Cerrado 10K', fotos:3 },
+    { id:'SB-4392', comprador:'Ricardo Menezes', contato:'(62) 9 9145-2280', data:'13/09/2026',
+      evento:'Corrida do Cerrado 10K', fotos:9 },
+    { id:'SB-4310', comprador:'Juliana Prado', contato:'(31) 9 8822-7741', data:'11/09/2026',
+      evento:'Copa Goiás de Jiu-Jítsu', fotos:5 }
+  ];
+  PEDIDOS.forEach(function(p){ p.codigo = codigoDe(p.id); });
+  function acharPedido(cod){
+    for (var i = 0; i < PEDIDOS.length; i++) if (PEDIDOS[i].codigo === cod) return PEDIDOS[i];
+    return null;
+  }
+
   /* ---------- entrar / criar conta ---------- */
   V.entrar = function(){
     return hero('<h1>Entrar como fotógrafo</h1><p class="sub" style="margin-top:6px">Sua área de vendas, eventos e saques.</p>')
@@ -1349,7 +1537,8 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
   function appShell(active, inner){
     var tabs = [['painel','Painel','/app/painel'], ['eventos','Meus eventos','/app/eventos'],
                 ['extrato','Extrato','/app/extrato'], ['novo','Novo evento','/app/novo'],
-                ['upload','Upload','/app/upload'], ['kit','Divulgação','/app/kit']];
+                ['upload','Upload','/app/upload'], ['kit','Divulgação','/app/kit'],
+                ['forense','Marca invisível','/app/forense']];
     var c = carteira();
     return hero('<div class="between" style="align-items:flex-end">'
       + '<div><span class="over">' + (conta ? conta.nome : 'Fotógrafo') + '</span>'
@@ -1470,6 +1659,65 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '<button class="btn btn-lg" id="dokyc">Verificar e liberar saque</button>'
       + '<p class="sub" id="kyc-hint">A verificação costuma sair na hora.</p>'
       + '</div></div>');
+  };
+
+  /* ---------- marca invisível / verificação de vazamento ---------- */
+  V.forense = function(){
+    var fotos = photosOf('cerrado10k').slice(0, 6);
+    return appShell('forense',
+        '<div><h2>Marca invisível</h2><p class="sub">O arquivo que o cliente baixa sai com o código do pedido embutido nos coeficientes da imagem. Não aparece na foto — aparece quando você verifica.</p></div>'
+      + '<div class="grid-2" style="align-items:start">'
+
+      /* -------- gerar -------- */
+      + '<div class="card pad stack" style="gap:13px">'
+      + '<div class="row" style="gap:10px"><span style="width:34px;height:34px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-shield"/></svg></span>'
+      + '<h3>1 · Marcar um arquivo</h3></div>'
+      + '<div class="fld"><label for="fx-pedido">Pedido</label><select id="fx-pedido">'
+      + PEDIDOS.map(function(p){ return '<option value="' + p.id + '">' + p.id + ' · ' + p.comprador + '</option>'; }).join('')
+      + '</select></div>'
+      + '<div><span class="sub">Escolha a foto</span>'
+      + '<div class="sheet" style="grid-template-columns:repeat(3,1fr); gap:7px; margin-top:6px" id="fx-fotos">'
+      + fotos.map(function(p, k){
+          return '<button class="frame' + (k === 0 ? ' in' : '') + '" data-fx="' + p.src + '" type="button" style="border:0;padding:0">'
+            + '<img src="' + p.src + '" alt="" loading="lazy" style="aspect-ratio:3/2;object-fit:cover;width:100%">'
+            + '</button>';
+        }).join('')
+      + '</div></div>'
+      + '<button class="btn" id="fx-gerar">Gerar arquivo marcado</button>'
+      + '<div id="fx-out" class="sub"></div>'
+      + '<canvas id="fx-canvas" style="display:none"></canvas>'
+      + '</div>'
+
+      /* -------- verificar -------- */
+      + '<div class="card pad stack" style="gap:13px">'
+      + '<div class="row" style="gap:10px"><span style="width:34px;height:34px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-search"/></svg></span>'
+      + '<h3>2 · Verificar uma imagem vazada</h3></div>'
+      + '<p class="sub">Achou uma foto sua num story ou num grupo? Salve e jogue aqui.</p>'
+      + '<div class="drop" id="fx-drop" style="padding:22px 16px">'
+      + '<svg class="i i-lg" style="color:var(--meta)"><use href="#ic-upload"/></svg>'
+      + '<strong style="color:var(--ink);font-size:14px">Arraste a imagem ou escolha</strong>'
+      + '<input type="file" id="fx-file" accept="image/*" style="display:none">'
+      + '<button class="btn btn-ghost btn-sm" id="fx-pick">Escolher arquivo</button></div>'
+      + '<div id="fx-res"></div>'
+      + '<canvas id="fx-check" style="display:none"></canvas>'
+      + '</div></div>'
+
+      + '<div class="alert warning"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+      + '<div><div class="at">O que esta marca aguenta — medido, não prometido</div>'
+      + '<div class="ad"><b>Aguenta:</b> recompressão JPEG até qualidade 50 (leitura a 98%) e redução até ~70% do tamanho (leitura a 90%, com o detector reancorando a escala). '
+      + '<b>Não aguenta:</b> redução para metade ou menos, corte forte — que desalinha a grade de blocos — e regeneração por modelo de difusão, que reconstrói a imagem inteira e de quebra degrada a foto. '
+      + 'Nenhuma marca invisível é inquebrável. Esta existe para o caso real: o cliente que comprou e repassou o arquivo.</div></div></div>'
+
+      + '<div class="card pad stack" style="gap:10px">'
+      + '<h3>Como isso vira prova</h3>'
+      + '<p class="sub">A marca sozinha não serve de nada. O que serve é a marca <b>mais o registro</b>: cada pedido guarda quem comprou, quando, qual evento e qual código foi embutido. A verificação acima consulta esse registro e devolve o nome.</p>'
+      + '<div class="table-wrap" style="box-shadow:none"><div class="table-scroll"><table>'
+      + '<thead><tr><th>Pedido</th><th>Código na imagem</th><th>Comprador</th><th>Contato</th><th>Evento</th><th>Data</th></tr></thead><tbody>'
+      + PEDIDOS.map(function(p){
+          return '<tr><td class="t-main">' + p.id + '</td><td><span class="badge brand num">' + p.codigo + '</span></td>'
+            + '<td>' + p.comprador + '</td><td class="num">' + p.contato + '</td><td>' + p.evento + '</td><td class="num">' + p.data + '</td></tr>';
+        }).join('')
+      + '</tbody></table></div></div></div>');
   };
 
   V.p_kyc_ok = function(){
@@ -1853,6 +2101,99 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
         nav('/app/extrato');
       });
     }
+    /* ----- marca invisível ----- */
+    var fxGerar = document.getElementById('fx-gerar');
+    if (fxGerar){
+      var fxSrc = document.querySelector('[data-fx]').dataset.fx;
+      document.querySelectorAll('[data-fx]').forEach(function(b){
+        b.addEventListener('click', function(){
+          document.querySelectorAll('[data-fx]').forEach(function(x){ x.classList.remove('in'); });
+          b.classList.add('in'); fxSrc = b.dataset.fx;
+        });
+      });
+      fxGerar.addEventListener('click', function(){
+        var out = document.getElementById('fx-out');
+        var pedidoId = document.getElementById('fx-pedido').value;
+        var cod = codigoDe(pedidoId);
+        out.innerHTML = 'Processando os blocos...';
+        var img = new Image();
+        img.onload = function(){
+          var cv = document.getElementById('fx-canvas');
+          var esc = Math.min(1, LARGURA_MARCA / img.naturalWidth);
+          cv.width = Math.round(img.naturalWidth * esc);
+          cv.height = Math.round(img.naturalHeight * esc);
+          var ctx = cv.getContext('2d', { willReadFrequently: true });
+          ctx.drawImage(img, 0, 0, cv.width, cv.height);
+          var t0 = performance.now();
+          var r = embutir(ctx, cv.width, cv.height, cod);
+          var ms = Math.round(performance.now() - t0);
+          cv.toBlob(function(blob){
+            var url = URL.createObjectURL(blob);
+            out.innerHTML = '<div class="alert success" style="margin-top:4px"><svg class="i i-lg"><use href="#ic-check"/></svg>'
+              + '<div><div class="at">Arquivo marcado com o código ' + cod + '</div>'
+              + '<div class="ad">' + r.blocos.toLocaleString('pt-BR') + ' blocos usados · a mensagem cabe '
+              + r.repeticoes + ' vezes na imagem · ' + ms + ' ms · ' + Math.round(blob.size / 1024) + ' KB<br>'
+              + 'Baixe, poste no WhatsApp ou tire um print, salve de volta e verifique ao lado.</div></div></div>'
+              + '<a class="btn btn-ghost btn-sm" style="margin-top:9px; text-decoration:none" download="saibem-' + pedidoId + '.jpg" href="' + url + '">'
+              + 'Baixar arquivo marcado</a>';
+          }, 'image/jpeg', .9);
+        };
+        img.src = fxSrc;
+      });
+
+      /* verificação */
+      var res = document.getElementById('fx-res');
+      var inputFile = document.getElementById('fx-file');
+      document.getElementById('fx-pick').addEventListener('click', function(){ inputFile.click(); });
+      var zona = document.getElementById('fx-drop');
+      ['dragover','dragenter'].forEach(function(ev){
+        zona.addEventListener(ev, function(e){ e.preventDefault(); zona.style.borderColor = 'var(--brand)'; });
+      });
+      zona.addEventListener('dragleave', function(){ zona.style.borderColor = ''; });
+      zona.addEventListener('drop', function(e){
+        e.preventDefault(); zona.style.borderColor = '';
+        if (e.dataTransfer.files[0]) verificar(e.dataTransfer.files[0]);
+      });
+      inputFile.addEventListener('change', function(){ if (inputFile.files[0]) verificar(inputFile.files[0]); });
+
+      function verificar(file){
+        res.innerHTML = '<p class="sub">Analisando os blocos da imagem...</p>';
+        var fr = new FileReader();
+        fr.onload = function(){
+          var img = new Image();
+          img.onload = function(){
+            var saida = extrair(img);
+            if (!saida.ok){
+              res.innerHTML = '<div class="alert warning"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+                + '<div><div class="at">Não deu para analisar</div><div class="ad">' + saida.motivo + '</div></div></div>';
+              return;
+            }
+            var r = saida.r;
+            var pedido = r.valido ? acharPedido(r.codigo) : null;
+            if (pedido){
+              res.innerHTML = '<div class="alert success"><svg class="i i-lg"><use href="#ic-check"/></svg>'
+                + '<div><div class="at">Origem identificada: pedido ' + pedido.id + '</div>'
+                + '<div class="ad">Código <b>' + r.codigo + '</b> · confiança ' + r.confianca + '% · ' + r.blocos.toLocaleString('pt-BR') + ' blocos lidos · escala ' + r.escala + '<br>'
+                + 'Comprado por <b>' + pedido.comprador + '</b> (' + pedido.contato + ') em ' + pedido.data + ', no evento ' + pedido.evento + '.</div></div></div>'
+                + '<div class="row" style="margin-top:10px"><button class="btn btn-sm" data-toast="Dossiê gerado|Código, pedido, comprador e data em PDF">Gerar dossiê</button>'
+                + '<button class="btn btn-ghost btn-sm" data-toast="Notificação enviada|Pedido de remoção encaminhado">Pedir remoção</button></div>';
+            } else if (r.valido){
+              res.innerHTML = '<div class="alert warning"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+                + '<div><div class="at">Código ' + r.codigo + ' não está no seu registro</div>'
+                + '<div class="ad">Confiança ' + r.confianca + '%. A imagem tem marca, mas de outro fotógrafo ou de um pedido antigo.</div></div></div>';
+            } else {
+              res.innerHTML = '<div class="alert warning"><svg class="i i-lg"><use href="#ic-x"/></svg>'
+                + '<div><div class="at">Nenhuma marca legível</div>'
+                + '<div class="ad">Leitura com ' + r.confianca + '% de consistência e verificação inválida. '
+                + 'Pode ser uma foto que nunca foi marcada, um corte forte da imagem ou uma imagem regenerada por IA.</div></div></div>';
+            }
+          };
+          img.src = fr.result;
+        };
+        fr.readAsDataURL(file);
+      }
+    }
+
     /* intensidade da marca d'água (avaliação) */
     document.querySelectorAll('[data-wm]').forEach(function(b){
       b.addEventListener('click', function(){
