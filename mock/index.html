@@ -1,0 +1,2747 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Saibem</title>
+<meta name="description" content="Mande uma selfie e receba as fotos em que você aparece. Corrida, campeonato, formatura ou festa.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#07182E">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Saibem">
+<meta name="mobile-web-app-capable" content="yes">
+<meta property="og:title" content="Saibem — você saiu bem">
+<meta property="og:description" content="Você não procura sua foto. Ela acha você.">
+<meta property="og:image" content="icon-512.png">
+<meta property="og:type" content="website">
+<style>
+/* ==========================================================================
+   Saibem — site navegável (SPA, rotas por hash)
+   Base: Synvia Design System v2 — petróleo #07182E · primário #1A5FC4
+         verde #2B7FE8 · limão on-dark #4DD0FF
+   Raio 7 campos / 9 botões / 11 ícones / 14 cards / 16 toast / 18 modal
+   ========================================================================== */
+:root{
+  --bg:#F2F4F3; --surface:#FFFFFF; --surface-2:#F5F7F6; --chip:#EEF1F0;
+  --line:#E6E8EB; --line-2:#D7DEDB;
+  --ink:#1A1918; --body:#374641; --label:#54606B; --meta:#637282;
+  --navy:#07182E; --navy-2:#0C2544; --navy-3:#12325A;
+  --hero:linear-gradient(135deg,#07182E 0%,#0C2544 60%,#12325A 100%);
+  --primary:#1A5FC4; --primary-hv:#154C9E; --on-primary:#FFFFFF;
+  --brand:#2B7FE8; --brand-ink:#1A5FC4; --brand-soft:#E8F1FD; --accent:#4DD0FF;
+  --danger:#DF3D11; --danger-ink:#C0330F; --warn:#E8912A; --warn-ink:#8A4E08;
+  --info:#2D6FE8; --info-ink:#2159C4; --chart-1:#2B7FE8; --chart-empty:#C3CDD7;
+  --ok:#1E9E4A; --ok-ink:#12763A; --ok-soft:#E6F6EC;
+  --sh-card:0 1px 2px rgba(7,24,46,.05);
+  --sh-pop:0 12px 32px -10px rgba(7,24,46,.20);
+  --sh-modal:0 24px 64px rgba(7,24,46,.28);
+  --r-fld:7px; --r-btn:9px; --r-ic:11px; --r-card:14px; --r-toast:16px; --r-modal:18px;
+  --header-h:60px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#050F1E; --surface:#0B1C33; --surface-2:#0E2340; --chip:#142E4D;
+    --line:#1A3454; --line-2:#2A4A75;
+    --ink:#EFF3F8; --body:#C9D6E8; --label:#A2B4CC; --meta:#8B9FBA;
+    --primary:#4DD0FF; --primary-hv:#7FDCFF; --on-primary:#04121F;
+    --brand:#5AB0FF; --brand-ink:#8CC7FF; --brand-soft:#10233C;
+    --danger:#FF7A57; --danger-ink:#FF9273; --warn:#E8B15E; --warn-ink:#EFC98F;
+    --info:#6C9BFF; --info-ink:#93B6FF; --chart-1:#5AB0FF; --chart-empty:#2A3A55;
+    --ok:#35C06E; --ok-ink:#5FD892; --ok-soft:#0C2A1B;
+    --sh-card:0 1px 2px rgba(0,0,0,.35);
+    --sh-pop:0 12px 32px -10px rgba(0,0,0,.6);
+    --sh-modal:0 24px 64px rgba(0,0,0,.65);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#050F1E; --surface:#0B1C33; --surface-2:#0E2340; --chip:#142E4D;
+  --line:#1A3454; --line-2:#2A4A75;
+  --ink:#EFF3F8; --body:#C9D6E8; --label:#A2B4CC; --meta:#8B9FBA;
+  --primary:#4DD0FF; --primary-hv:#7FDCFF; --on-primary:#04121F;
+  --brand:#5AB0FF; --brand-ink:#8CC7FF; --brand-soft:#10233C;
+  --danger:#FF7A57; --danger-ink:#FF9273; --warn:#E8B15E; --warn-ink:#EFC98F;
+  --info:#6C9BFF; --info-ink:#93B6FF; --chart-1:#5AB0FF; --chart-empty:#2A3A55;
+  --ok:#35C06E; --ok-ink:#5FD892; --ok-soft:#0C2A1B;
+  --sh-card:0 1px 2px rgba(0,0,0,.35);
+  --sh-pop:0 12px 32px -10px rgba(0,0,0,.6);
+  --sh-modal:0 24px 64px rgba(0,0,0,.65);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--body); font-size:14px; line-height:1.55;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+input,select,button,textarea{font-family:inherit}
+img{max-width:100%; display:block}
+p{margin:0}
+h1,h2,h3,h4{margin:0; color:var(--ink); line-height:1.18; letter-spacing:-.015em; text-wrap:balance}
+h1{font-size:26px; font-weight:800}
+h2{font-size:19px; font-weight:700}
+h3{font-size:15px; font-weight:700}
+a{color:var(--brand-ink); text-decoration:none}
+a:hover{text-decoration:underline}
+button{color:inherit}
+.i{width:16px; height:16px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.i-sm{width:14px;height:14px} .i-lg{width:19px;height:19px}
+:focus-visible{outline:2px solid var(--brand); outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.over{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--meta)}
+.sub{font-size:12.5px; font-weight:500; color:var(--meta)}
+.muted{color:var(--meta)}
+.hide{display:none!important}
+
+/* ---------- header ---------- */
+.hdr{position:sticky; top:0; z-index:60; background:var(--navy); color:#fff}
+.hdr-in{max-width:1160px; margin:0 auto; padding:0 20px; height:var(--header-h);
+  display:flex; align-items:center; gap:14px}
+.brand{display:flex; align-items:center; gap:9px; cursor:pointer; background:0; border:0; padding:0}
+.brand .mk{width:26px; height:26px; border-radius:8px; background:var(--accent); color:var(--navy); display:grid; place-items:center}
+.brand .mk svg{width:15px; height:15px; stroke-width:2.6}
+.brand .wm{color:#fff; font-size:16.5px; font-weight:800; letter-spacing:-.025em}
+.brand .wm i{font-style:normal; color:var(--accent)}
+.hsearch{display:flex; align-items:center; gap:8px; height:36px; padding:0 12px; border-radius:var(--r-btn);
+  border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.08); flex:1; max-width:420px}
+.hsearch input{flex:1; min-width:0; background:0; border:0; outline:0; color:#fff; font-size:13px}
+.hsearch input::placeholder{color:rgba(255,255,255,.5)}
+.hsearch .i{color:rgba(255,255,255,.6)}
+.hnav{display:flex; align-items:center; gap:6px; margin-left:auto}
+.hlink{background:0; border:0; color:rgba(255,255,255,.82); font-size:13px; font-weight:600;
+  padding:7px 11px; border-radius:var(--r-btn); cursor:pointer; white-space:nowrap}
+.hlink:hover{background:rgba(255,255,255,.1); color:#fff}
+.hlink[aria-current="page"]{color:var(--accent)}
+.bag{position:relative; display:inline-flex; align-items:center; gap:7px; height:36px; padding:0 13px;
+  border-radius:var(--r-btn); background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.28);
+  color:#fff; font-size:13px; font-weight:700; cursor:pointer}
+.bag:hover{background:rgba(255,255,255,.15)}
+.bag .n{min-width:19px; height:19px; padding:0 5px; border-radius:999px; background:var(--accent); color:var(--navy);
+  font-size:11px; font-weight:800; display:grid; place-items:center}
+.burger{display:none; background:0; border:1px solid rgba(255,255,255,.24); color:#fff; width:36px; height:36px;
+  border-radius:var(--r-btn); cursor:pointer; place-items:center}
+@media(max-width:880px){
+  .hsearch{display:none}
+  .hnav .hlink{display:none}
+  .burger{display:grid}
+}
+.mmenu{background:var(--navy-2); border-top:1px solid rgba(255,255,255,.1); padding:8px 20px 14px;
+  display:flex; flex-direction:column; gap:2px}
+.mmenu button{background:0; border:0; text-align:left; color:rgba(255,255,255,.85); font-size:14px; font-weight:600;
+  padding:10px 8px; border-radius:8px; cursor:pointer}
+.mmenu button:hover{background:rgba(255,255,255,.08); color:#fff}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1160px; margin:0 auto; padding:0 20px}
+.sec{padding-block:26px}
+.hero{background:var(--hero); color:#fff}
+.hero .wrap{padding-block:34px 38px}
+.hero h1{color:#fff}
+.hero .sub{color:rgba(255,255,255,.72)}
+.hero .over{color:rgba(255,255,255,.6)}
+.stack{display:flex; flex-direction:column; gap:16px}
+.row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+.between{display:flex; gap:14px; flex-wrap:wrap; align-items:center; justify-content:space-between}
+.grid-2{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--sh-card)}
+.pad{padding:18px}
+.crumb{display:flex; gap:7px; align-items:center; font-size:12.5px; color:rgba(255,255,255,.6); margin-bottom:10px; flex-wrap:wrap}
+.crumb button{background:0; border:0; color:rgba(255,255,255,.78); cursor:pointer; padding:0; font-size:12.5px; font-weight:600}
+.crumb button:hover{color:#fff; text-decoration:underline}
+
+/* ---------- botões ---------- */
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:7px; height:40px; padding:0 17px;
+  border-radius:var(--r-btn); font-size:13.5px; font-weight:700; cursor:pointer; border:0;
+  background:var(--primary); color:var(--on-primary); transition:background .14s}
+.btn:hover{background:var(--primary-hv)}
+.btn:disabled{opacity:.5; cursor:not-allowed}
+.btn-ghost{background:var(--surface); border:1px solid var(--line-2); color:var(--body); font-weight:600}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-lg{height:46px; padding:0 22px; font-size:15px}
+.btn-sm{height:32px; padding:0 12px; font-size:12.5px}
+.on-dark.btn{background:var(--accent); color:var(--navy)}
+.on-dark.btn:hover{background:#7FDCFF}
+.on-dark.btn-ghost{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.32); color:#fff}
+.on-dark.btn-ghost:hover{background:rgba(255,255,255,.15)}
+
+/* ---------- campos ---------- */
+.fld{display:flex; flex-direction:column; gap:5px}
+.fld label{font-size:11.5px; font-weight:600; color:var(--label)}
+.fld input,.fld select{width:100%; height:42px; padding:0 12px; border:1px solid var(--line-2); border-radius:var(--r-fld);
+  font-size:14px; color:var(--body); background:var(--surface); outline:0; transition:border-color .12s, box-shadow .12s}
+.fld input:focus,.fld select:focus{border-color:var(--brand); box-shadow:0 0 0 1px var(--brand)}
+.fld .hint{font-size:11px; color:var(--meta)}
+.check{display:flex; gap:9px; align-items:flex-start; font-size:13px; cursor:pointer}
+.check input{accent-color:var(--brand); margin-top:3px; flex-shrink:0}
+
+/* ---------- badges / chips ---------- */
+.badge{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; padding:3px 9px;
+  border-radius:6px; background:var(--chip); color:var(--label); white-space:nowrap}
+.badge .dot{width:6px; height:6px; border-radius:50%; background:currentColor}
+.badge.brand{background:var(--brand-soft); color:var(--brand-ink)}
+.badge.amber{background:rgba(232,145,42,.14); color:var(--warn-ink)}
+.badge.ok{background:var(--ok-soft); color:var(--ok-ink)}
+.badge.red{background:rgba(223,61,17,.12); color:var(--danger-ink)}
+.badge.blue{background:rgba(45,111,232,.12); color:var(--info-ink)}
+.badge.live .dot{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@media(prefers-reduced-motion:reduce){.badge.live .dot{animation:none}}
+.chips{display:flex; gap:7px; flex-wrap:wrap}
+.chipf{border:1px solid var(--line-2); background:var(--surface); color:var(--label); font-size:12.5px; font-weight:600;
+  padding:6px 13px; border-radius:999px; cursor:pointer}
+.chipf:hover{background:var(--surface-2); color:var(--ink)}
+.chipf[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:#fff}
+
+/* ---------- cartão de evento ---------- */
+.evgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(252px,1fr)); gap:16px}
+.ev{display:flex; flex-direction:column; text-align:left; padding:0; cursor:pointer; overflow:hidden;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--sh-card);
+  transition:transform .18s cubic-bezier(.34,1.2,.5,1), box-shadow .18s, border-color .12s}
+.ev:hover{transform:translateY(-3px); box-shadow:var(--sh-pop); border-color:var(--line-2)}
+.ev-th{position:relative}
+.ev-th img{aspect-ratio:16/9; object-fit:cover; width:100%}
+.ev-th .badge{position:absolute; top:9px; left:9px; box-shadow:0 2px 8px rgba(7,24,46,.35)}
+.ev-b{padding:13px 14px 15px; display:flex; flex-direction:column; gap:4px}
+.ev-b .t{font-size:14.5px; font-weight:700; color:var(--ink)}
+.ev-b .price{margin-top:5px; font-size:12.5px; font-weight:700; color:var(--brand-ink)}
+
+/* ---------- galeria ---------- */
+.sheet{display:grid; grid-template-columns:repeat(auto-fill,minmax(164px,1fr)); gap:11px}
+.frame{position:relative; margin:0; padding:0; border:0; width:100%; display:block; cursor:pointer;
+  background:var(--chip); border-radius:11px; overflow:hidden; box-shadow:var(--sh-card);
+  transition:transform .16s cubic-bezier(.34,1.2,.5,1), box-shadow .16s}
+.frame:hover{transform:translateY(-3px); box-shadow:var(--sh-pop)}
+.frame img{aspect-ratio:3/2; object-fit:cover; width:100%}
+.frame .wm{position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; font-size:12px;
+  font-weight:800; letter-spacing:.28em; color:rgba(255,255,255,.6); transform:rotate(-20deg); text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.frame figcaption{position:absolute; left:0; right:0; bottom:0; display:flex; justify-content:space-between;
+  padding:18px 8px 6px; font-size:10px; font-weight:600; color:#fff; font-variant-numeric:tabular-nums;
+  background:linear-gradient(transparent,rgba(7,24,46,.78))}
+.frame .add{position:absolute; top:7px; right:7px; width:26px; height:26px; border-radius:999px; border:1.5px solid rgba(255,255,255,.9);
+  background:rgba(7,24,46,.4); display:grid; place-items:center; color:#fff}
+.frame .add .i{width:14px; height:14px}
+.frame.in{box-shadow:0 0 0 2.5px var(--brand), var(--sh-card)}
+.frame.in .add{background:var(--brand); border-color:var(--brand)}
+.frame .match{position:absolute; top:7px; left:7px; font-size:10px; font-weight:700; padding:2px 7px; border-radius:999px;
+  background:rgba(7,24,46,.85); color:var(--accent); font-variant-numeric:tabular-nums}
+
+/* ---------- barra fixa ---------- */
+.stickybar{position:sticky; bottom:14px; z-index:30; margin-top:16px; background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r-card); box-shadow:var(--sh-pop); padding:12px 16px; display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+.stickybar .grow{flex:1; min-width:140px}
+
+/* ---------- tabela ---------- */
+.table-wrap{border:1px solid var(--line); border-radius:11px; overflow:hidden; background:var(--surface); box-shadow:var(--sh-card)}
+.table-scroll{overflow-x:auto}
+table{width:100%; border-collapse:collapse; font-size:13px; background:var(--surface)}
+thead th{text-align:left; font-size:11.5px; font-weight:600; color:var(--ink); padding:13px; border-bottom:1px solid var(--line);
+  background:var(--surface-2); white-space:nowrap}
+td{padding:12px 13px; border-bottom:1px solid var(--line); color:var(--label); white-space:nowrap; vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--brand-soft)}
+.t-main{font-weight:600; color:var(--ink)}
+.t-sub{font-size:11px; color:var(--meta); margin-top:2px}
+td.n{text-align:right; font-variant-numeric:tabular-nums}
+
+/* ---------- KPI ---------- */
+.kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(168px,1fr)); gap:12px}
+.kpi{display:flex; align-items:center; gap:12px; border:1px solid var(--line); background:var(--surface);
+  border-radius:var(--r-card); padding:15px 16px; box-shadow:var(--sh-card)}
+.kpi .ic{width:44px; height:44px; border-radius:12px; display:grid; place-items:center; flex-shrink:0;
+  background:rgba(43,127,232,.1); color:var(--brand)}
+.kpi .ic .i{width:20px;height:20px}
+.kpi-l{font-size:11.5px; font-weight:600; color:var(--label)}
+.kpi-v{font-size:26px; font-weight:800; letter-spacing:-.02em; color:var(--ink); line-height:1.1; font-variant-numeric:tabular-nums}
+.kpi-f{font-size:11px; color:var(--meta)}
+.kpi-f.up{color:var(--brand-ink); font-weight:600}
+
+/* ---------- alert ---------- */
+.alert{display:flex; gap:12px; padding:14px 16px; border-radius:11px; border:1px solid}
+.alert .at{font-size:13px; font-weight:700}
+.alert .ad{font-size:12.5px; margin-top:2px; color:var(--label); line-height:1.45}
+.alert.info{background:rgba(45,111,232,.06); border-color:rgba(45,111,232,.22); color:var(--info-ink)}
+.alert.success{background:var(--ok-soft); border-color:rgba(30,158,74,.3); color:var(--ok-ink)}
+.alert.warning{background:rgba(232,145,42,.09); border-color:rgba(232,145,42,.3); color:var(--warn-ink)}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex; gap:2px; border-bottom:1px solid var(--line); overflow-x:auto}
+.tab{padding:11px 15px; font-size:13.5px; font-weight:600; color:var(--meta); cursor:pointer; background:0; border:0;
+  border-bottom:2px solid transparent; margin-bottom:-1px; white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--brand-ink); border-bottom-color:var(--brand)}
+
+/* ---------- câmera ---------- */
+.cam{position:relative; border-radius:var(--r-card); overflow:hidden; aspect-ratio:1; background:var(--navy); display:grid; place-items:center}
+.cam img{width:100%; height:100%; object-fit:cover}
+.reticle{position:absolute; width:46%; aspect-ratio:3/4; border:2px solid rgba(255,255,255,.9);
+  border-radius:42% 42% 38% 38%; box-shadow:0 0 0 9999px rgba(7,24,46,.45)}
+.scan{position:absolute; left:0; right:0; height:2px; background:var(--accent); box-shadow:0 0 16px 3px rgba(77,208,255,.8);
+  animation:scan 1.8s ease-in-out infinite}
+@keyframes scan{0%,100%{top:12%}50%{top:86%}}
+.cam.busy .reticle{border-color:var(--accent)}
+@media(prefers-reduced-motion:reduce){.scan{animation:none; top:50%}}
+
+/* ---------- PIX ---------- */
+.qr{width:164px; height:164px; display:grid; grid-template-columns:repeat(21,1fr); background:#fff; padding:8px;
+  border-radius:11px; border:1px solid var(--line-2); flex-shrink:0}
+.qr i{background:transparent}
+.qr i.on{background:#111}
+.pixcode{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; word-break:break-all;
+  background:var(--surface-2); padding:10px 12px; border-radius:var(--r-fld); color:var(--meta); border:1px solid var(--line)}
+.checkout{display:grid; grid-template-columns:1fr 340px; gap:16px; align-items:start}
+@media(max-width:860px){.checkout{grid-template-columns:1fr}}
+.line{display:flex; justify-content:space-between; gap:12px; font-size:13.5px; padding:3px 0}
+.total{display:flex; justify-content:space-between; border-top:1px solid var(--line); padding-top:12px; margin-top:4px;
+  font-size:18px; font-weight:800; color:var(--ink); font-variant-numeric:tabular-nums}
+
+/* ---------- pipeline / upload ---------- */
+.pipe{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:11px}
+.step{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:13px 14px;
+  display:flex; flex-direction:column; gap:3px; box-shadow:var(--sh-card); position:relative; overflow:hidden}
+.step::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:transparent}
+.step.done::before{background:var(--brand)}
+.step.now::before{background:var(--accent)}
+.step .v{font-size:17px; font-weight:800; color:var(--ink); font-variant-numeric:tabular-nums}
+.track{display:block; height:6px; background:var(--chip); border-radius:999px; overflow:hidden}
+.track i{display:block; height:100%; background:var(--brand); border-radius:999px; transition:width .4s ease}
+.drop{border:1.5px dashed var(--line-2); border-radius:var(--r-card); padding:26px 20px; text-align:center;
+  display:flex; flex-direction:column; gap:9px; align-items:center; background:var(--surface-2)}
+
+/* ---------- gráfico ---------- */
+.chart-wrap{position:relative}
+.bar{fill:var(--chart-1)}
+.bar:hover{opacity:.78}
+.grid-line{stroke:var(--line); stroke-width:1}
+.axis-lbl{fill:var(--meta); font-size:10px; font-weight:600}
+.tip{position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-118%); background:var(--navy);
+  color:#fff; border-radius:8px; padding:6px 10px; font-size:11.5px; font-weight:600; white-space:nowrap;
+  box-shadow:var(--sh-pop); transition:opacity .12s; z-index:5}
+.tip b{color:var(--accent)}
+
+/* ---------- lightbox / modal ---------- */
+.lb{position:fixed; inset:0; z-index:120; display:none; place-items:center; padding:20px; background:rgba(7,24,46,.75)}
+.lb[open]{display:grid}
+.lb-box{background:var(--surface); border-radius:var(--r-modal); box-shadow:var(--sh-modal); overflow:hidden;
+  max-width:900px; width:100%; max-height:92vh; display:grid; grid-template-columns:1fr 272px}
+@media(max-width:760px){.lb-box{grid-template-columns:1fr; max-height:90vh; overflow-y:auto}}
+.lb-img{position:relative; background:var(--navy); display:grid; place-items:center; min-height:220px}
+.lb-img img{width:100%; max-height:72vh; object-fit:contain}
+.lb-img .wm{position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; font-size:26px;
+  font-weight:800; letter-spacing:.4em; color:rgba(255,255,255,.32); transform:rotate(-20deg)}
+.lb-side{padding:18px; display:flex; flex-direction:column; gap:12px; border-left:1px solid var(--line)}
+@media(max-width:760px){.lb-side{border-left:0; border-top:1px solid var(--line)}}
+.lb-meta{display:flex; flex-direction:column; gap:7px; font-size:12.5px; color:var(--label)}
+.lb-meta .r{display:flex; justify-content:space-between; gap:10px}
+.lb-meta .r b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums}
+.lb-x{position:absolute; top:10px; right:10px; width:32px; height:32px; border-radius:999px; border:0;
+  background:rgba(7,24,46,.65); color:#fff; cursor:pointer; display:grid; place-items:center}
+.lb-nav{position:absolute; top:50%; transform:translateY(-50%); width:38px; height:38px; border-radius:999px; border:0;
+  background:rgba(7,24,46,.6); color:#fff; cursor:pointer; display:grid; place-items:center}
+.lb-nav:hover{background:rgba(7,24,46,.85)}
+.lb-prev{left:10px} .lb-next{right:10px}
+
+/* ---------- toast ---------- */
+.toasts{position:fixed; left:50%; transform:translateX(-50%); bottom:22px; z-index:130; display:flex;
+  flex-direction:column; align-items:center; gap:10px; pointer-events:none}
+.toast{pointer-events:auto; display:flex; align-items:center; gap:12px; width:340px; max-width:calc(100vw - 40px);
+  padding:12px 13px; border-radius:var(--r-toast); background:var(--hero); color:#fff;
+  box-shadow:0 4px 24px rgba(7,24,46,.3); transform:translateY(16px) scale(.98); opacity:0;
+  transition:transform .3s cubic-bezier(.16,1,.3,1), opacity .24s}
+.toast.show{transform:none; opacity:1}
+.toast .tic{width:30px; height:30px; border-radius:9px; display:grid; place-items:center; background:var(--accent); color:var(--navy); flex-shrink:0}
+.toast .tt{font-size:13px; font-weight:700}
+.toast .tm{font-size:11.5px; color:rgba(255,255,255,.82)}
+
+/* ---------- empty ---------- */
+.empty{display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; padding:40px 20px}
+.empty .ic{width:52px; height:52px; border-radius:14px; background:var(--chip); color:var(--meta); display:grid; place-items:center}
+
+/* ---------- footer ---------- */
+.ftr{background:var(--navy); color:rgba(255,255,255,.7); margin-top:40px}
+.ftr .wrap{padding-block:30px 26px; display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:24px}
+@media(max-width:760px){.ftr .wrap{grid-template-columns:1fr 1fr}}
+.ftr h4{color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; margin-bottom:10px}
+.ftr button{display:block; background:0; border:0; color:rgba(255,255,255,.7); font-size:13px; padding:4px 0; cursor:pointer; text-align:left}
+.ftr button:hover{color:#fff}
+.ftr .fine{border-top:1px solid rgba(255,255,255,.1); padding:14px 20px 26px; font-size:11.5px; color:rgba(255,255,255,.5);
+  max-width:1160px; margin:0 auto; display:flex; gap:12px; justify-content:space-between; flex-wrap:wrap}
+
+/* ---------- pitch / landing fotógrafo ---------- */
+.pitch{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px}
+.pitch .card{padding:17px; display:flex; flex-direction:column; gap:7px}
+.pitch .ic{width:36px; height:36px; border-radius:var(--r-ic); display:grid; place-items:center; background:var(--brand-soft); color:var(--brand-ink)}
+.calc-out{background:var(--hero); border-radius:var(--r-card); padding:17px 18px; color:#fff; display:flex; flex-direction:column; gap:3px}
+.calc-out .v{font-size:30px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+.calc-out .l{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:rgba(255,255,255,.62)}
+.calc-out .d{font-size:12px; color:rgba(255,255,255,.78)}
+.story{width:190px; aspect-ratio:9/16; border-radius:var(--r-card); overflow:hidden; position:relative; background:var(--navy)}
+.story img{width:100%; height:100%; object-fit:cover}
+.story .ov{position:absolute; inset:0; padding:14px; color:#fff; display:flex; flex-direction:column; justify-content:space-between;
+  background:linear-gradient(180deg,rgba(7,24,46,.6),rgba(7,24,46,.05) 42%,rgba(7,24,46,.86))}
+.story h4{color:#fff; font-size:17px; font-weight:800; line-height:1.15}
+.wabubble{background:var(--brand-soft); color:var(--body); border-radius:11px 11px 11px 3px; padding:11px 13px; font-size:13px; max-width:430px}
+
+/* ==========================================================================
+   PROTEÇÃO DE IMAGEM
+   A foto do preview nunca é um <img>: é um <canvas> desenhado com a marca
+   queimada. Sobre ele vai um escudo transparente, que é o que o clique
+   direito e o arrastar alcançam.
+   ========================================================================== */
+.shot{position:relative; display:block; width:100%; line-height:0}
+.shot canvas{width:100%; height:auto; display:block; -webkit-user-drag:none; user-select:none}
+.shield{position:absolute; inset:0; z-index:2; background:transparent; cursor:pointer}
+.noselect{user-select:none; -webkit-user-select:none; -webkit-touch-callout:none}
+.lb-img canvas{max-width:100%; max-height:72vh; width:auto; height:auto; display:block; transition:filter .18s}
+.lb.masked .lb-img canvas{filter:blur(22px) saturate(.4)}
+.lb-mask{position:absolute; inset:0; z-index:4; display:none; place-items:center; text-align:center; padding:20px;
+  background:rgba(7,24,46,.86); color:#fff; font-size:13px; font-weight:600}
+.lb.masked .lb-mask{display:grid}
+.legalbar{display:flex; gap:9px; align-items:flex-start; font-size:11px; line-height:1.45; color:var(--meta);
+  border-top:1px solid var(--line); padding-top:10px}
+.legalbar .i{width:13px; height:13px; margin-top:1px; flex-shrink:0}
+.wmctl{display:flex; gap:7px; align-items:center; flex-wrap:wrap; font-size:12px; color:var(--meta)}
+.wmctl b{color:var(--ink); font-weight:600}
+
+/* ==========================================================================
+   CARROSSEL DE CAPA — tratamento de landing fotográfica
+   A foto manda: full-bleed, scrim para legibilidade, texto no terço inferior,
+   Ken Burns lento no slide ativo e filmstrip dos próximos.
+   ========================================================================== */
+.hcar{position:relative; overflow:hidden; background:var(--navy); touch-action:pan-y}
+.hcar-track{display:flex; transition:transform .62s cubic-bezier(.16,1,.3,1); will-change:transform}
+.hslide{position:relative; flex:0 0 100%; height:clamp(410px, 66vh, 580px); overflow:hidden}
+.hslide img{width:100%; height:100%; object-fit:cover; object-position:50% 38%; transform:scale(1.03); transition:transform 8s linear}
+.hslide.on img{transform:scale(1.13)}
+.hslide::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(180deg, rgba(7,24,46,.62) 0%, rgba(7,24,46,.12) 32%, rgba(7,24,46,.55) 62%, rgba(7,24,46,.94) 100%)}
+.hslide-c{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:0 20px 30px}
+.hslide-in{max-width:1160px; margin:0 auto; display:flex; flex-direction:column; gap:11px; align-items:flex-start}
+.hslide-in h2{color:#fff; font-size:clamp(26px,4.4vw,40px); font-weight:800; letter-spacing:-.03em; line-height:1.05;
+  max-width:15ch; text-shadow:0 2px 24px rgba(7,24,46,.55)}
+.hslide-in .meta{display:flex; gap:14px; flex-wrap:wrap; color:rgba(255,255,255,.85); font-size:13px; font-weight:600}
+.hslide-in .meta span{display:inline-flex; align-items:center; gap:6px}
+.hslide-in .cta{display:flex; gap:9px; flex-wrap:wrap; margin-top:4px}
+.hbars{position:absolute; top:0; left:0; right:0; z-index:3; display:flex; gap:5px; padding:14px 20px 0}
+.hbar{flex:1; height:3px; border-radius:2px; background:rgba(255,255,255,.26); overflow:hidden; cursor:pointer; border:0; padding:0}
+.hbar i{display:block; height:100%; width:0; background:var(--accent); border-radius:2px}
+.hbar.done i{width:100%}
+.hbar.on i{animation:hfill 6.4s linear forwards}
+@keyframes hfill{from{width:0}to{width:100%}}
+.hcar.paused .hbar.on i{animation-play-state:paused}
+.harrow{position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:42px; height:42px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.3); background:rgba(7,24,46,.4); color:#fff; cursor:pointer;
+  display:grid; place-items:center; backdrop-filter:blur(4px); transition:background .14s}
+.harrow:hover{background:rgba(7,24,46,.75)}
+.harrow.prev{left:16px} .harrow.next{right:16px}
+.hstrip{position:absolute; right:20px; bottom:30px; z-index:3; display:flex; gap:8px; align-items:flex-end}
+.hthumb{width:64px; height:44px; border-radius:8px; overflow:hidden; border:2px solid rgba(255,255,255,.35);
+  cursor:pointer; padding:0; background:0; opacity:.72; transition:opacity .16s, border-color .16s, transform .16s}
+.hthumb img{width:100%; height:100%; object-fit:cover}
+.hthumb:hover{opacity:1; transform:translateY(-2px)}
+.hthumb.on{border-color:var(--accent); opacity:1}
+.hcount{position:absolute; right:20px; top:26px; z-index:3; font-size:11.5px; font-weight:700; letter-spacing:.1em;
+  color:rgba(255,255,255,.7); font-variant-numeric:tabular-nums}
+@media(max-width:860px){
+  .harrow{display:none}
+  .hstrip{display:none}
+  .hcount{right:20px; top:26px}
+  .hslide-c{padding-bottom:24px}
+}
+@media(prefers-reduced-motion:reduce){
+  .hcar-track{transition:none}
+  .hslide img,.hslide.on img{transition:none; transform:none}
+  .hbar.on i{animation:none; width:100%}
+}
+
+/* trilho horizontal com snap — vitrine de eventos */
+.railhead{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.rbtns{display:flex; gap:7px}
+.rbtn{width:34px; height:34px; border-radius:999px; border:1px solid var(--line-2); background:var(--surface);
+  color:var(--label); cursor:pointer; display:grid; place-items:center}
+.rbtn:hover{background:var(--surface-2); color:var(--ink)}
+@media(max-width:700px){.rbtns{display:none}}
+.rail{display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
+  scrollbar-width:none; padding:2px 2px 6px; margin:0 -2px}
+.rail::-webkit-scrollbar{display:none}
+.rail > .ev{flex:0 0 clamp(232px, 78vw, 288px); scroll-snap-align:start}
+
+/* ==========================================================================
+   CHROME DE APP (PWA)
+   ========================================================================== */
+body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
+.tabbar{position:fixed; left:10px; right:10px; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:70;
+  background:var(--surface); border:1px solid var(--line); border-radius:15px;
+  box-shadow:0 8px 22px rgba(7,24,46,.18); padding:4px; display:none; justify-content:space-around}
+.tb{flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:2px;
+  padding:9px 3px 7px; border-radius:13px; border:1.5px solid transparent; background:0; cursor:pointer;
+  color:var(--meta); font-size:9.5px; font-weight:600}
+.tb .i{width:18px; height:18px}
+.tb.on{background:var(--navy); border-color:var(--accent); color:var(--accent)}
+.tb .badge-n{position:absolute; transform:translate(12px,-4px); min-width:16px; height:16px; padding:0 4px;
+  border-radius:999px; background:var(--danger); color:#fff; font-size:9px; font-weight:800; display:grid; place-items:center}
+@media(max-width:880px){
+  .tabbar{display:flex}
+  body{padding-bottom:86px}
+  .ftr{margin-bottom:0}
+}
+@media(display-mode:standalone){
+  .hdr{padding-top:env(safe-area-inset-top)}
+  .ftr .wrap{padding-block:22px 18px}
+}
+.installbar{position:fixed; left:12px; right:12px; bottom:calc(84px + env(safe-area-inset-bottom)); z-index:75;
+  background:var(--hero); color:#fff; border-radius:var(--r-card); box-shadow:var(--sh-modal);
+  padding:12px 14px; display:none; gap:12px; align-items:center; max-width:520px; margin:0 auto}
+.installbar.on{display:flex}
+@media(min-width:881px){.installbar{bottom:16px}}
+.installbar .ic{width:38px; height:38px; border-radius:11px; background:rgba(77,208,255,.16);
+  border:1px solid rgba(77,208,255,.4); color:var(--accent); display:grid; place-items:center; flex-shrink:0}
+.installbar .tx{flex:1; min-width:0}
+.installbar .tt{font-size:13px; font-weight:700}
+.installbar .tm{font-size:11.5px; color:rgba(255,255,255,.78)}
+.installbar .x{background:0; border:0; color:rgba(255,255,255,.6); cursor:pointer; padding:4px}
+.offchip{position:fixed; top:calc(var(--header-h) + 10px); left:50%; transform:translateX(-50%) translateY(-16px); z-index:80;
+  background:var(--warn); color:#3B2401; font-size:12px; font-weight:700; padding:7px 14px; border-radius:999px;
+  box-shadow:var(--sh-pop); opacity:0; pointer-events:none; transition:opacity .2s, transform .2s}
+.offchip.on{opacity:1; transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+<symbol id="ic-cam" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+<symbol id="ic-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="ic-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L7 21"/></symbol>
+<symbol id="ic-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v13"/></symbol>
+<symbol id="ic-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+<symbol id="ic-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+<symbol id="ic-wallet" viewBox="0 0 24 24"><path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5"/><circle cx="16" cy="13" r="1.4"/></symbol>
+<symbol id="ic-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15v3M12 9v9M17 5v13"/></symbol>
+<symbol id="ic-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></symbol>
+<symbol id="ic-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></symbol>
+<symbol id="ic-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+<symbol id="ic-qr" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20h1"/></symbol>
+<symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="ic-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="ic-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></symbol>
+<symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="ic-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+<symbol id="ic-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+<symbol id="ic-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+<symbol id="ic-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></symbol>
+<symbol id="ic-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+</defs></svg>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <button class="brand" data-nav="/" aria-label="Saibem, ir para o início">
+      <span class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <span class="wm">Saibem<i>.</i></span>
+    </button>
+    <label class="hsearch">
+      <svg class="i"><use href="#ic-search"/></svg>
+      <input id="gsearch" placeholder="Buscar evento, cidade ou modalidade" aria-label="Buscar evento">
+    </label>
+    <nav class="hnav">
+      <button class="hlink" data-nav="/eventos">Eventos</button>
+      <button class="hlink" data-nav="/fotografos">Para fotógrafos</button>
+      <button class="hlink" data-nav="/privacidade">Privacidade</button>
+      <button class="hlink" id="acct" data-nav="/entrar">Entrar</button>
+      <button class="bag" data-nav="/sacola"><svg class="i i-sm"><use href="#ic-bag"/></svg>Sacola <span class="n" id="bagn">0</span></button>
+      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><svg class="i"><use href="#ic-menu"/></svg></button>
+    </nav>
+  </div>
+  <div class="mmenu hide" id="mmenu">
+    <button data-nav="/eventos">Eventos</button>
+    <button data-nav="/fotografos">Para fotógrafos</button>
+    <button data-nav="/app/painel">Área do fotógrafo</button>
+    <button data-nav="/entrar">Entrar / criar conta</button>
+    <button data-nav="/privacidade">Privacidade e dados</button>
+    <button id="theme-m">Trocar tema</button>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div>
+      <div class="row" style="gap:9px; margin-bottom:9px">
+        <span style="width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--navy);display:grid;place-items:center">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span style="color:#fff; font-size:16px; font-weight:800; letter-spacing:-.025em">Saibem.</span>
+      </div>
+      <p style="font-size:13px; max-width:280px">Você saiu bem. A gente acha a sua foto — em corrida, campeonato, formatura ou festa.</p>
+    </div>
+    <div><h4>Quem foi fotografado</h4>
+      <button data-nav="/eventos">Buscar eventos</button>
+      <button data-nav="/e/cerrado10k/selfie">Buscar pelo rosto</button>
+      <button data-nav="/sacola">Minha sacola</button>
+      <button data-nav="/privacidade">Excluir meus dados</button></div>
+    <div><h4>Quem fotografa</h4>
+      <button data-nav="/fotografos">Por que o Saibem</button>
+      <button data-nav="/app/novo">Criar evento</button>
+      <button data-nav="/app/painel">Painel de vendas</button>
+      <button data-nav="/app/extrato">Extrato e saques</button>
+      <button data-nav="/fotografos">Taxas</button></div>
+    <div><h4>Ajuda</h4>
+      <button data-nav="/privacidade">LGPD e biometria</button>
+      <button data-nav="/privacidade">Termos de uso</button>
+      <button id="theme-f">Trocar tema</button></div>
+  </div>
+  <div class="fine">
+    <span>Protótipo navegável · dados fictícios · Saibem Fotos LTDA · Goiânia, GO</span>
+    <span>Fotos ilustrativas do Wikimedia Commons sob licença livre</span>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Foto ampliada">
+  <div class="lb-box">
+    <div class="lb-img">
+      <canvas id="lb-canvas" aria-label="Foto ampliada com marca d'água"></canvas>
+      <span class="shield"></span>
+      <div class="lb-mask">Visualização pausada<br><span style="font-weight:400;opacity:.8">A imagem volta quando esta janela estiver em foco.</span></div>
+      <button class="lb-x" id="lb-x" type="button" aria-label="Fechar"><svg class="i"><use href="#ic-x"/></svg></button>
+      <button class="lb-nav lb-prev" id="lb-prev" type="button" aria-label="Foto anterior"><svg class="i"><use href="#ic-left"/></svg></button>
+      <button class="lb-nav lb-next" id="lb-next" type="button" aria-label="Próxima foto"><svg class="i"><use href="#ic-right"/></svg></button>
+    </div>
+    <div class="lb-side">
+      <div><span class="over">Prévia com marca d'água</span><h2 id="lb-title" style="margin-top:4px">Foto</h2>
+        <p class="sub" id="lb-ev"></p></div>
+      <div class="lb-meta" id="lb-meta"></div>
+      <div class="alert success" style="padding:11px 13px"><svg class="i"><use href="#ic-check"/></svg>
+        <div class="at" style="font-size:12.5px">Sem marca d'água depois da compra</div></div>
+      <div style="margin-top:auto; display:flex; flex-direction:column; gap:9px">
+        <div class="total" style="border:0; padding:0; margin:0">
+          <span style="font-size:13px; font-weight:600; color:var(--label)">Foto avulsa</span>
+          <span id="lb-price">R$ 12,00</span></div>
+        <button class="btn btn-lg" id="lb-add" type="button">Adicionar à sacola</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="tabbar" id="tabbar" aria-label="Navegação principal">
+  <button class="tb" data-tab="/" data-nav="/"><svg class="i"><use href="#ic-image"/></svg><span>Início</span></button>
+  <button class="tb" data-tab="/eventos" data-nav="/eventos"><svg class="i"><use href="#ic-search"/></svg><span>Eventos</span></button>
+  <button class="tb" data-tab="/selfie" data-nav="/e/cerrado10k/selfie"><svg class="i"><use href="#ic-cam"/></svg><span>Selfie</span></button>
+  <button class="tb" data-tab="/sacola" data-nav="/sacola"><svg class="i"><use href="#ic-bag"/></svg><span>Sacola</span><span class="badge-n" id="tabn" style="display:none">0</span></button>
+  <button class="tb" data-tab="/app" data-nav="/app/painel"><svg class="i"><use href="#ic-chart"/></svg><span>Fotógrafo</span></button>
+</nav>
+
+<div class="installbar" id="installbar" role="dialog" aria-label="Instalar aplicativo">
+  <span class="ic"><svg class="i i-lg"><use href="#ic-down"/></svg></span>
+  <div class="tx"><div class="tt">Instalar o Saibem</div>
+    <div class="tm">Abre em tela cheia e funciona mesmo com internet ruim no evento.</div></div>
+  <button class="btn on-dark btn-sm" id="doinstall">Instalar</button>
+  <button class="x" id="noinstall" aria-label="Agora não"><svg class="i i-sm"><use href="#ic-x"/></svg></button>
+</div>
+
+<div class="offchip" id="offchip" role="status">Sem conexão · mostrando o que já foi baixado</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     DADOS
+     ========================================================= */
+  var POOL = []; for (var i = 1; i <= 24; i++) POOL.push('img/p' + i + '.jpg');
+
+  var EVENTS = [
+    { slug:'cerrado10k', nome:'Corrida do Cerrado 10K', cat:'Corrida de rua', cidade:'Goiânia',
+      local:'Parque Vaca Brava', data:'14 set 2026', dataISO:'2026-09-14', foto:'Marina Rezende Fotografia',
+      preco:12, pacote:39, nFotos:4812, pessoas:1936, capa:2, live:true,
+      pool:[2,13,3,1,7,14,11,5,16,9,0,17,4,12,6,10,15,8] },
+    { slug:'copa-goias-jj', nome:'Copa Goiás de Jiu-Jítsu', cat:'Jiu-jítsu / lutas', cidade:'Goiânia',
+      local:'Ginásio Rio Vermelho', data:'07 set 2026', dataISO:'2026-09-07', foto:'Marina Rezende Fotografia',
+      preco:10, pacote:32, nFotos:3140, pessoas:1204, capa:18, live:false,
+      pool:[18,18,19,18,19,18,19,18,19,18,18,19] },
+    { slug:'hyrox-goiania', nome:'Hyrox Goiânia', cat:'Crossfit / Hyrox', cidade:'Goiânia',
+      local:'Expo Center', data:'06 set 2026', dataISO:'2026-09-06', foto:'Pedro Lacerda',
+      preco:14, pacote:45, nFotos:2209, pessoas:884, capa:19, live:false,
+      pool:[19,19,18,19,18,19,19,18,19,18,19,18] },
+    { slug:'formatura-med-ufg', nome:'Formatura Medicina UFG', cat:'Formatura', cidade:'Goiânia',
+      local:'Teatro Goiânia', data:'30 ago 2026', dataISO:'2026-08-30', foto:'Marina Rezende Fotografia',
+      preco:18, pacote:59, nFotos:1988, pessoas:412, capa:20, live:false,
+      pool:[20,20,21,20,20,21,20,20,21,20,20,21] },
+    { slug:'enduro-serra', nome:'Enduro Serra Dourada', cat:'Ciclismo / MTB', cidade:'Goiânia',
+      local:'Serra Dourada', data:'17 ago 2026', dataISO:'2026-08-17', foto:'Pedro Lacerda',
+      preco:12, pacote:39, nFotos:2657, pessoas:706, capa:21, live:false,
+      pool:[21,22,21,22,21,22,21,22,21,22,21,22] },
+    { slug:'volta-pampulha', nome:'Volta da Pampulha', cat:'Corrida de rua', cidade:'Belo Horizonte',
+      local:'Lagoa da Pampulha', data:'03 ago 2026', dataISO:'2026-08-03', foto:'Estúdio Horizonte',
+      preco:12, pacote:39, nFotos:5607, pessoas:2988, capa:22, live:false,
+      pool:[22,1,3,7,14,11,5,16,9,0,17,4] },
+    { slug:'festival-verao', nome:'Festival de Verão', cat:'Festa / show', cidade:'Goiânia',
+      local:'Arena Goiânia', data:'27 jul 2026', dataISO:'2026-07-27', foto:'Coletivo Lente Livre',
+      preco:9, pacote:29, nFotos:6104, pessoas:3410, capa:23, live:false,
+      pool:[23,23,23,23,23,23,23,23,23,23,23,23] },
+    { slug:'circuito-aguas', nome:'Circuito das Águas', cat:'Corrida de rua', cidade:'Caldas Novas',
+      local:'Parque das Águas', data:'20 jul 2026', dataISO:'2026-07-20', foto:'Estúdio Horizonte',
+      preco:12, pacote:39, nFotos:1744, pessoas:598, capa:13, live:false,
+      pool:[13,4,12,6,10,15,8,2,1,3,7,14] }
+  ];
+  var CATS = ['Corrida de rua','Jiu-jítsu / lutas','Crossfit / Hyrox','Ciclismo / MTB','Formatura','Festa / show'];
+  var CIDADES = ['Goiânia','Belo Horizonte','Caldas Novas'];
+
+  /* fotos determinísticas por evento */
+  var photoCache = {};
+  var POR_PAGINA = 24;
+  function photosOf(slug){
+    if (photoCache[slug]) return photoCache[slug];
+    var ev = eventBySlug(slug), out = [], n = 96; /* acervo paginado */
+    for (var k = 0; k < n; k++){
+      var pi = ev.pool[k % ev.pool.length];
+      var minuto = (k * 7) % 60;
+      out.push({
+        id: slug + '-' + k,
+        src: POOL[pi],
+        num: ('000' + (400 + (k * 37) % 560)).slice(-4),
+        hora: (7 + Math.floor(k / 12)) + 'h' + ('0' + minuto).slice(-2),
+        /* número do peito: o mesmo atleta aparece em várias fotos, e em
+           cerca de 1 de cada 5 o OCR não lê nada (dobrado, coberto, de costas) */
+        peito: (k % 5 === 4) ? null : String(100 + ((k * 13) % 30) * 7),
+        preco: ev.preco, ev: slug
+      });
+    }
+    photoCache[slug] = out; return out;
+  }
+  /* fotos em que o OCR leu determinado número do peito */
+  function porNumero(slug, numero){
+    var alvo = String(numero || '').replace(/\D/g, '');
+    if (!alvo) return [];
+    return photosOf(slug).filter(function(p){ return p.peito === alvo; });
+  }
+  function numerosDoEvento(slug){
+    var vistos = {}, saida = [];
+    photosOf(slug).forEach(function(p){
+      if (p.peito && !vistos[p.peito]){ vistos[p.peito] = 1; saida.push(p.peito); }
+    });
+    return saida.sort(function(a, b){ return a - b; });
+  }
+  var MATCHES = [99,98,97,94,92,91,88,86,81];
+  function myPhotos(slug){
+    var all = photosOf(slug), idx = [5,11,13,9,3,16,7,14,1], out = [];
+    idx.forEach(function(k, j){
+      var p = Object.assign({}, all[k % all.length]);
+      p.match = MATCHES[j]; p.id = p.id + '-m'; out.push(p);
+    });
+    return out;
+  }
+  function eventBySlug(s){ for (var k = 0; k < EVENTS.length; k++) if (EVENTS[k].slug === s) return EVENTS[k]; return EVENTS[0]; }
+
+  /* =========================================================
+     CONTA DO FOTÓGRAFO — sessão, KYC e carteira
+     ========================================================= */
+  var conta = null;
+  try { conta = JSON.parse(localStorage.getItem('saibem.conta') || 'null'); } catch(e){}
+  function saveConta(){ try { localStorage.setItem('saibem.conta', JSON.stringify(conta)); } catch(e){} }
+  function logado(){ return !!conta; }
+
+  /* estados possíveis de um evento e o que cada um permite */
+  var ESTADOS = {
+    rascunho:   { rotulo:'rascunho',   cls:'',      dica:'Só você vê. Publique para começar a vender.' },
+    processando:{ rotulo:'processando',cls:'amber', dica:'Indexando rostos. As fotos já indexadas estão à venda.' },
+    no_ar:      { rotulo:'no ar',      cls:'ok',    dica:'Vendendo normalmente.' },
+    encerrado:  { rotulo:'encerrado',  cls:'',      dica:'Não recebe mais fotos, mas continua vendendo.' },
+    arquivado:  { rotulo:'arquivado',  cls:'red',   dica:'Fora do ar. Quem já comprou mantém o download.' }
+  };
+  var TRANSICOES = {
+    rascunho:    [['publicar','processando']],
+    processando: [['publicar agora','no_ar']],
+    no_ar:       [['encerrar','encerrado']],
+    encerrado:   [['reabrir','no_ar'], ['arquivar','arquivado']],
+    arquivado:   [['reativar','encerrado']]
+  };
+
+  /* eventos do fotógrafo logado (dados de demonstração) */
+  var MEUS = [
+    { slug:'cerrado10k', nome:'Corrida do Cerrado 10K', quando:'14 set · Goiânia', estado:'processando',
+      fotos:4812, visitas:2104, vendas:177, liquido:1911.60, conv:8.4 },
+    { slug:'copa-goias-jj', nome:'Copa Goiás de Jiu-Jítsu', quando:'07 set · Ginásio Rio Vermelho', estado:'no_ar',
+      fotos:3140, visitas:1512, vendas:96, liquido:1036.80, conv:6.3 },
+    { slug:'formatura-med-ufg', nome:'Formatura Medicina UFG', quando:'30 ago · Teatro Goiânia', estado:'no_ar',
+      fotos:1988, visitas:874, vendas:61, liquido:823.50, conv:7.0 },
+    { slug:'enduro-serra', nome:'Enduro Serra Dourada', quando:'17 ago · Serra Dourada', estado:'encerrado',
+      fotos:2657, visitas:1033, vendas:88, liquido:950.40, conv:8.5 },
+    { slug:'volta-pampulha', nome:'Volta da Pampulha', quando:'03 ago · Belo Horizonte', estado:'encerrado',
+      fotos:5607, visitas:3288, vendas:241, liquido:2602.80, conv:7.3 }
+  ];
+  try {
+    var est = JSON.parse(localStorage.getItem('saibem.estados') || '{}');
+    MEUS.forEach(function(m){ if (est[m.slug]) m.estado = est[m.slug]; });
+  } catch(e){}
+  function saveEstados(){
+    var o = {}; MEUS.forEach(function(m){ o[m.slug] = m.estado; });
+    try { localStorage.setItem('saibem.estados', JSON.stringify(o)); } catch(e){}
+  }
+
+  /* extrato — lançamentos mais recentes primeiro */
+  var LEDGER = [
+    { d:'14/09', t:'venda',    ev:'Corrida do Cerrado 10K', bruto:39.00, taxa:3.90, v:35.10, st:'liberado' },
+    { d:'14/09', t:'venda',    ev:'Corrida do Cerrado 10K', bruto:12.00, taxa:1.20, v:10.80, st:'liberado' },
+    { d:'14/09', t:'venda',    ev:'Corrida do Cerrado 10K', bruto:39.00, taxa:3.90, v:35.10, st:'a liberar' },
+    { d:'13/09', t:'venda',    ev:'Copa Goiás de Jiu-Jítsu', bruto:32.00, taxa:3.20, v:28.80, st:'liberado' },
+    { d:'13/09', t:'reembolso',ev:'Copa Goiás de Jiu-Jítsu', bruto:-10.00, taxa:1.00, v:-9.00, st:'liberado' },
+    { d:'12/09', t:'saque',    ev:'PIX 62 9 9631-2200', bruto:-820.00, taxa:0, v:-820.00, st:'liberado' },
+    { d:'11/09', t:'venda',    ev:'Formatura Medicina UFG', bruto:59.00, taxa:5.90, v:53.10, st:'liberado' },
+    { d:'10/09', t:'venda',    ev:'Volta da Pampulha', bruto:39.00, taxa:3.90, v:35.10, st:'liberado' },
+    { d:'09/09', t:'venda',    ev:'Enduro Serra Dourada', bruto:12.00, taxa:1.20, v:10.80, st:'liberado' }
+  ];
+  function carteira(){
+    var disp = 1284.50, aLiberar = 0;
+    LEDGER.forEach(function(l){ if (l.st === 'a liberar') aLiberar += l.v; });
+    return { disponivel: disp, aLiberar: aLiberar };
+  }
+
+  /* validação real de CPF e CNPJ — dígitos verificadores */
+  function validaCPF(s){
+    s = (s || '').replace(/\D/g, '');
+    if (s.length !== 11 || /^(\d)\1{10}$/.test(s)) return false;
+    var i, soma = 0, r;
+    for (i = 0; i < 9; i++) soma += +s[i] * (10 - i);
+    r = (soma * 10) % 11; if (r === 10) r = 0;
+    if (r !== +s[9]) return false;
+    soma = 0;
+    for (i = 0; i < 10; i++) soma += +s[i] * (11 - i);
+    r = (soma * 10) % 11; if (r === 10) r = 0;
+    return r === +s[10];
+  }
+  function validaCNPJ(s){
+    s = (s || '').replace(/\D/g, '');
+    if (s.length !== 14 || /^(\d)\1{13}$/.test(s)) return false;
+    function dig(base){
+      var p = base.length === 12 ? [5,4,3,2,9,8,7,6,5,4,3,2] : [6,5,4,3,2,9,8,7,6,5,4,3,2];
+      var soma = 0;
+      for (var i = 0; i < base.length; i++) soma += +base[i] * p[i];
+      var r = soma % 11;
+      return r < 2 ? 0 : 11 - r;
+    }
+    return dig(s.slice(0, 12)) === +s[12] && dig(s.slice(0, 13)) === +s[13];
+  }
+  function validaDoc(s){
+    var n = (s || '').replace(/\D/g, '');
+    if (n.length === 11) return validaCPF(n);
+    if (n.length === 14) return validaCNPJ(n);
+    return false;
+  }
+
+  /* =========================================================
+     ESTADO
+     ========================================================= */
+  var state = { cart: [], busca: '', cat: '', cidade: '', found: {} };
+  try {
+    var raw = localStorage.getItem('saibem.cart');
+    if (raw) state.cart = JSON.parse(raw) || [];
+  } catch(e){}
+  function persist(){ try { localStorage.setItem('saibem.cart', JSON.stringify(state.cart)); } catch(e){} }
+  function inCart(id){ return state.cart.some(function(c){ return c.id === id; }); }
+  function toggleCart(p){
+    var i = state.cart.findIndex(function(c){ return c.id === p.id; });
+    if (i >= 0){ state.cart.splice(i, 1); }
+    else { state.cart.push({ id:p.id, src:p.src, num:p.num, hora:p.hora, ev:p.ev, preco:p.preco }); }
+    persist(); paintBag();
+    return i < 0;
+  }
+  /* preço com regra de pacote por evento */
+  function cartTotals(){
+    var byEv = {}, bruto = 0;
+    state.cart.forEach(function(c){ (byEv[c.ev] = byEv[c.ev] || []).push(c); bruto += c.preco; });
+    var total = 0, desconto = 0;
+    Object.keys(byEv).forEach(function(s){
+      var ev = eventBySlug(s), itens = byEv[s], soma = itens.length * ev.preco;
+      if (soma > ev.pacote){ desconto += soma - ev.pacote; total += ev.pacote; }
+      else total += soma;
+    });
+    return { bruto: bruto, desconto: desconto, total: total, n: state.cart.length, byEv: byEv };
+  }
+  function brl(v){ return 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function paintBag(){
+    var n = state.cart.length, el = document.getElementById('bagn');
+    el.textContent = n;
+    el.style.display = n ? 'grid' : 'none';
+  }
+
+  /* =========================================================
+     COMPONENTES
+     ========================================================= */
+  function evCard(ev){
+    return '<button class="ev" data-nav="/e/' + ev.slug + '">'
+      + '<div class="ev-th"><img src="' + POOL[ev.capa] + '" alt="" loading="lazy">'
+      + (ev.live ? '<span class="badge live" style="background:var(--accent);color:var(--navy)"><span class="dot"></span>ao vivo</span>'
+                 : '<span class="badge" style="background:rgba(7,24,46,.78);color:#fff">encerrado</span>')
+      + '</div><div class="ev-b"><span class="t">' + ev.nome + '</span>'
+      + '<span class="sub">' + ev.data + ' · ' + ev.local + '</span>'
+      + '<span class="sub num">' + ev.nFotos.toLocaleString('pt-BR') + ' fotos · ' + ev.cidade + '</span>'
+      + '<span class="price num">a partir de ' + brl(ev.preco) + '</span></div></button>';
+  }
+  /* ---------- marca d'água e proteção ---------- */
+  /* medidas relativas à largura do canvas: a marca pesa igual em qualquer tamanho */
+  var FORCAS = {
+    leve:      { op:.22, passo:.30, fonte:.028, linhas:false, rot:-20 },
+    media:     { op:.34, passo:.215, fonte:.032, linhas:true,  rot:-20 },
+    agressiva: { op:.50, passo:.145, fonte:.036, linhas:true,  rot:-22 }
+  };
+  var forca = 'media';
+  try { forca = localStorage.getItem('saibem.wm') || 'media'; } catch(e){}
+
+  /* identificador da sessão — é o que permite rastrear um vazamento */
+  var visitanteId = null;
+  try { visitanteId = localStorage.getItem('saibem.vid'); } catch(e){}
+  if (!visitanteId){
+    visitanteId = Math.random().toString(36).slice(2, 7).toUpperCase();
+    try { localStorage.setItem('saibem.vid', visitanteId); } catch(e){}
+  }
+
+  /* desenha a foto já com a marca queimada no canvas */
+  function pintar(cv, src, larguraAlvo, num){
+    var cfg = FORCAS[forca] || FORCAS.media;
+    var img = new Image();
+    img.onload = function(){
+      var esc = Math.min(1, larguraAlvo / img.naturalWidth);
+      var w = Math.round(img.naturalWidth * esc), h = Math.round(img.naturalHeight * esc);
+      cv.width = w; cv.height = h;
+      var c = cv.getContext('2d');
+      c.drawImage(img, 0, 0, w, h);
+
+      /* miniatura é exibida em metade do tamanho do canvas: a marca precisa ser
+         proporcionalmente maior, e o texto mais curto, para continuar legível */
+      var mini = w < 520;
+      var texto = mini
+        ? 'SAIBEM ' + visitanteId
+        : 'SAIBEM · saibem.com.br · #' + (num || '0000') + ' · ' + visitanteId;
+      var passo = Math.max(26, Math.round(cfg.passo * w * (mini ? 1.7 : 1)));
+      var fonte = Math.max(10, Math.round(cfg.fonte * w * (mini ? 2.4 : 1)));
+
+      c.save();
+      c.translate(w / 2, h / 2);
+      c.rotate(cfg.rot * Math.PI / 180);
+      c.translate(-w, -h);
+      var diag = w * 2 + h * 2;
+
+      if (cfg.linhas){
+        c.strokeStyle = 'rgba(255,255,255,' + (cfg.op * .45) + ')';
+        c.lineWidth = Math.max(1, w / 900);
+        c.setLineDash([9, 7]);
+        for (var y = 0; y < diag; y += passo){
+          c.beginPath(); c.moveTo(0, y); c.lineTo(diag, y); c.stroke();
+        }
+        c.setLineDash([]);
+      }
+
+      c.font = '700 ' + fonte + 'px -apple-system, "Segoe UI", Arial, sans-serif';
+      c.textBaseline = 'middle';
+      c.lineJoin = 'round';
+      c.lineWidth = Math.max(2, fonte / 5);
+      c.strokeStyle = 'rgba(7,24,46,' + (cfg.op * .85) + ')';
+      c.fillStyle = 'rgba(255,255,255,' + cfg.op + ')';
+      var larguraTexto = c.measureText(texto).width + passo;
+      var linha = 0;
+      for (var ty = passo / 2; ty < diag; ty += passo){
+        var desloca = (linha % 2) * (larguraTexto / 2);
+        for (var tx = -larguraTexto; tx < diag; tx += larguraTexto){
+          c.strokeText(texto, tx + desloca, ty);
+          c.fillText(texto, tx + desloca, ty);
+        }
+        linha++;
+      }
+      c.restore();
+    };
+    img.src = src;
+  }
+
+  /* desenha os canvases que entraram na tela */
+  function pintarPendentes(){
+    document.querySelectorAll('canvas[data-src]:not([data-pronto])').forEach(function(cv){
+      cv.setAttribute('data-pronto', '1');
+      pintar(cv, cv.dataset.src, +cv.dataset.w || 420, cv.dataset.num);
+    });
+  }
+
+  function tile(p, opts){
+    opts = opts || {};
+    var cls = 'frame' + (inCart(p.id) ? ' in' : '');
+    return '<figure class="' + cls + ' noselect" data-photo="' + p.id + '" data-ev="' + p.ev + '" tabindex="0" role="button" aria-label="Foto ' + p.num + '">'
+      + '<span class="shot"><canvas data-src="' + p.src + '" data-w="420" data-num="' + p.num + '" aria-label="Foto ' + p.num + ' com marca d\'água"></canvas>'
+      + '<span class="shield"></span></span>'
+      + (p.match ? '<span class="match">' + p.match + '%</span>' : '')
+      + (opts.add !== false ? '<span class="add" data-add="' + p.id + '"><svg class="i"><use href="#ic-' + (inCart(p.id) ? 'check' : 'plus') + '"/></svg></span>' : '')
+      + '<figcaption><span>#' + p.num + '</span><span>' + p.hora + '</span></figcaption></figure>';
+  }
+  function qrHTML(){
+    var s = 7, out = '';
+    for (var i = 0; i < 441; i++){
+      var x = i % 21, y = Math.floor(i / 21), on;
+      if ((x < 7 && y < 7) || (x > 13 && y < 7) || (x < 7 && y > 13)){
+        var cx = x > 13 ? x - 14 : x, cy = y > 13 ? y - 14 : y;
+        on = (cx === 0 || cx === 6 || cy === 0 || cy === 6 || (cx > 1 && cx < 5 && cy > 1 && cy < 5));
+      } else { s = (s * 1103515 + 12345) & 0x7fffffff; on = ((s >> 13) & 1) === 1; }
+      out += '<i class="' + (on ? 'on' : '') + '"></i>';
+    }
+    return out;
+  }
+  function hero(inner){ return '<section class="hero"><div class="wrap">' + inner + '</div></section>'; }
+  function crumb(items){
+    var h = '<div class="crumb">';
+    items.forEach(function(it, k){
+      if (k) h += '<span>›</span>';
+      h += it.to ? '<button data-nav="' + it.to + '">' + it.t + '</button>' : '<span>' + it.t + '</span>';
+    });
+    return h + '</div>';
+  }
+
+  /* =========================================================
+     PÁGINAS
+     ========================================================= */
+  var V = {};
+
+  /* carrossel de capa — os eventos em destaque, tratados como capa de revista */
+  var FEAT = ['cerrado10k','copa-goias-jj','formatura-med-ufg','festival-verao'];
+  function carousel(){
+    var evs = FEAT.map(eventBySlug);
+    var slides = evs.map(function(ev, k){
+      return '<div class="hslide' + (k === 0 ? ' on' : '') + '" data-slide="' + k + '" aria-hidden="' + (k !== 0) + '">'
+        + '<img src="' + POOL[ev.capa] + '" alt="' + ev.nome + '" ' + (k ? 'loading="lazy"' : '') + '>'
+        + '<div class="hslide-c"><div class="hslide-in">'
+        + (ev.live ? '<span class="badge live" style="background:var(--accent);color:var(--navy)"><span class="dot"></span>fotos entrando ao vivo</span>'
+                   : '<span class="badge" style="background:rgba(255,255,255,.16);color:#fff">' + ev.cat + '</span>')
+        + '<h2>' + ev.nome + '</h2>'
+        + '<div class="meta">'
+        + '<span><svg class="i i-sm"><use href="#ic-pin"/></svg>' + ev.local + ', ' + ev.cidade + '</span>'
+        + '<span><svg class="i i-sm"><use href="#ic-clock"/></svg>' + ev.data + '</span>'
+        + '<span><svg class="i i-sm"><use href="#ic-image"/></svg>' + ev.nFotos.toLocaleString('pt-BR') + ' fotos · a partir de ' + brl(ev.preco) + '</span>'
+        + '</div>'
+        + '<div class="cta">'
+        + '<button class="btn on-dark btn-lg" data-nav="/e/' + ev.slug + '/selfie"><svg class="i"><use href="#ic-cam"/></svg>Achar minhas fotos</button>'
+        + '<button class="btn btn-ghost on-dark btn-lg" data-nav="/e/' + ev.slug + '">Ver a galeria</button>'
+        + '</div></div></div></div>';
+    }).join('');
+    return '<section class="hcar" id="hcar" aria-roledescription="carrossel" aria-label="Eventos em destaque">'
+      + '<div class="hbars">' + evs.map(function(_, k){
+          return '<button class="hbar' + (k === 0 ? ' on' : '') + '" data-go-slide="' + k + '" aria-label="Ir para o destaque ' + (k + 1) + '"><i></i></button>';
+        }).join('') + '</div>'
+      + '<div class="hcar-track" id="hcar-track">' + slides + '</div>'
+      + '<button class="harrow prev" data-step="-1" aria-label="Destaque anterior"><svg class="i"><use href="#ic-left"/></svg></button>'
+      + '<button class="harrow next" data-step="1" aria-label="Próximo destaque"><svg class="i"><use href="#ic-right"/></svg></button>'
+      + '<span class="hcount" id="hcount">01 / 0' + evs.length + '</span>'
+      + '<div class="hstrip">' + evs.map(function(ev, k){
+          return '<button class="hthumb' + (k === 0 ? ' on' : '') + '" data-go-slide="' + k + '" aria-label="' + ev.nome + '"><img src="' + POOL[ev.capa] + '" alt="" loading="lazy"></button>';
+        }).join('') + '</div>'
+      + '</section>';
+  }
+
+  V.home = function(){
+    var live = EVENTS.filter(function(e){ return e.live; });
+    return carousel()
+    + '<div class="wrap sec stack">'
+    + '<div class="between" style="gap:20px">'
+    + '<div style="max-width:560px"><h1 style="font-size:27px">Você não procura sua foto. Ela acha você.</h1>'
+    + '<p class="sub" style="font-size:14px; margin-top:8px">Mande uma selfie e receba, em segundos, só as fotos em que você aparece. Sem número do peito, sem rolar cinco mil fotos.</p></div>'
+    + '<div class="row" style="gap:18px">'
+    + '<div><div style="font-size:22px; font-weight:800; color:var(--ink)" class="num">28.161</div><div class="sub">fotos no ar</div></div>'
+    + '<div><div style="font-size:22px; font-weight:800; color:var(--ink)" class="num">184</div><div class="sub">eventos</div></div>'
+    + '<div><div style="font-size:22px; font-weight:800; color:var(--ink)" class="num">5 s</div><div class="sub">para se achar</div></div>'
+    + '</div></div>'
+    + (live.length ? '<div class="between" style="margin-top:6px"><div><h2>Acontecendo agora</h2><p class="sub">As fotos entram no ar durante o evento.</p></div>'
+        + '<button class="btn btn-ghost btn-sm" data-nav="/eventos">Ver todos</button></div>'
+        + '<div class="evgrid">' + live.map(evCard).join('') + '</div>' : '')
+    + '<div class="railhead" style="margin-top:10px"><div><h2>Eventos recentes</h2><p class="sub">Arraste para o lado · ' + EVENTS.length + ' eventos publicados</p></div>'
+    + '<div class="rbtns"><button class="rbtn" data-rail="-1" aria-label="Anterior"><svg class="i i-sm"><use href="#ic-left"/></svg></button>'
+    + '<button class="rbtn" data-rail="1" aria-label="Próximo"><svg class="i i-sm"><use href="#ic-right"/></svg></button></div></div>'
+    + '<div class="rail" id="rail">' + EVENTS.map(evCard).join('') + '</div>'
+    + '<div class="grid-2" style="margin-top:14px">'
+    + '<div class="card pad stack" style="gap:10px"><span class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-shield"/></svg></span>'
+    + '<h3>Sua selfie não fica guardada</h3><p class="sub">Ela é comparada com os rostos do evento e apagada logo depois. Não vira foto pública nem treina modelo nenhum. <button class="linkish" data-nav="/privacidade" style="background:0;border:0;color:var(--brand-ink);font-weight:600;cursor:pointer;padding:0">Como funciona</button></p></div>'
+    + '<div class="card pad stack" style="gap:10px"><span class="ic" style="width:36px;height:36px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-cam"/></svg></span>'
+    + '<h3>Fotografa eventos?</h3><p class="sub">Publique seu evento em um minuto, receba no PIX no mesmo dia e pague 10% só quando vender. <button data-nav="/fotografos" style="background:0;border:0;color:var(--brand-ink);font-weight:600;cursor:pointer;padding:0">Ver como funciona</button></p></div>'
+    + '</div></div>';
+  };
+
+  V.eventos = function(){
+    var q = state.busca.toLowerCase().trim();
+    var list = EVENTS.filter(function(e){
+      var okQ = !q || (e.nome + ' ' + e.cidade + ' ' + e.cat + ' ' + e.local).toLowerCase().indexOf(q) >= 0;
+      var okC = !state.cat || e.cat === state.cat;
+      var okCi = !state.cidade || e.cidade === state.cidade;
+      return okQ && okC && okCi;
+    });
+    var chips = '<button class="chipf" data-cat="" aria-pressed="' + (!state.cat) + '">Todas as modalidades</button>'
+      + CATS.map(function(c){ return '<button class="chipf" data-cat="' + c + '" aria-pressed="' + (state.cat === c) + '">' + c + '</button>'; }).join('');
+    var cid = '<button class="chipf" data-cidade="" aria-pressed="' + (!state.cidade) + '">Todas as cidades</button>'
+      + CIDADES.map(function(c){ return '<button class="chipf" data-cidade="' + c + '" aria-pressed="' + (state.cidade === c) + '">' + c + '</button>'; }).join('');
+
+    return hero('<h1>Eventos</h1><p class="sub" style="margin-top:6px">Ache o evento e busque pelo rosto — ou pelo número do peito.</p>'
+        + '<div class="row" style="margin-top:16px; gap:8px">'
+        + '<label class="hsearch" style="max-width:520px; display:flex"><svg class="i"><use href="#ic-search"/></svg>'
+        + '<input id="lsearch" value="' + state.busca.replace(/"/g, '&quot;') + '" placeholder="Nome do evento, cidade ou modalidade" aria-label="Buscar"></label></div>')
+      + '<div class="wrap sec stack">'
+      + '<div class="chips">' + chips + '</div>'
+      + '<div class="chips">' + cid + '</div>'
+      + '<div class="between"><p class="sub">' + list.length + (list.length === 1 ? ' evento encontrado' : ' eventos encontrados') + '</p>'
+      + (state.busca || state.cat || state.cidade ? '<button class="btn btn-ghost btn-sm" id="clearf">Limpar filtros</button>' : '') + '</div>'
+      + (list.length
+          ? '<div class="evgrid">' + list.map(evCard).join('') + '</div>'
+          : '<div class="card empty"><span class="ic"><svg class="i i-lg"><use href="#ic-search"/></svg></span>'
+            + '<h3>Nenhum evento com esse filtro</h3><p class="sub">Tente outra palavra ou limpe os filtros.</p>'
+            + '<button class="btn btn-ghost" id="clearf2">Limpar filtros</button></div>')
+      + '</div>';
+  };
+
+  V.evento = function(slug){
+    var ev = eventBySlug(slug), fotos = photosOf(slug);
+    state.pagina = state.pagina || {};
+    var mostrando = state.pagina[slug] || POR_PAGINA;
+    return hero(crumb([{t:'Início', to:'/'}, {t:'Eventos', to:'/eventos'}, {t:ev.nome}])
+      + '<div class="between" style="align-items:flex-end">'
+      + '<div style="display:flex; flex-direction:column; gap:8px; min-width:260px">'
+      + (ev.live ? '<span class="badge live" style="background:rgba(77,208,255,.16);color:var(--accent);width:fit-content"><span class="dot"></span>fotos chegando ao vivo</span>'
+                 : '<span class="badge" style="background:rgba(255,255,255,.12);color:#fff;width:fit-content">evento encerrado</span>')
+      + '<h1>' + ev.nome + '</h1>'
+      + '<p class="sub"><svg class="i i-sm" style="vertical-align:-2px"><use href="#ic-pin"/></svg> ' + ev.local + ', ' + ev.cidade + ' · ' + ev.data + '</p>'
+      + '<p class="sub">Fotografado por '
+      + (slugFotografo(ev.foto)
+          ? '<button data-nav="/f/' + slugFotografo(ev.foto) + '" style="background:0;border:0;padding:0;color:var(--accent);font-weight:700;font-size:12.5px;cursor:pointer;text-decoration:underline">' + ev.foto + '</button>'
+          : '<b style="color:#fff">' + ev.foto + '</b>') + '</p>'
+      + '<p class="sub num">' + ev.nFotos.toLocaleString('pt-BR') + ' fotos · ' + ev.pessoas.toLocaleString('pt-BR') + ' pessoas identificadas</p></div>'
+      + '<div style="display:flex; flex-direction:column; gap:10px; align-items:flex-start">'
+      + '<div><span class="over">Foto avulsa</span><div class="num" style="font-size:30px; font-weight:800; color:#fff">' + brl(ev.preco) + '</div>'
+      + '<p class="sub">Todas as suas por <b style="color:var(--accent)">' + brl(ev.pacote) + '</b></p></div>'
+      + '<button class="btn on-dark btn-lg" data-nav="/e/' + ev.slug + '/selfie"><svg class="i"><use href="#ic-cam"/></svg>Achar minhas fotos</button>'
+      + '<button class="btn btn-ghost on-dark" data-nav="/e/' + ev.slug + '/numero">Buscar pelo número do peito</button>'
+      + '</div></div>')
+      + '<div class="wrap sec stack">'
+      + '<div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="true">Todas as fotos</button>'
+      + '<button class="tab" role="tab" aria-selected="false">Largada</button>'
+      + '<button class="tab" role="tab" aria-selected="false">Percurso</button>'
+      + '<button class="tab" role="tab" aria-selected="false">Chegada</button></div>'
+      + '<div class="between"><p class="sub">Clique na foto para ampliar. O <b>+</b> joga direto na sacola.</p>'
+      + '<div class="wmctl"><span>Marca d\'água:</span>'
+      + ['leve','media','agressiva'].map(function(f){
+          return '<button class="chipf" data-wm="' + f + '" aria-pressed="' + (forca === f) + '">'
+            + (f === 'media' ? 'média' : f) + '</button>';
+        }).join('')
+      + '<span class="sub">(controle de protótipo)</span></div></div>'
+      + '<div class="sheet" id="sheet">' + fotos.slice(0, mostrando).map(function(p){ return tile(p); }).join('') + '</div>'
+      + '<div class="row" style="justify-content:center; margin-top:14px; gap:10px; flex-direction:column; align-items:center">'
+      + '<span class="sub num" id="contador">' + Math.min(mostrando, fotos.length) + ' de ' + fotos.length + ' fotos</span>'
+      + (mostrando < fotos.length
+          ? '<button class="btn btn-ghost" id="more">Carregar mais ' + Math.min(POR_PAGINA, fotos.length - mostrando) + '</button>'
+          : '<span class="badge ok"><svg class="i i-sm"><use href="#ic-check"/></svg>acervo completo</span>')
+      + '</div></div>';
+  };
+
+  V.selfie = function(slug){
+    var ev = eventBySlug(slug);
+    return hero(crumb([{t:'Início', to:'/'}, {t:ev.nome, to:'/e/' + slug}, {t:'Buscar pelo rosto'}])
+      + '<h1>Aponte a câmera para o seu rosto</h1>'
+      + '<p class="sub" style="margin-top:6px">' + ev.nome + ' · leva 5 segundos, sem número do peito</p>')
+      + '<div class="wrap sec">'
+      + '<div style="display:grid; grid-template-columns:minmax(0,400px) 1fr; gap:22px; align-items:start" class="sgrid">'
+      + '<div class="cam" id="cam"><img src="' + POOL[5] + '" alt="Prévia da câmera frontal"><div class="reticle"></div><div class="scan"></div></div>'
+      + '<div class="stack">'
+      + '<div class="card pad stack" style="gap:12px">'
+      + '<div class="row" style="gap:10px"><span style="width:36px;height:36px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-shield"/></svg></span><h3>O que acontece com a sua selfie</h3></div>'
+      + '<p>Ela é comparada com os rostos deste evento e <b>apagada em seguida</b>. Não vira foto pública, não fica guardada e não é usada para treinar nada.</p>'
+      + '<label class="check" for="lgpd"><input type="checkbox" id="lgpd"><span>Autorizo o uso da minha imagem <b>somente para encontrar minhas fotos neste evento</b>. Posso pedir exclusão quando quiser. <button data-nav="/privacidade" style="background:0;border:0;color:var(--brand-ink);font-weight:600;cursor:pointer;padding:0">Ler a política</button></span></label>'
+      + '</div>'
+      + '<div class="row"><button class="btn btn-lg" id="dobusca" disabled><svg class="i"><use href="#ic-search"/></svg>Buscar minhas fotos</button>'
+      + '<button class="btn btn-ghost btn-lg">Enviar da galeria</button></div>'
+      + '<p class="sub" id="lgpdhint">Marque a autorização para liberar a busca.</p>'
+      + '<div class="card pad stack" style="gap:10px"><div class="between"><h3>Receber no WhatsApp quando aparecer</h3>'
+      + '<span class="badge brand"><span class="dot"></span>418 hoje</span></div>'
+      + '<p class="sub">O fotógrafo ainda está enviando. Avisamos assim que sua foto entrar no ar.</p>'
+      + '<div class="row" style="gap:8px"><div class="fld" style="flex:1; min-width:160px"><input class="num" value="(62) 9 9812-4477" aria-label="Seu WhatsApp"></div>'
+      + '<button class="btn btn-ghost" data-toast="Aviso ligado|Mandamos no WhatsApp quando sua foto entrar">Avisar</button></div></div>'
+      + '</div></div></div>';
+  };
+
+  /* ---------- busca pelo número do peito ---------- */
+  V.numero = function(slug){
+    var ev = eventBySlug(slug);
+    var num = state.numero || '';
+    var achadas = num ? porNumero(slug, num) : [];
+    var exemplos = numerosDoEvento(slug).slice(0, 6);
+    return hero(crumb([{t:'Início', to:'/'}, {t:ev.nome, to:'/e/' + slug}, {t:'Número do peito'}])
+        + '<h1>Buscar pelo número do peito</h1>'
+        + '<p class="sub" style="margin-top:6px">' + ev.nome + ' · lemos o número na foto durante o processamento</p>'
+        + '<div class="row" style="margin-top:16px; gap:8px">'
+        + '<label class="hsearch" style="max-width:280px; display:flex">'
+        + '<svg class="i"><use href="#ic-search"/></svg>'
+        + '<input id="nsearch" class="num" inputmode="numeric" value="' + num + '" placeholder="Ex.: ' + (exemplos[0] || '123') + '" aria-label="Número do peito"></label>'
+        + '<button class="btn on-dark" id="nbusca">Buscar</button>'
+        + '<button class="btn btn-ghost on-dark" data-nav="/e/' + slug + '/selfie">Prefiro mandar uma selfie</button></div>')
+      + '<div class="wrap sec stack">'
+      + (num
+          ? (achadas.length
+              ? '<div class="between"><div><h2>' + achadas.length + (achadas.length === 1 ? ' foto com o número ' : ' fotos com o número ') + num + '</h2>'
+                + '<p class="sub">Confira se é você mesmo antes de comprar — o número pode aparecer em foto de outra pessoa.</p></div></div>'
+                + '<div class="sheet">' + achadas.map(function(p){ return tile(p); }).join('') + '</div>'
+              : '<div class="card empty"><span class="ic"><svg class="i i-lg"><use href="#ic-search"/></svg></span>'
+                + '<h3>Nenhuma foto com o número ' + num + '</h3>'
+                + '<p class="sub">O número pode estar dobrado, coberto pelo braço ou fora de foco — acontece em cerca de 1 de cada 5 fotos.</p>'
+                + '<button class="btn" data-nav="/e/' + slug + '/selfie">Buscar pelo rosto</button></div>')
+          : '<div class="card pad stack" style="gap:12px">'
+            + '<h3>Números encontrados neste evento</h3>'
+            + '<p class="sub">Clique em um para ver as fotos, ou digite o seu acima.</p>'
+            + '<div class="chips">' + exemplos.map(function(n){
+                return '<button class="chipf num" data-num="' + n + '">' + n + '</button>';
+              }).join('') + '</div></div>')
+      + '<div class="alert info"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+      + '<div><div class="at">Por que a selfie funciona melhor</div>'
+      + '<div class="ad">O número some quando você vira, quando o braço cobre ou quando a foto pega você de costas. O rosto aparece em muito mais fotos — por isso a busca por selfie costuma achar o dobro.</div></div></div>'
+      + '</div>';
+  };
+
+  /* ---------- perfil público do fotógrafo ---------- */
+  var FOTOGRAFOS = {
+    'marina-rezende': { nome:'Marina Rezende Fotografia', cidade:'Goiânia, GO', desde:'2019',
+      bio:'Fotografia de corrida e esporte amador. Chego cedo, fico até o último corredor cruzar a linha e publico ainda no mesmo dia.',
+      capa:2, avatar:'MR', nota:4.9, avaliacoes:186, eventos:7, fotos:18204, atende:'Goiás e Distrito Federal',
+      especialidades:['Corrida de rua','Jiu-jítsu / lutas','Formatura'] },
+    'pedro-lacerda': { nome:'Pedro Lacerda', cidade:'Goiânia, GO', desde:'2021',
+      bio:'Crossfit, Hyrox e mountain bike. Foco em movimento e no instante do esforço.',
+      capa:19, avatar:'PL', nota:4.7, avaliacoes:94, eventos:4, fotos:9820, atende:'Centro-Oeste',
+      especialidades:['Crossfit / Hyrox','Ciclismo / MTB'] },
+    'estudio-horizonte': { nome:'Estúdio Horizonte', cidade:'Belo Horizonte, MG', desde:'2016',
+      bio:'Equipe de quatro fotógrafos para provas grandes. Cobertura de largada, percurso e chegada.',
+      capa:22, avatar:'EH', nota:4.8, avaliacoes:311, eventos:12, fotos:41500, atende:'Minas Gerais',
+      especialidades:['Corrida de rua','Ciclismo / MTB'] }
+  };
+  function slugFotografo(nome){
+    for (var s in FOTOGRAFOS) if (FOTOGRAFOS[s].nome === nome) return s;
+    return null;
+  }
+  V.fotografo = function(slug){
+    var f = FOTOGRAFOS[slug];
+    if (!f) return V.p404();
+    var eventos = EVENTS.filter(function(e){ return e.foto === f.nome; });
+    return '<section class="hcar" style="height:auto">'
+      + '<div class="hslide on" style="height:230px">'
+      + '<img src="' + POOL[f.capa] + '" alt="">'
+      + '</div></section>'
+      + '<div class="wrap" style="margin-top:-52px; position:relative; z-index:3">'
+      + '<div class="card pad" style="display:grid; grid-template-columns:auto 1fr auto; gap:16px; align-items:center">'
+      + '<span style="width:72px;height:72px;border-radius:999px;background:var(--navy);color:var(--accent);display:grid;place-items:center;font-size:23px;font-weight:800;border:3px solid var(--surface)">' + f.avatar + '</span>'
+      + '<div style="min-width:0"><h1 style="font-size:22px">' + f.nome + '</h1>'
+      + '<p class="sub"><svg class="i i-sm" style="vertical-align:-2px"><use href="#ic-pin"/></svg> ' + f.cidade + ' · no Saibem desde ' + f.desde + '</p>'
+      + '<div class="row" style="gap:8px; margin-top:8px">'
+      + '<span class="badge ok">★ ' + f.nota.toString().replace('.', ',') + ' · ' + f.avaliacoes + ' avaliações</span>'
+      + f.especialidades.map(function(e){ return '<span class="badge">' + e + '</span>'; }).join('')
+      + '</div></div>'
+      + '<button class="btn" data-toast="Contato enviado|O fotógrafo responde pelo WhatsApp">Contratar</button>'
+      + '</div></div>'
+      + '<div class="wrap sec stack">'
+      + '<div class="kpis">'
+      + kpi('image','Fotos publicadas', f.fotos.toLocaleString('pt-BR'), 'em ' + f.eventos + ' eventos', '')
+      + kpi('users','Avaliação', f.nota.toString().replace('.', ','), f.avaliacoes + ' compradores', '')
+      + kpi('pin','Atende', f.atende, 'deslocamento combinado', '')
+      + kpi('clock','Publica em', 'até 24 h', 'média deste fotógrafo', '')
+      + '</div>'
+      + '<div class="card pad stack" style="gap:8px"><h3>Sobre</h3><p>' + f.bio + '</p></div>'
+      + '<div><h2 style="margin-bottom:12px">Eventos de ' + f.nome.split(' ')[0] + '</h2>'
+      + (eventos.length ? '<div class="evgrid">' + eventos.map(evCard).join('') + '</div>'
+                        : '<div class="card empty"><p class="sub">Nenhum evento publicado ainda.</p></div>') + '</div>'
+      + '</div>';
+  };
+
+  V.minhas = function(slug){
+    var ev = eventBySlug(slug), fotos = myPhotos(slug);
+    var nSel = fotos.filter(function(p){ return inCart(p.id); }).length;
+    return hero(crumb([{t:'Início', to:'/'}, {t:ev.nome, to:'/e/' + slug}, {t:'Minhas fotos'}])
+      + '<div class="between" style="align-items:flex-end">'
+      + '<div style="display:flex; flex-direction:column; gap:7px">'
+      + '<span class="badge ok"><svg class="i i-sm"><use href="#ic-check"/></svg>' + fotos.length + ' fotos encontradas</span>'
+      + '<h1>Suas fotos</h1><p class="sub">' + ev.nome + ' · busca por rosto · selfie já descartada</p></div>'
+      + '<div><span class="over">Pacote com as ' + fotos.length + '</span>'
+      + '<div class="num" style="font-size:30px; font-weight:800; color:#fff">' + brl(ev.pacote) + '</div>'
+      + '<p class="sub">em vez de ' + brl(fotos.length * ev.preco) + '</p></div></div>')
+      + '<div class="wrap sec">'
+      + '<div class="alert success" style="margin-bottom:16px"><svg class="i i-lg"><use href="#ic-zap"/></svg>'
+      + '<div><div class="at">Compensa levar o pacote</div><div class="ad">A partir de ' + Math.ceil(ev.pacote / ev.preco) + ' fotos o pacote sai mais barato. Selecionamos as ' + fotos.length + ' para você — é só tirar o que não quiser.</div></div></div>'
+      + '<div class="sheet" id="sheet">' + fotos.map(function(p){ return tile(p); }).join('') + '</div>'
+      + '<div class="stickybar">'
+      + '<div class="grow"><div class="num" style="font-size:13.5px; font-weight:600; color:var(--ink)" id="selinfo">' + nSel + ' na sacola</div>'
+      + '<div class="sub">Alta resolução, sem marca d\'água, download na hora</div></div>'
+      + '<button class="btn btn-ghost" id="selall">Selecionar todas</button>'
+      + '<button class="btn" data-nav="/sacola">Ir para a sacola</button></div>'
+      + '</div>';
+  };
+
+  V.sacola = function(){
+    var t = cartTotals();
+    if (!t.n){
+      return hero('<h1>Sua sacola</h1>')
+        + '<div class="wrap sec"><div class="card empty"><span class="ic"><svg class="i i-lg"><use href="#ic-bag"/></svg></span>'
+        + '<h3>Sua sacola está vazia</h3><p class="sub">Ache seu evento e busque pelo rosto — leva 5 segundos.</p>'
+        + '<div class="row" style="justify-content:center"><button class="btn" data-nav="/eventos">Ver eventos</button>'
+        + '<button class="btn btn-ghost" data-nav="/e/cerrado10k/selfie">Buscar pelo rosto</button></div></div></div>';
+    }
+    var blocos = Object.keys(t.byEv).map(function(s){
+      var ev = eventBySlug(s), itens = t.byEv[s], soma = itens.length * ev.preco, pack = soma > ev.pacote;
+      return '<div class="card pad stack" style="gap:12px">'
+        + '<div class="between"><div><h3>' + ev.nome + '</h3><p class="sub">' + ev.data + ' · ' + ev.foto + '</p></div>'
+        + (pack ? '<span class="badge ok">pacote aplicado</span>' : '<span class="badge">' + itens.length + ' de ' + Math.ceil(ev.pacote / ev.preco) + ' para o pacote</span>') + '</div>'
+        + '<div class="sheet">' + itens.map(function(c){
+            return '<figure class="frame" data-photo="' + c.id + '" data-ev="' + c.ev + '" tabindex="0" role="button">'
+              + '<img src="' + c.src + '" alt="Foto ' + c.num + '" loading="lazy"><span class="wm">SAIBEM</span>'
+              + '<span class="add" data-add="' + c.id + '"><svg class="i"><use href="#ic-x"/></svg></span>'
+              + '<figcaption><span>#' + c.num + '</span><span class="num">' + brl(c.preco) + '</span></figcaption></figure>';
+          }).join('') + '</div>'
+        + (pack ? '<p class="sub">' + itens.length + ' fotos por ' + brl(ev.pacote) + ' — você economizou ' + brl(soma - ev.pacote) + '.</p>'
+               : '<p class="sub">Levando todas as suas fotos deste evento você paga ' + brl(ev.pacote) + '.</p>')
+        + '</div>';
+    }).join('');
+
+    return hero(crumb([{t:'Início', to:'/'}, {t:'Sacola'}]) + '<h1>Sua sacola</h1>'
+        + '<p class="sub" style="margin-top:6px">' + t.n + (t.n === 1 ? ' foto' : ' fotos') + ' · ' + Object.keys(t.byEv).length + (Object.keys(t.byEv).length === 1 ? ' evento' : ' eventos') + '</p>')
+      + '<div class="wrap sec"><div class="checkout">'
+      + '<div class="stack">' + blocos + '</div>'
+      + '<div class="card pad stack" style="gap:13px">'
+      + '<h3>Resumo</h3>'
+      + '<div><div class="line"><span>' + t.n + ' fotos</span><span class="num">' + brl(t.bruto) + '</span></div>'
+      + (t.desconto ? '<div class="line" style="color:var(--brand-ink)"><span>Desconto de pacote</span><span class="num">− ' + brl(t.desconto) + '</span></div>' : '')
+      + '</div>'
+      + '<div class="total"><span>Total</span><span>' + brl(t.total) + '</span></div>'
+      + '<button class="btn btn-lg" data-nav="/pagamento"><svg class="i"><use href="#ic-wallet"/></svg>Pagar com PIX</button>'
+      + '<button class="btn btn-ghost" data-nav="/eventos">Continuar buscando</button>'
+      + '<p class="sub">Download imediato após o pagamento. Se a foto não for você, devolvemos em até 7 dias.</p>'
+      + '</div></div></div>';
+  };
+
+  V.pagamento = function(){
+    var t = cartTotals();
+    if (!t.n) return V.sacola();
+    var repasse = t.total * 0.9;
+    return hero(crumb([{t:'Sacola', to:'/sacola'}, {t:'Pagamento'}]) + '<h1>Pagamento</h1>'
+        + '<p class="sub" style="margin-top:6px">PIX aprovado em segundos · fotos reservadas por 10 minutos</p>')
+      + '<div class="wrap sec"><div class="checkout">'
+      + '<div class="card pad stack">'
+      + '<div class="row" style="gap:9px"><span class="badge brand"><span class="dot"></span>PIX</span><span class="sub">Aprovação instantânea</span></div>'
+      + '<div class="row" style="gap:18px; align-items:flex-start">'
+      + '<div class="qr" role="img" aria-label="QR Code PIX de exemplo">' + qrHTML() + '</div>'
+      + '<div class="stack" style="gap:10px; flex:1; min-width:220px">'
+      + '<p>Abra o app do banco, escolha <b>Pagar com PIX</b> e aponte a câmera. Ou copie o código:</p>'
+      + '<div class="pixcode">00020126580014br.gov.bcb.pix0136a1f3c9e2-4d77-4b91-a0e6-8c5d2f19saibe52040000530398654' + ('0' + t.total.toFixed(2)).slice(-6) + '5802BR5921SAIBEM FOTOS LTDA6008GOIANIA62070503***6304A1B2</div>'
+      + '<div class="row"><button class="btn btn-ghost" data-toast="Código PIX copiado|Cole no app do seu banco">Copiar código PIX</button>'
+      + '<span class="sub num"><svg class="i i-sm" style="vertical-align:-2px"><use href="#ic-clock"/></svg> expira em 09:47</span></div>'
+      + '</div></div>'
+      + '<div class="alert success"><svg class="i i-lg"><use href="#ic-shield"/></svg>'
+      + '<div><div class="at">Compra protegida</div><div class="ad">Foto com defeito ou que não é você: devolvemos em até 7 dias, sem burocracia.</div></div></div>'
+      + '</div>'
+      + '<div class="card pad stack" style="gap:13px"><h3>Resumo</h3>'
+      + '<div><div class="line"><span>' + t.n + ' fotos</span><span class="num">' + brl(t.bruto) + '</span></div>'
+      + (t.desconto ? '<div class="line" style="color:var(--brand-ink)"><span>Desconto de pacote</span><span class="num">− ' + brl(t.desconto) + '</span></div>' : '') + '</div>'
+      + '<div class="total"><span>Total</span><span>' + brl(t.total) + '</span></div>'
+      + '<div class="fld"><label for="mail">E-mail para receber o link</label><input id="mail" value="ana.paula@email.com"></div>'
+      + '<button class="btn btn-lg" id="pago">Já paguei</button>'
+      + '<p class="sub">Fotógrafo recebe ' + brl(repasse) + ' · taxa Saibem 10%</p>'
+      + '</div></div></div>';
+  };
+
+  V.pedido = function(){
+    var itens = state.lastOrder || [];
+    return hero('<h1>Pagamento confirmado</h1><p class="sub" style="margin-top:6px">Recibo enviado para ana.paula@email.com · pedido #SB-4417</p>')
+      + '<div class="wrap sec"><div class="card pad stack" style="align-items:center; text-align:center; gap:14px; padding:32px 20px">'
+      + '<span style="width:54px;height:54px;border-radius:999px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center">'
+      + '<svg class="i" style="width:26px;height:26px;stroke-width:2.6"><use href="#ic-check"/></svg></span>'
+      + '<div><h1>' + itens.length + (itens.length === 1 ? ' foto liberada' : ' fotos liberadas') + '</h1>'
+      + '<p class="sub" style="margin-top:5px">Alta resolução, sem marca d\'água</p></div>'
+      + '<div class="row" style="justify-content:center">'
+      + '<button class="btn btn-lg" data-toast="Download iniciado|saibem-pedido-4417.zip"><svg class="i"><use href="#ic-down"/></svg>Baixar tudo (.zip)</button>'
+      + '<button class="btn btn-ghost btn-lg"><svg class="i"><use href="#ic-share"/></svg>Enviar no WhatsApp</button></div>'
+      + '<p class="sub num">O link fica no seu e-mail por 90 dias</p>'
+      + '<div class="sheet" style="width:100%; max-width:620px; margin-top:8px">'
+      + itens.map(function(c){
+          return '<figure class="frame" style="cursor:default"><img src="' + c.src + '" alt="Foto ' + c.num + '">'
+            + '<figcaption><span>#' + c.num + '</span><span>' + c.hora + '</span></figcaption></figure>';
+        }).join('')
+      + '</div>'
+      + '<button class="btn btn-ghost" data-nav="/eventos" style="margin-top:6px">Voltar aos eventos</button>'
+      + '</div></div>';
+  };
+
+  V.fotografos = function(){
+    return hero('<div class="between" style="align-items:flex-end">'
+      + '<div style="max-width:600px; display:flex; flex-direction:column; gap:12px">'
+      + '<span class="over">Para quem fotografa</span>'
+      + '<h1 style="font-size:32px">Fotografe. O resto a gente faz.</h1>'
+      + '<p class="sub" style="font-size:14px">Sem negociar no direct, sem mandar arquivo, sem cobrar. Você sobe as fotos e recebe no PIX no mesmo dia.</p></div>'
+      + '<button class="btn on-dark btn-lg" data-nav="/app/novo"><svg class="i"><use href="#ic-plus"/></svg>Criar meu primeiro evento</button></div>')
+      + '<div class="wrap sec stack">'
+      + '<div class="pitch">'
+      + '<div class="card"><span class="ic"><svg class="i"><use href="#ic-wallet"/></svg></span><h3>10% e só quando vende</h3>'
+      + '<p class="sub">Sem mensalidade, sem taxa de upload, sem plano premium para liberar o essencial.</p></div>'
+      + '<div class="card"><span class="ic"><svg class="i"><use href="#ic-zap"/></svg></span><h3>Publique durante o evento</h3>'
+      + '<p class="sub">As primeiras horas concentram a maior parte das vendas. Suba direto do cartão e o público já se acha.</p></div>'
+      + '<div class="card"><span class="ic"><svg class="i"><use href="#ic-share"/></svg></span><h3>Divulgação pronta</h3>'
+      + '<p class="sub">QR para imprimir, texto do grupo e story do Instagram gerados automaticamente.</p></div>'
+      + '<div class="card"><span class="ic"><svg class="i"><use href="#ic-users"/></svg></span><h3>Aviso no WhatsApp</h3>'
+      + '<p class="sub">Quem mandou selfie recebe a própria foto assim que ela entra no ar. É o que multiplica a conversão.</p></div>'
+      + '</div>'
+      + '<div class="grid-2" style="align-items:start">'
+      + '<div class="card pad stack" style="gap:14px"><div><h2>Quanto você recebe</h2><p class="sub">Mexa nos números.</p></div>'
+      + '<div class="grid-2" style="gap:12px">'
+      + '<div class="fld"><label for="c-preco">Preço da foto (R$)</label><input id="c-preco" type="number" min="1" value="12" class="num"></div>'
+      + '<div class="fld"><label for="c-qtd">Fotos vendidas no evento</label><input id="c-qtd" type="number" min="1" value="180" class="num"></div></div>'
+      + '<div class="calc-out"><span class="l">Você recebe</span><span class="v" id="c-liq">R$ 1.944,00</span>'
+      + '<span class="d" id="c-det">Bruto R$ 2.160,00 · taxa Saibem 10% · cai no PIX no mesmo dia</span></div></div>'
+      + '<div class="card pad stack" style="gap:12px"><h2>Comparação de taxas</h2>'
+      + '<div class="table-wrap" style="box-shadow:none"><div class="table-scroll"><table>'
+      + '<thead><tr><th>Plataforma</th><th>Comissão</th><th>Upload</th><th>Saque</th></tr></thead><tbody>'
+      + '<tr><td class="t-main">Saibem</td><td><span class="badge ok">10% fixo</span></td><td>não cobra</td><td>mesmo dia</td></tr>'
+      + '<tr><td class="t-main">Plataforma A</td><td>8% a 15%</td><td>cobra</td><td>não informado</td></tr>'
+      + '<tr><td class="t-main">Plataforma B</td><td>9% a 10%</td><td>varia por plano</td><td>24 h</td></tr>'
+      + '<tr><td class="t-main">Plataforma C</td><td>10% a 25%</td><td>não informado</td><td>não informado</td></tr>'
+      + '</tbody></table></div></div>'
+      + '<p class="sub">Valores públicos de mercado (set/2026). Nomes omitidos neste protótipo.</p></div></div>'
+      + '<div class="card pad between"><div><h3>Pronto para publicar seu primeiro evento?</h3>'
+      + '<p class="sub">Cadastro gratuito, sem contrato e sem exclusividade.</p></div>'
+      + '<button class="btn btn-lg" data-nav="/app/novo">Começar agora</button></div>'
+      + '</div>';
+  };
+
+  V.privacidade = function(){
+    return hero('<h1>Privacidade e dados biométricos</h1><p class="sub" style="margin-top:6px">Como tratamos a sua selfie e as suas fotos.</p>')
+      + '<div class="wrap sec stack" style="max-width:760px">'
+      + '<div class="alert info"><svg class="i i-lg"><use href="#ic-info"/></svg><div><div class="at">Resumo em uma frase</div>'
+      + '<div class="ad">A selfie serve só para achar suas fotos naquele evento e é apagada logo depois. Ninguém mais vê essa imagem.</div></div></div>'
+      + '<div class="card pad stack" style="gap:12px"><h3>O que fazemos com a selfie</h3>'
+      + '<p>Ao enviar a selfie, extraímos uma representação matemática do rosto (um vetor), comparamos com os rostos daquele evento e devolvemos as fotos parecidas. Depois disso, <b>tanto a imagem quanto o vetor da sua selfie são descartados</b>.</p>'
+      + '<ul style="margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px">'
+      + '<li>A selfie não é publicada, não entra em galeria e não é vendida.</li>'
+      + '<li>Não usamos sua imagem para treinar modelos.</li>'
+      + '<li>Não compartilhamos com outras empresas.</li>'
+      + '<li>A base legal é o seu consentimento, dado na tela da busca (LGPD, art. 7º, I e art. 11, I).</li></ul></div>'
+      + '<div class="card pad stack" style="gap:12px"><h3>Seus direitos</h3>'
+      + '<p>Você pode pedir a qualquer momento a confirmação, o acesso, a correção ou a exclusão dos seus dados — inclusive a remoção do seu rosto do índice de um evento.</p>'
+      + '<div class="row"><button class="btn btn-ghost" data-toast="Pedido registrado|Respondemos em até 15 dias">Excluir meus dados</button>'
+      + '<button class="btn btn-ghost" data-toast="Pedido registrado|Enviamos por e-mail">Baixar meus dados</button></div>'
+      + '<p class="sub">Encarregado de dados (DPO): dpo@saibem.com.br</p></div>'
+      + '<div class="card pad stack" style="gap:12px"><h3>Fotos do evento</h3>'
+      + '<p>As fotos são do fotógrafo, que autoriza a exibição no Saibem para venda. Se você aparece em uma foto e quer que ela saia do ar, é só pedir — retiramos primeiro e conversamos depois.</p>'
+      + '<button class="btn btn-ghost" style="width:fit-content" data-toast="Solicitação enviada|A foto sai do ar em até 24 h">Pedir remoção de uma foto</button></div>'
+      + '</div>';
+  };
+
+  /* =========================================================
+     MARCA INVISÍVEL (esteganografia no domínio da frequência)
+     Em cada bloco 8x8 da luminância, força a relação entre dois
+     coeficientes DCT de média frequência. Sobrevive a recompressão
+     JPEG porque não depende do valor exato do pixel — depende de
+     qual dos dois coeficientes é maior.
+     Em produção isto roda no servidor (invisible-watermark / TrustMark);
+     aqui é a mesma ideia, em JavaScript, para você ver funcionando.
+     ========================================================= */
+  var ALFA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; /* 32 símbolos, sem I O 0 1 */
+  var LARGURA_MARCA = 900; /* toda marcação acontece nesta largura: é a âncora do detector */
+  var DELTA = 28;        /* calibrado: 42 dB de PSNR e leitura a 99% após JPEG 60 */
+  var VAR_MIN = 90;      /* blocos lisos são pulados: ali a marca apareceria */
+  var C1 = 2 * 8 + 3, C2 = 3 * 8 + 2; /* par simétrico de média frequência */
+
+  var COS = new Float32Array(64), CU = new Float32Array(8);
+  (function(){
+    for (var u = 0; u < 8; u++){
+      CU[u] = u === 0 ? Math.SQRT1_2 : 1;
+      for (var x = 0; x < 8; x++) COS[u * 8 + x] = Math.cos((2 * x + 1) * u * Math.PI / 16);
+    }
+  })();
+  function fdct(b, out){
+    var t = new Float32Array(64), y, u, x, v, s;
+    for (y = 0; y < 8; y++) for (u = 0; u < 8; u++){
+      s = 0; for (x = 0; x < 8; x++) s += b[y * 8 + x] * COS[u * 8 + x];
+      t[y * 8 + u] = .5 * CU[u] * s;
+    }
+    for (x = 0; x < 8; x++) for (v = 0; v < 8; v++){
+      s = 0; for (y = 0; y < 8; y++) s += t[y * 8 + x] * COS[v * 8 + y];
+      out[v * 8 + x] = .5 * CU[v] * s;
+    }
+  }
+  function idct(d, out){
+    var t = new Float32Array(64), y, u, x, v, s;
+    for (y = 0; y < 8; y++) for (x = 0; x < 8; x++){
+      s = 0; for (u = 0; u < 8; u++) s += CU[u] * d[y * 8 + u] * COS[u * 8 + x];
+      t[y * 8 + x] = .5 * s;
+    }
+    for (x = 0; x < 8; x++) for (y = 0; y < 8; y++){
+      s = 0; for (v = 0; v < 8; v++) s += CU[v] * t[v * 8 + x] * COS[v * 8 + y];
+      out[y * 8 + x] = .5 * s;
+    }
+  }
+
+  /* código de 5 símbolos + 5 bits de verificação = 30 bits */
+  function codigoDe(texto){
+    var h = 2166136261;
+    for (var i = 0; i < texto.length; i++){ h ^= texto.charCodeAt(i); h = (h * 16777619) >>> 0; }
+    var s = '';
+    for (var k = 0; k < 5; k++){ s += ALFA[h % 32]; h = Math.floor(h / 32) + 7; }
+    return s;
+  }
+  function paraBits(cod){
+    var bits = [], soma = 0, i, j, v;
+    for (i = 0; i < 5; i++){
+      v = ALFA.indexOf(cod[i]); if (v < 0) v = 0;
+      soma += v;
+      for (j = 4; j >= 0; j--) bits.push((v >> j) & 1);
+    }
+    var chk = soma % 32;
+    for (j = 4; j >= 0; j--) bits.push((chk >> j) & 1);
+    return bits; /* 30 bits */
+  }
+  function deBits(bits){
+    var cod = '', soma = 0, i, j, v;
+    for (i = 0; i < 5; i++){
+      v = 0; for (j = 0; j < 5; j++) v = (v << 1) | bits[i * 5 + j];
+      soma += v; cod += ALFA[v];
+    }
+    var chk = 0;
+    for (j = 0; j < 5; j++) chk = (chk << 1) | bits[25 + j];
+    return { codigo: cod, valido: chk === soma % 32 };
+  }
+
+  /* Percorre os blocos chamando fn(coeficientes, índiceDoBit).
+     O índice vem da POSIÇÃO do bloco na grade, nunca da contagem de blocos
+     aceitos: a recompressão faz blocos cruzarem o limiar de variância, e um
+     índice sequencial desalinharia a mensagem inteira. */
+  function porBloco(dados, w, h, fn){
+    var bloco = new Float32Array(64), coef = new Float32Array(64);
+    var porLinha = Math.floor(w / 8);
+    var bx, by, x, y, i, usados = 0;
+    for (by = 0; by + 8 <= h; by += 8){
+      for (bx = 0; bx + 8 <= w; bx += 8){
+        var soma = 0, soma2 = 0;
+        for (y = 0; y < 8; y++) for (x = 0; x < 8; x++){
+          i = ((by + y) * w + (bx + x)) * 4;
+          /* luminância BT.601 */
+          var lum = .299 * dados[i] + .587 * dados[i + 1] + .114 * dados[i + 2];
+          bloco[y * 8 + x] = lum;
+          soma += lum; soma2 += lum * lum;
+        }
+        var media = soma / 64, variancia = soma2 / 64 - media * media;
+        if (variancia < VAR_MIN) continue; /* área lisa: a marca apareceria */
+        usados++;
+        fdct(bloco, coef);
+        var novo = fn(coef, (by / 8) * porLinha + (bx / 8));
+        if (novo){
+          idct(coef, bloco);
+          for (y = 0; y < 8; y++) for (x = 0; x < 8; x++){
+            i = ((by + y) * w + (bx + x)) * 4;
+            var lumAntiga = .299 * dados[i] + .587 * dados[i + 1] + .114 * dados[i + 2];
+            var d = bloco[y * 8 + x] - lumAntiga;
+            dados[i]     = Math.max(0, Math.min(255, dados[i] + d));
+            dados[i + 1] = Math.max(0, Math.min(255, dados[i + 1] + d));
+            dados[i + 2] = Math.max(0, Math.min(255, dados[i + 2] + d));
+          }
+        }
+      }
+    }
+    return usados;
+  }
+
+  function embutir(ctx, w, h, codigo){
+    var img = ctx.getImageData(0, 0, w, h), bits = paraBits(codigo);
+    var usados = porBloco(img.data, w, h, function(coef, idx){
+      var bit = bits[idx % bits.length];
+      var m = (coef[C1] + coef[C2]) / 2;
+      coef[C1] = m + (bit ? DELTA / 2 : -DELTA / 2);
+      coef[C2] = m - (bit ? DELTA / 2 : -DELTA / 2);
+      return true;
+    });
+    ctx.putImageData(img, 0, 0);
+    return { blocos: usados, repeticoes: Math.floor(usados / 30) };
+  }
+
+  function lerUmaEscala(dados, w, h){
+    var votos = []; for (var k = 0; k < 30; k++) votos.push([0, 0]);
+    var total = porBloco(dados, w, h, function(coef, idx){
+      votos[idx % 30][coef[C1] > coef[C2] ? 1 : 0]++;
+      return false;
+    });
+    if (total < 60) return null;
+    var bits = [], forca = 0;
+    for (var i = 0; i < 30; i++){
+      var v = votos[i], soma = v[0] + v[1];
+      bits.push(v[1] > v[0] ? 1 : 0);
+      if (soma) forca += Math.max(v[0], v[1]) / soma;
+    }
+    var r = deBits(bits);
+    return { codigo:r.codigo, valido:r.valido, confianca: Math.round((forca / 30) * 100), blocos: total };
+  }
+
+  /* Busca de sincronização: a marca sempre foi aplicada a 900px de largura.
+     Se a imagem chegou redimensionada, a grade de blocos desalinha — então
+     testamos também a imagem trazida de volta para a largura de origem. */
+  function extrair(imgEl){
+    var tentativas = [], vistos = {};
+    [imgEl.naturalWidth, LARGURA_MARCA].forEach(function(lw){
+      if (!lw || vistos[lw]) return;
+      vistos[lw] = 1; tentativas.push(lw);
+    });
+    var melhor = null;
+    for (var t = 0; t < tentativas.length; t++){
+      var lw = tentativas[t];
+      var esc = lw / imgEl.naturalWidth;
+      var cv = document.createElement('canvas');
+      cv.width = Math.round(imgEl.naturalWidth * esc);
+      cv.height = Math.round(imgEl.naturalHeight * esc);
+      var cx = cv.getContext('2d', { willReadFrequently: true });
+      cx.drawImage(imgEl, 0, 0, cv.width, cv.height);
+      var d = cx.getImageData(0, 0, cv.width, cv.height);
+      var r = lerUmaEscala(d.data, cv.width, cv.height);
+      if (!r) continue;
+      r.escala = (esc === 1 ? 'original' : Math.round(esc * 100) + '%');
+      if (r.valido) return { ok:true, r:r };
+      if (!melhor || r.confianca > melhor.confianca) melhor = r;
+    }
+    if (!melhor) return { ok:false, motivo:'imagem pequena demais ou sem textura suficiente' };
+    return { ok:true, r:melhor };
+  }
+
+  /* registro das vendas — é o que transforma o código em prova */
+  var PEDIDOS = [
+    { id:'SB-4417', comprador:'Ana Paula Moreira', contato:'(62) 9 9812-4477', data:'14/09/2026',
+      evento:'Corrida do Cerrado 10K', fotos:3 },
+    { id:'SB-4392', comprador:'Ricardo Menezes', contato:'(62) 9 9145-2280', data:'13/09/2026',
+      evento:'Corrida do Cerrado 10K', fotos:9 },
+    { id:'SB-4310', comprador:'Juliana Prado', contato:'(31) 9 8822-7741', data:'11/09/2026',
+      evento:'Copa Goiás de Jiu-Jítsu', fotos:5 }
+  ];
+  PEDIDOS.forEach(function(p){ p.codigo = codigoDe(p.id); });
+  function acharPedido(cod){
+    for (var i = 0; i < PEDIDOS.length; i++) if (PEDIDOS[i].codigo === cod) return PEDIDOS[i];
+    return null;
+  }
+
+  /* ---------- entrar / criar conta ---------- */
+  V.entrar = function(){
+    return hero('<h1>Entrar como fotógrafo</h1><p class="sub" style="margin-top:6px">Sua área de vendas, eventos e saques.</p>')
+      + '<div class="wrap sec"><div style="max-width:420px; margin:0 auto" class="stack">'
+      + '<div class="card pad stack" style="gap:14px">'
+      + '<div class="fld"><label for="lg-mail">E-mail</label><input id="lg-mail" type="email" value="marina@estudio.com.br" autocomplete="email"></div>'
+      + '<div class="fld"><label for="lg-pass">Senha</label><input id="lg-pass" type="password" value="••••••••" autocomplete="current-password"></div>'
+      + '<button class="btn btn-lg" id="dologin">Entrar</button>'
+      + '<p class="sub" style="text-align:center">Protótipo: qualquer e-mail entra.</p></div>'
+      + '<div class="card pad stack" style="gap:10px; text-align:center">'
+      + '<h3>Primeira vez aqui?</h3>'
+      + '<p class="sub">Publique seu primeiro evento em um minuto. Sem mensalidade, sem contrato.</p>'
+      + '<button class="btn btn-ghost" data-nav="/criar-conta">Criar conta de fotógrafo</button></div>'
+      + '</div></div>';
+  };
+
+  V['criar-conta'] = function(){
+    return hero('<h1>Criar conta de fotógrafo</h1><p class="sub" style="margin-top:6px">Leva 30 segundos. Documento e chave PIX só no primeiro saque.</p>')
+      + '<div class="wrap sec"><div style="max-width:460px; margin:0 auto" class="stack">'
+      + '<div class="card pad stack" style="gap:14px">'
+      + '<div class="fld"><label for="cc-nome">Seu nome ou nome do estúdio</label><input id="cc-nome" placeholder="Marina Rezende Fotografia"></div>'
+      + '<div class="fld"><label for="cc-mail">E-mail</label><input id="cc-mail" type="email" placeholder="voce@email.com"></div>'
+      + '<div class="fld"><label for="cc-cidade">Cidade onde mais fotografa</label><select id="cc-cidade">'
+      + CIDADES.map(function(c){ return '<option>' + c + '</option>'; }).join('') + '<option>Outra</option></select></div>'
+      + '<label class="check" for="cc-termos"><input type="checkbox" id="cc-termos">'
+      + '<span>Declaro que sou autor das fotos que vou publicar e aceito os <button data-nav="/privacidade" style="background:0;border:0;color:var(--brand-ink);font-weight:600;cursor:pointer;padding:0">termos de uso</button>.</span></label>'
+      + '<button class="btn btn-lg" id="docriar" disabled>Criar conta e publicar evento</button>'
+      + '<p class="sub" id="cc-hint">Aceite os termos para continuar.</p>'
+      + '</div>'
+      + '<div class="alert info"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+      + '<div><div class="at">Por que não pedimos documento agora</div>'
+      + '<div class="ad">Você publica, divulga e vende antes de provar quem é. CPF ou CNPJ e chave PIX só entram quando for sacar o dinheiro.</div></div></div>'
+      + '</div></div>';
+  };
+
+  /* ---------- área do fotógrafo ---------- */
+  function appShell(active, inner){
+    var tabs = [['painel','Painel','/app/painel'], ['eventos','Meus eventos','/app/eventos'],
+                ['extrato','Extrato','/app/extrato'], ['novo','Novo evento','/app/novo'],
+                ['upload','Upload','/app/upload'], ['kit','Divulgação','/app/kit'],
+                ['forense','Marca invisível','/app/forense']];
+    var c = carteira();
+    return hero('<div class="between" style="align-items:flex-end">'
+      + '<div><span class="over">' + (conta ? conta.nome : 'Fotógrafo') + '</span>'
+      + '<h1 style="margin-top:5px">Área do fotógrafo</h1>'
+      + '<p class="sub" style="margin-top:5px">'
+      + (conta && conta.verificado
+          ? '<span style="color:var(--accent)">✓ conta verificada</span> · saque liberado'
+          : 'Conta sem verificação · o documento é pedido no primeiro saque')
+      + '</p></div>'
+      + '<div class="row"><button class="btn btn-ghost on-dark" data-nav="/app/extrato">'
+      + '<svg class="i i-sm"><use href="#ic-wallet"/></svg>' + brl(c.disponivel) + '</button>'
+      + '<button class="btn on-dark" data-nav="/app/novo"><svg class="i i-sm"><use href="#ic-plus"/></svg>Novo evento</button></div></div>')
+      + '<div class="wrap" style="padding-top:14px"><div class="tabs">'
+      + tabs.map(function(t){ return '<button class="tab" data-nav="' + t[2] + '" aria-selected="' + (active === t[0]) + '">' + t[1] + '</button>'; }).join('')
+      + '</div></div><div class="wrap sec stack">' + inner + '</div>';
+  }
+
+  /* ---------- meus eventos (máquina de estados) ---------- */
+  V.eventos_app = function(){
+    return appShell('eventos',
+        '<div class="between"><div><h2>Meus eventos</h2><p class="sub">O estado define o que o evento aceita: upload, venda ou nada.</p></div></div>'
+      + '<div class="stack" style="gap:12px">'
+      + MEUS.map(function(m){
+          var e = ESTADOS[m.estado];
+          return '<div class="card pad" style="display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center">'
+            + '<div style="min-width:0">'
+            + '<div class="row" style="gap:9px"><h3>' + m.nome + '</h3>'
+            + '<span class="badge ' + e.cls + '">' + (e.cls ? '<span class="dot"></span>' : '') + e.rotulo + '</span></div>'
+            + '<p class="sub" style="margin-top:3px">' + m.quando + ' · ' + e.dica + '</p>'
+            + '<div class="row" style="gap:16px; margin-top:8px">'
+            + '<span class="sub num"><b style="color:var(--ink)">' + m.fotos.toLocaleString('pt-BR') + '</b> fotos</span>'
+            + '<span class="sub num"><b style="color:var(--ink)">' + m.visitas.toLocaleString('pt-BR') + '</b> visitas</span>'
+            + '<span class="sub num"><b style="color:var(--ink)">' + m.vendas + '</b> vendas</span>'
+            + '<span class="sub num"><b style="color:var(--ink)">' + m.conv.toString().replace('.', ',') + '%</b> conversão</span>'
+            + '<span class="sub num"><b style="color:var(--brand-ink)">' + brl(m.liquido) + '</b> líquido</span>'
+            + '</div></div>'
+            + '<div class="row" style="gap:8px; justify-content:flex-end">'
+            + TRANSICOES[m.estado].map(function(t){
+                return '<button class="btn btn-ghost btn-sm" data-estado="' + m.slug + '|' + t[1] + '">' + t[0] + '</button>';
+              }).join('')
+            + '<button class="btn btn-sm" data-nav="/app/kit">Divulgar</button>'
+            + '</div></div>';
+        }).join('')
+      + '</div>'
+      + '<div class="alert info"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+      + '<div><div class="at">Encerrar não é o mesmo que arquivar</div>'
+      + '<div class="ad">Evento encerrado para de receber fotos, mas continua vendendo — a cauda longa costuma render por semanas. Arquivar tira do ar; quem já comprou mantém o download.</div></div></div>');
+  };
+
+  /* ---------- extrato ---------- */
+  V.extrato = function(){
+    var c = carteira();
+    var filtro = state.ledFiltro || '';
+    var linhas = LEDGER.filter(function(l){ return !filtro || l.t === filtro; });
+    var tipos = [['','tudo'], ['venda','vendas'], ['saque','saques'], ['reembolso','reembolsos']];
+    return appShell('extrato',
+        '<div class="kpis">'
+      + kpi('wallet','Disponível para saque', brl(c.disponivel), 'cai no PIX em minutos', '')
+      + kpi('clock','A liberar', brl(c.aLiberar), 'vendas no cartão, D+2', '')
+      + kpi('chart','Recebido em setembro','R$ 3.912','▲ 38% vs. agosto','up')
+      + kpi('users','Taxa média paga','10%','R$ 434,70 em setembro','')
+      + '</div>'
+      + '<div class="card pad between">'
+      + '<div><h3>' + brl(c.disponivel) + ' prontos para saque</h3>'
+      + '<p class="sub">' + (conta && conta.verificado
+          ? 'Chave PIX ' + conta.chave + ' · sem taxa'
+          : 'Primeiro saque exige CPF ou CNPJ e chave PIX no mesmo titular') + '</p></div>'
+      + '<button class="btn" data-nav="/app/saque">Sacar</button></div>'
+      + '<div class="card pad stack" style="gap:12px">'
+      + '<div class="between"><h2>Lançamentos</h2>'
+      + '<div class="row" style="gap:7px">'
+      + tipos.map(function(t){ return '<button class="chipf" data-led="' + t[0] + '" aria-pressed="' + (filtro === t[0]) + '">' + t[1] + '</button>'; }).join('')
+      + '<button class="btn btn-ghost btn-sm" id="csv"><svg class="i i-sm"><use href="#ic-down"/></svg>CSV</button></div></div>'
+      + '<div class="table-wrap" style="box-shadow:none"><div class="table-scroll"><table>'
+      + '<thead><tr><th>Data</th><th>Tipo</th><th>Referência</th><th>Bruto</th><th>Taxa</th><th>Valor</th><th>Situação</th></tr></thead><tbody>'
+      + linhas.map(function(l){
+          var neg = l.v < 0;
+          return '<tr><td class="num">' + l.d + '</td>'
+            + '<td><span class="badge ' + (l.t === 'venda' ? 'ok' : l.t === 'saque' ? 'brand' : 'red') + '">' + l.t + '</span></td>'
+            + '<td class="t-main">' + l.ev + '</td>'
+            + '<td class="n">' + brl(Math.abs(l.bruto)) + '</td>'
+            + '<td class="n">' + (l.taxa ? '− ' + brl(l.taxa) : '—') + '</td>'
+            + '<td class="n t-main" style="color:' + (neg ? 'var(--danger-ink)' : 'var(--ink)') + '">' + (neg ? '− ' : '') + brl(Math.abs(l.v)) + '</td>'
+            + '<td><span class="sub">' + l.st + '</span></td></tr>';
+        }).join('')
+      + '</tbody></table></div></div>'
+      + '<p class="sub">A receita é sua e a emissão de nota também. O CSV sai no formato que o contador pede.</p>'
+      + '</div>');
+  };
+
+  /* ---------- saque com KYC ---------- */
+  V.saque = function(){
+    var c = carteira();
+    if (conta && conta.verificado){
+      return appShell('extrato',
+          '<div style="max-width:460px" class="stack">'
+        + '<div class="card pad stack" style="gap:14px">'
+        + '<div><span class="over">Disponível</span><div style="font-size:32px; font-weight:800; color:var(--ink)" class="num">' + brl(c.disponivel) + '</div></div>'
+        + '<div class="fld"><label for="sq-valor">Quanto você quer sacar</label><input id="sq-valor" class="num" value="' + brl(c.disponivel) + '"></div>'
+        + '<div class="card pad" style="box-shadow:none; background:var(--surface-2)">'
+        + '<div class="sub">Enviando para</div><div class="t-main">' + conta.chave + '</div>'
+        + '<div class="sub">' + conta.titular + ' · ' + conta.doc + '</div></div>'
+        + '<button class="btn btn-lg" id="dosaque">Sacar agora</button>'
+        + '<p class="sub">Sem taxa. Costuma cair em menos de 5 minutos.</p></div></div>');
+    }
+    return appShell('extrato',
+        '<div style="max-width:520px" class="stack">'
+      + '<div class="alert warning"><svg class="i i-lg"><use href="#ic-shield"/></svg>'
+      + '<div><div class="at">Verificação do primeiro saque</div>'
+      + '<div class="ad">Precisamos confirmar quem recebe o dinheiro. A chave PIX tem que estar no mesmo CPF ou CNPJ informado — chave de terceiro é recusada.</div></div></div>'
+      + '<div class="card pad stack" style="gap:14px">'
+      + '<div class="fld"><label for="kyc-titular">Nome completo do titular</label><input id="kyc-titular" placeholder="Como está no documento"></div>'
+      + '<div class="fld"><label for="kyc-doc">CPF ou CNPJ</label><input id="kyc-doc" class="num" placeholder="000.000.000-00" inputmode="numeric">'
+      + '<span class="hint" id="kyc-doc-hint">Só números ou com pontuação, tanto faz.</span></div>'
+      + '<div class="fld"><label for="kyc-chave">Chave PIX do mesmo titular</label><input id="kyc-chave" placeholder="CPF, telefone, e-mail ou aleatória"></div>'
+      + '<label class="check" for="kyc-ok"><input type="checkbox" id="kyc-ok">'
+      + '<span>Confirmo que sou o titular desta conta e que as fotos publicadas são de minha autoria.</span></label>'
+      + '<button class="btn btn-lg" id="dokyc">Verificar e liberar saque</button>'
+      + '<p class="sub" id="kyc-hint">A verificação costuma sair na hora.</p>'
+      + '</div></div>');
+  };
+
+  /* ---------- marca invisível / verificação de vazamento ---------- */
+  V.forense = function(){
+    var fotos = photosOf('cerrado10k').slice(0, 6);
+    return appShell('forense',
+        '<div><h2>Marca invisível</h2><p class="sub">O arquivo que o cliente baixa sai com o código do pedido embutido nos coeficientes da imagem. Não aparece na foto — aparece quando você verifica.</p></div>'
+      + '<div class="grid-2" style="align-items:start">'
+
+      /* -------- gerar -------- */
+      + '<div class="card pad stack" style="gap:13px">'
+      + '<div class="row" style="gap:10px"><span style="width:34px;height:34px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-shield"/></svg></span>'
+      + '<h3>1 · Marcar um arquivo</h3></div>'
+      + '<div class="fld"><label for="fx-pedido">Pedido</label><select id="fx-pedido">'
+      + PEDIDOS.map(function(p){ return '<option value="' + p.id + '">' + p.id + ' · ' + p.comprador + '</option>'; }).join('')
+      + '</select></div>'
+      + '<div><span class="sub">Escolha a foto</span>'
+      + '<div class="sheet" style="grid-template-columns:repeat(3,1fr); gap:7px; margin-top:6px" id="fx-fotos">'
+      + fotos.map(function(p, k){
+          return '<button class="frame' + (k === 0 ? ' in' : '') + '" data-fx="' + p.src + '" type="button" style="border:0;padding:0">'
+            + '<img src="' + p.src + '" alt="" loading="lazy" style="aspect-ratio:3/2;object-fit:cover;width:100%">'
+            + '</button>';
+        }).join('')
+      + '</div></div>'
+      + '<button class="btn" id="fx-gerar">Gerar arquivo marcado</button>'
+      + '<div id="fx-out" class="sub"></div>'
+      + '<canvas id="fx-canvas" style="display:none"></canvas>'
+      + '</div>'
+
+      /* -------- verificar -------- */
+      + '<div class="card pad stack" style="gap:13px">'
+      + '<div class="row" style="gap:10px"><span style="width:34px;height:34px;border-radius:11px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i"><use href="#ic-search"/></svg></span>'
+      + '<h3>2 · Verificar uma imagem vazada</h3></div>'
+      + '<p class="sub">Achou uma foto sua num story ou num grupo? Salve e jogue aqui.</p>'
+      + '<div class="drop" id="fx-drop" style="padding:22px 16px">'
+      + '<svg class="i i-lg" style="color:var(--meta)"><use href="#ic-upload"/></svg>'
+      + '<strong style="color:var(--ink);font-size:14px">Arraste a imagem ou escolha</strong>'
+      + '<input type="file" id="fx-file" accept="image/*" style="display:none">'
+      + '<button class="btn btn-ghost btn-sm" id="fx-pick">Escolher arquivo</button></div>'
+      + '<div id="fx-res"></div>'
+      + '<canvas id="fx-check" style="display:none"></canvas>'
+      + '</div></div>'
+
+      + '<div class="alert warning"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+      + '<div><div class="at">O que esta marca aguenta — medido, não prometido</div>'
+      + '<div class="ad"><b>Aguenta:</b> recompressão JPEG até qualidade 50 (leitura a 98%) e redução até ~70% do tamanho (leitura a 90%, com o detector reancorando a escala). '
+      + '<b>Não aguenta:</b> redução para metade ou menos, corte forte — que desalinha a grade de blocos — e regeneração por modelo de difusão, que reconstrói a imagem inteira e de quebra degrada a foto. '
+      + 'Nenhuma marca invisível é inquebrável. Esta existe para o caso real: o cliente que comprou e repassou o arquivo.</div></div></div>'
+
+      + '<div class="card pad stack" style="gap:10px">'
+      + '<h3>Como isso vira prova</h3>'
+      + '<p class="sub">A marca sozinha não serve de nada. O que serve é a marca <b>mais o registro</b>: cada pedido guarda quem comprou, quando, qual evento e qual código foi embutido. A verificação acima consulta esse registro e devolve o nome.</p>'
+      + '<div class="table-wrap" style="box-shadow:none"><div class="table-scroll"><table>'
+      + '<thead><tr><th>Pedido</th><th>Código na imagem</th><th>Comprador</th><th>Contato</th><th>Evento</th><th>Data</th></tr></thead><tbody>'
+      + PEDIDOS.map(function(p){
+          return '<tr><td class="t-main">' + p.id + '</td><td><span class="badge brand num">' + p.codigo + '</span></td>'
+            + '<td>' + p.comprador + '</td><td class="num">' + p.contato + '</td><td>' + p.evento + '</td><td class="num">' + p.data + '</td></tr>';
+        }).join('')
+      + '</tbody></table></div></div></div>');
+  };
+
+  V.p_kyc_ok = function(){
+    return appShell('extrato',
+        '<div class="card pad stack" style="align-items:center; text-align:center; gap:13px; padding:30px 20px; max-width:460px; margin:0 auto">'
+      + '<span style="width:52px;height:52px;border-radius:999px;background:var(--ok-soft);color:var(--ok-ink);display:grid;place-items:center">'
+      + '<svg class="i" style="width:25px;height:25px;stroke-width:2.6"><use href="#ic-check"/></svg></span>'
+      + '<h1>Conta verificada</h1>'
+      + '<p class="sub">Saque liberado. A partir de agora o dinheiro cai direto na sua chave PIX, no mesmo dia da venda.</p>'
+      + '<button class="btn btn-lg" data-nav="/app/saque">Sacar ' + brl(carteira().disponivel) + '</button></div>');
+  };
+
+  var VENDAS = [['01/09',118],['02/09',96],['03/09',142],['04/09',210],['05/09',188],['06/09',264],['07/09',431],
+                ['08/09',302],['09/09',156],['10/09',172],['11/09',224],['12/09',268],['13/09',329],['14/09',612]];
+
+  V.painel = function(){
+    var rows = [
+      ['Corrida do Cerrado 10K','14 set · Goiânia','amber','processando',4812,2104,177,1911.60,'cerrado10k'],
+      ['Copa Goiás de Jiu-Jítsu','07 set · Ginásio Rio Vermelho','ok','no ar',3140,1512,96,1036.80,'copa-goias-jj'],
+      ['Formatura Medicina UFG','30 ago · Teatro Goiânia','ok','no ar',1988,874,61,823.50,'formatura-med-ufg'],
+      ['Enduro Serra Dourada','17 ago · Serra Dourada','','encerrado',2657,1033,88,950.40,'enduro-serra'],
+      ['Volta da Pampulha','03 ago · Belo Horizonte','','encerrado',5607,3288,241,2602.80,'volta-pampulha']
+    ];
+    return appShell('painel',
+        '<div class="kpis">'
+      + kpi('wallet','Saldo disponível','R$ 1.284','saque PIX no mesmo dia','')
+      + kpi('chart','Vendas em setembro','R$ 3.912','▲ 38% vs. agosto','up')
+      + kpi('users','Conversão','8,4%','média do mercado: 3,1%','')
+      + kpi('image','Fotos no ar','18.204','em 7 eventos','')
+      + '</div>'
+      + '<div class="card pad between"><div class="row" style="gap:13px">'
+      + '<span style="width:44px;height:44px;border-radius:12px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i i-lg"><use href="#ic-wallet"/></svg></span>'
+      + '<div><h3>R$ 1.284,50 prontos para saque</h3><p class="sub">Chave PIX 62 9 9631-2200 · cai em minutos, sem taxa</p></div></div>'
+      + '<button class="btn" data-toast="Saque solicitado|R$ 1.284,50 a caminho da sua chave PIX">Sacar agora</button></div>'
+      + '<div class="card pad stack" style="gap:14px"><div class="between">'
+      + '<div><h2>Vendas dos últimos 14 dias</h2><p class="sub">Passe o mouse nas barras.</p></div>'
+      + '<span class="badge brand"><svg class="i i-sm"><use href="#ic-chart"/></svg>R$ 3.912 no período</span></div>'
+      + '<div class="chart-wrap"><svg id="chart" viewBox="0 0 620 190" width="100%" height="190" role="img" aria-label="Vendas diárias dos últimos 14 dias, pico de R$ 612 em 14 de setembro"></svg><div class="tip" id="tip"></div></div></div>'
+      + '<div class="card pad stack" style="gap:12px"><div class="between"><h2>Seus eventos</h2><span class="sub">7 eventos · 5 exibidos</span></div>'
+      + '<div class="table-wrap" style="box-shadow:none"><div class="table-scroll"><table>'
+      + '<thead><tr><th>Evento</th><th>Situação</th><th>Fotos</th><th>Visitas</th><th>Vendas</th><th>Você recebe</th><th></th></tr></thead><tbody>'
+      + rows.map(function(r){
+          return '<tr><td><div class="t-main">' + r[0] + '</div><div class="t-sub">' + r[1] + '</div></td>'
+            + '<td><span class="badge ' + r[2] + '">' + (r[2] ? '<span class="dot"></span>' : '') + r[3] + '</span></td>'
+            + '<td class="n">' + r[4].toLocaleString('pt-BR') + '</td><td class="n">' + r[5].toLocaleString('pt-BR') + '</td>'
+            + '<td class="n">' + r[6] + '</td><td class="n t-main">' + brl(r[7]) + '</td>'
+            + '<td><button class="btn btn-ghost btn-sm" data-nav="/app/kit">Divulgar</button></td></tr>';
+        }).join('')
+      + '</tbody></table></div></div></div>');
+  };
+  function kpi(ic, label, val, foot, cls){
+    return '<div class="kpi"><span class="ic"><svg class="i"><use href="#ic-' + ic + '"/></svg></span>'
+      + '<div><div class="kpi-l">' + label + '</div><div class="kpi-v">' + val + '</div>'
+      + '<div class="kpi-f ' + cls + '">' + foot + '</div></div></div>';
+  }
+
+  V.novo = function(){
+    return appShell('novo',
+        '<div class="card pad stack" style="gap:16px">'
+      + '<div><span class="over">Passo 1 de 2</span><h2 style="margin-top:4px">Criar evento</h2>'
+      + '<p class="sub">Publica na hora, sem aprovação e sem falar com ninguém.</p></div>'
+      + '<div class="grid-2">'
+      + '<div class="fld"><label for="n-nome">Nome do evento</label><input id="n-nome" value="Corrida do Cerrado 10K"></div>'
+      + '<div class="fld"><label for="n-cat">Categoria</label><select id="n-cat">' + CATS.map(function(c){ return '<option>' + c + '</option>'; }).join('') + '<option>Outro</option></select></div>'
+      + '<div class="fld"><label for="n-data">Data</label><input id="n-data" type="date" value="2026-09-14"></div>'
+      + '<div class="fld"><label for="n-local">Local</label><input id="n-local" value="Parque Vaca Brava, Goiânia"></div></div>'
+      + '<div class="grid-2">'
+      + '<div class="fld"><label for="n-p1">Preço da foto avulsa</label><input id="n-p1" class="num" value="R$ 12,00"><span class="hint">Média da categoria em Goiânia: R$ 11,50</span></div>'
+      + '<div class="fld"><label for="n-p2">Pacote com todas as fotos da pessoa</label><input id="n-p2" class="num" value="R$ 39,00"><span class="hint">62% das vendas saem no pacote</span></div></div>'
+      + '<div class="stack" style="gap:8px"><span style="font-size:11.5px; font-weight:600; color:var(--label)">Como as pessoas vão se achar</span>'
+      + '<div class="row" style="gap:18px">'
+      + '<label class="check"><input type="checkbox" checked>Reconhecimento facial</label>'
+      + '<label class="check"><input type="checkbox" checked>Número do peito</label>'
+      + '<label class="check"><input type="checkbox">Somente por horário</label></div></div>'
+      + '<div class="alert success"><svg class="i i-lg"><use href="#ic-check"/></svg>'
+      + '<div><div class="at">Link público reservado</div><div class="ad">saibem.com.br/e/cerrado10k — já é seu.</div></div></div>'
+      + '<div class="row"><button class="btn btn-lg" data-nav="/app/upload">Criar e enviar fotos</button>'
+      + '<button class="btn btn-ghost btn-lg" data-toast="Rascunho salvo|Você retoma quando quiser">Salvar rascunho</button></div>'
+      + '</div>');
+  };
+
+  V.upload = function(){
+    var arquivos = [['DSC_4471.JPG','no ar',100],['DSC_4472.JPG','no ar',100],['DSC_4473.JPG','no ar',100],
+      ['DSC_4474.JPG','detectando rostos',74],['DSC_4475.JPG','enviando',41],['DSC_4476.JPG','enviando',18],
+      ['DSC_4477.JPG','na fila',0],['DSC_4478.JPG','na fila',0]];
+    return appShell('upload',
+        '<div class="between"><div><h2>Corrida do Cerrado 10K</h2><p class="sub">Passo 2 de 2 · pode fechar o navegador, o envio retoma sozinho</p></div>'
+      + '<div class="row"><button class="btn btn-ghost" data-toast="Envio pausado|Retome quando quiser">Pausar</button>'
+      + '<button class="btn" data-nav="/app/kit">Publicar evento</button></div></div>'
+      + '<div class="pipe">'
+      + '<div class="step done"><span class="over">1 · Envio</span><span class="v num">4.812</span><span class="sub">em 6min12</span></div>'
+      + '<div class="step done"><span class="over">2 · Marca d\'água</span><span class="v num">4.812</span><span class="sub">prévias geradas</span></div>'
+      + '<div class="step now"><span class="over">3 · Rostos</span><span class="v num" id="faces">3.640</span><span class="sub">de 4.812 · ~2 min</span></div>'
+      + '<div class="step"><span class="over">4 · No ar</span><span class="v num">—</span><span class="sub">aguardando</span></div></div>'
+      + '<div class="alert success"><svg class="i i-lg"><use href="#ic-zap"/></svg>'
+      + '<div><div class="at">Já dá para divulgar</div><div class="ad">3.640 fotos estão no ar e o público já consegue se achar. Não espere terminar.</div></div></div>'
+      + '<div class="card pad stack" style="gap:14px">'
+      + '<div class="drop"><span style="width:44px;height:44px;border-radius:12px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center"><svg class="i i-lg"><use href="#ic-upload"/></svg></span>'
+      + '<strong style="color:var(--ink); font-size:15px">Arraste a pasta do cartão para cá</strong>'
+      + '<span class="sub">JPG, PNG, HEIC ou RAW+JPG · sem limite de arquivos</span>'
+      + '<button class="btn btn-ghost" data-toast="Seleção aberta|Escolha a pasta do cartão">Escolher arquivos</button></div>'
+      + '<div>' + arquivos.map(function(f){
+          return '<div style="display:grid; grid-template-columns:1fr 130px 120px; gap:12px; align-items:center; padding:9px 0; border-top:1px solid var(--line); font-size:12.5px">'
+            + '<span class="num" style="color:var(--ink); font-weight:600">' + f[0] + '</span>'
+            + '<span class="sub">' + f[1] + '</span>'
+            + '<span class="track' + (f[2] === 100 ? ' done' : '') + '"><i style="width:' + f[2] + '%"></i></span></div>';
+        }).join('') + '</div></div>');
+  };
+
+  V.kit = function(){
+    return appShell('kit',
+        '<div><h2>Kit de divulgação</h2><p class="sub">Corrida do Cerrado 10K · pronto para imprimir, colar no grupo e postar.</p></div>'
+      + '<div style="display:grid; grid-template-columns:240px 1fr; gap:18px; align-items:start" class="kgrid">'
+      + '<div class="stack" style="gap:10px"><div class="card pad stack" style="gap:11px; align-items:center">'
+      + '<div class="qr" role="img" aria-label="QR Code do evento">' + qrHTML() + '</div>'
+      + '<span class="sub num">saibem.com.br/e/cerrado10k</span>'
+      + '<button class="btn btn-ghost btn-sm" data-toast="PDF gerado|QR em A4 pronto para imprimir"><svg class="i i-sm"><use href="#ic-qr"/></svg>Baixar QR em A4</button></div>'
+      + '<p class="sub">Deixe na tenda da organização, na retirada do kit e na chegada.</p></div>'
+      + '<div class="stack">'
+      + '<div class="card pad stack" style="gap:11px"><h3>Mensagem para o grupo do WhatsApp</h3>'
+      + '<div class="wabubble">📸 As fotos da <b>Corrida do Cerrado 10K</b> já estão no ar!<br>Manda uma selfie e o site acha as suas em 5 segundos — não precisa procurar uma por uma.<br>👉 saibem.com.br/e/cerrado10k</div>'
+      + '<div class="row"><button class="btn btn-ghost btn-sm" data-toast="Texto copiado|Cole no grupo do evento">Copiar texto</button>'
+      + '<button class="btn btn-ghost btn-sm">Abrir no WhatsApp</button></div></div>'
+      + '<div class="card pad stack" style="gap:12px"><h3>Story para o Instagram</h3>'
+      + '<div class="row" style="gap:16px; align-items:flex-start">'
+      + '<div class="story"><img src="' + POOL[11] + '" alt="Prévia do story"><div class="ov">'
+      + '<span class="over" style="color:rgba(255,255,255,.85)">Saibem.</span>'
+      + '<div><h4>Suas fotos da Corrida do Cerrado já estão no ar</h4>'
+      + '<p style="font-size:11.5px; margin-top:6px; color:rgba(255,255,255,.85)">Arrasta pra cima e manda uma selfie</p></div></div></div>'
+      + '<div class="stack" style="gap:9px; flex:1; min-width:180px">'
+      + '<p class="sub">Montado com 3 fotos do evento. Dá para trocar fotos, texto e cores.</p>'
+      + '<button class="btn btn-ghost btn-sm" data-toast="Story baixado|1080 × 1920">Baixar story</button>'
+      + '<button class="btn btn-ghost btn-sm">Gerar outra versão</button></div></div></div>'
+      + '<div class="card pad stack" style="gap:11px"><div class="between"><h3>Aviso automático no WhatsApp</h3>'
+      + '<span class="badge ok"><span class="dot"></span>ligado</span></div>'
+      + '<p class="sub">418 pessoas mandaram selfie pelo QR durante a prova. Assim que a foto de cada uma entra no ar, a mensagem sai sozinha.</p>'
+      + '<div class="row" style="gap:9px"><span class="badge ok"><svg class="i i-sm"><use href="#ic-check"/></svg>312 avisadas</span>'
+      + '<span class="badge amber"><span class="dot"></span>106 aguardando</span>'
+      + '<span class="badge blue"><svg class="i i-sm"><use href="#ic-chart"/></svg>taxa de compra 31%</span></div></div>'
+      + '</div></div>');
+  };
+
+  V.p404 = function(){
+    return hero('<h1>Página não encontrada</h1>')
+      + '<div class="wrap sec"><div class="card empty"><span class="ic"><svg class="i i-lg"><use href="#ic-search"/></svg></span>'
+      + '<h3>Esse endereço não existe</h3><p class="sub">O link pode ter mudado.</p>'
+      + '<button class="btn" data-nav="/">Voltar ao início</button></div></div>';
+  };
+
+  /* =========================================================
+     ROTEADOR
+     ========================================================= */
+  var app = document.getElementById('app');
+  function parse(){
+    var h = (location.hash || '#/').replace(/^#/, '');
+    if (h.charAt(0) !== '/') h = '/' + h;
+    return h.split('/').filter(Boolean);
+  }
+  function nav(path){ location.hash = '#' + path; }
+
+  function render(){
+    var seg = parse(), html, page = seg[0] || '';
+    if (!page) html = V.home();
+    else if (page === 'eventos') html = V.eventos();
+    else if (page === 'e' && seg[1]){
+      if (!EVENTS.some(function(e){ return e.slug === seg[1]; })) html = V.p404();
+      else if (seg[2] === 'selfie') html = V.selfie(seg[1]);
+      else if (seg[2] === 'minhas') html = V.minhas(seg[1]);
+      else if (seg[2] === 'numero') html = V.numero(seg[1]);
+      else html = V.evento(seg[1]);
+    }
+    else if (page === 'f' && seg[1]) html = V.fotografo(seg[1]);
+    else if (page === 'sacola') html = V.sacola();
+    else if (page === 'pagamento') html = V.pagamento();
+    else if (page === 'pedido') html = V.pedido();
+    else if (page === 'fotografos') html = V.fotografos();
+    else if (page === 'privacidade') html = V.privacidade();
+    else if (page === 'entrar') html = V.entrar();
+    else if (page === 'criar-conta') html = V['criar-conta']();
+    else if (page === 'app'){
+      var s = seg[1] || 'painel';
+      if (!logado()){
+        state.voltarPara = '/' + seg.join('/');
+        html = V.entrar();
+      }
+      else if (s === 'eventos') html = V.eventos_app();
+      else if (s === 'kyc-ok') html = V.p_kyc_ok();
+      else html = V[s] ? V[s]() : V.p404();
+    }
+    else html = V.p404();
+
+    app.innerHTML = html;
+    document.querySelectorAll('.hlink').forEach(function(b){
+      var t = b.dataset.nav;
+      b.setAttribute('aria-current', (t === '/' + page || (page === '' && t === '/')) ? 'page' : 'false');
+    });
+    document.getElementById('mmenu').classList.add('hide');
+    window.scrollTo(0, 0);
+    afterRender(seg);
+  }
+
+  function afterRender(seg){
+    var page = seg[0] || '';
+
+    /* busca da listagem */
+    var ls = document.getElementById('lsearch');
+    if (ls){
+      ls.addEventListener('input', function(){
+        state.busca = ls.value;
+        var pos = ls.selectionStart;
+        render();
+        var el = document.getElementById('lsearch');
+        if (el){ el.focus(); el.setSelectionRange(pos, pos); }
+      });
+    }
+    /* selfie */
+    var chk = document.getElementById('lgpd');
+    if (chk){
+      chk.addEventListener('change', function(){
+        var b = document.getElementById('dobusca'), hint = document.getElementById('lgpdhint');
+        b.disabled = !chk.checked;
+        hint.textContent = chk.checked ? 'Tudo certo — a busca leva cerca de 5 segundos.' : 'Marque a autorização para liberar a busca.';
+      });
+      document.getElementById('dobusca').addEventListener('click', function(){
+        var b = this, cam = document.getElementById('cam');
+        b.disabled = true; b.textContent = 'Procurando...'; cam.classList.add('busy');
+        setTimeout(function(){ nav('/e/' + seg[1] + '/minhas'); }, 1100);
+      });
+    }
+    /* minhas fotos */
+    var selall = document.getElementById('selall');
+    if (selall){
+      selall.addEventListener('click', function(){
+        myPhotos(seg[1]).forEach(function(p){ if (!inCart(p.id)) toggleCart(p); });
+        toast('Todas na sacola', 'Pacote aplicado automaticamente');
+        render();
+      });
+    }
+    /* paginação real: acrescenta a próxima fatia do acervo */
+    var more = document.getElementById('more');
+    if (more){
+      more.addEventListener('click', function(){
+        var slug = seg[1], fotos = photosOf(slug);
+        var de = state.pagina[slug] || POR_PAGINA;
+        var ate = Math.min(de + POR_PAGINA, fotos.length);
+        var sheet = document.getElementById('sheet');
+        sheet.insertAdjacentHTML('beforeend', fotos.slice(de, ate).map(function(p){ return tile(p); }).join(''));
+        state.pagina[slug] = ate;
+        document.getElementById('contador').textContent = ate + ' de ' + fotos.length + ' fotos';
+        if (ate >= fotos.length){
+          more.outerHTML = '<span class="badge ok"><svg class="i i-sm"><use href="#ic-check"/></svg>acervo completo</span>';
+        } else {
+          more.textContent = 'Carregar mais ' + Math.min(POR_PAGINA, fotos.length - ate);
+        }
+        pintarPendentes();
+      });
+    }
+    /* pagamento */
+    var pago = document.getElementById('pago');
+    if (pago){
+      pago.addEventListener('click', function(){
+        state.lastOrder = state.cart.slice();
+        state.cart = []; persist(); paintBag();
+        nav('/pedido');
+      });
+    }
+    /* calculadora */
+    var cp = document.getElementById('c-preco');
+    if (cp){
+      var calc = function(){
+        var p = Math.max(0, +cp.value || 0), q = Math.max(0, +document.getElementById('c-qtd').value || 0);
+        var bruto = p * q, taxa = bruto * .1;
+        document.getElementById('c-liq').textContent = brl(bruto - taxa);
+        document.getElementById('c-det').textContent = 'Bruto ' + brl(bruto) + ' · taxa Saibem 10% (' + brl(taxa) + ') · cai no PIX no mesmo dia';
+      };
+      cp.addEventListener('input', calc);
+      document.getElementById('c-qtd').addEventListener('input', calc);
+    }
+    /* gráfico */
+    if (document.getElementById('chart')) drawChart();
+    /* filtros */
+    document.querySelectorAll('[data-cat]').forEach(function(b){
+      b.addEventListener('click', function(){ state.cat = b.dataset.cat; render(); });
+    });
+    document.querySelectorAll('[data-cidade]').forEach(function(b){
+      b.addEventListener('click', function(){ state.cidade = b.dataset.cidade; render(); });
+    });
+    ['clearf','clearf2'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('click', function(){ state.busca = ''; state.cat = ''; state.cidade = ''; render(); });
+    });
+    /* ----- conta do fotógrafo ----- */
+    var dologin = document.getElementById('dologin');
+    if (dologin){
+      dologin.addEventListener('click', function(){
+        var mail = (document.getElementById('lg-mail').value || '').trim();
+        if (!mail){ toast('Informe o e-mail', 'Precisamos dele para entrar'); return; }
+        conta = conta || { nome:'Marina Rezende Fotografia', email:mail, verificado:false };
+        conta.email = mail; saveConta();
+        toast('Bem-vindo de volta', conta.nome);
+        var destino = state.voltarPara || '/app/painel';
+        state.voltarPara = null; nav(destino);
+      });
+    }
+    var termos = document.getElementById('cc-termos');
+    if (termos){
+      termos.addEventListener('change', function(){
+        document.getElementById('docriar').disabled = !termos.checked;
+        document.getElementById('cc-hint').textContent = termos.checked
+          ? 'Tudo certo. Você publica o primeiro evento em seguida.'
+          : 'Aceite os termos para continuar.';
+      });
+      document.getElementById('docriar').addEventListener('click', function(){
+        var nome = (document.getElementById('cc-nome').value || '').trim() || 'Meu Estúdio';
+        conta = { nome:nome, email:(document.getElementById('cc-mail').value || '').trim(),
+                  cidade:document.getElementById('cc-cidade').value, verificado:false };
+        saveConta();
+        toast('Conta criada', 'Agora publique seu primeiro evento');
+        nav('/app/novo');
+      });
+    }
+    /* transições de estado do evento */
+    document.querySelectorAll('[data-estado]').forEach(function(b){
+      b.addEventListener('click', function(){
+        var p = b.dataset.estado.split('|'), alvo = p[1];
+        var m = MEUS.filter(function(x){ return x.slug === p[0]; })[0];
+        if (!m) return;
+        if (alvo === 'arquivado' && !window.confirm('Arquivar "' + m.nome + '"? As fotos saem do ar. Quem já comprou mantém o download.')) return;
+        m.estado = alvo; saveEstados();
+        toast(m.nome, 'Agora está ' + ESTADOS[alvo].rotulo);
+        render();
+      });
+    });
+    /* extrato */
+    document.querySelectorAll('[data-led]').forEach(function(b){
+      b.addEventListener('click', function(){ state.ledFiltro = b.dataset.led; render(); });
+    });
+    var csv = document.getElementById('csv');
+    if (csv){
+      csv.addEventListener('click', function(){
+        var head = 'data;tipo;referencia;bruto;taxa;valor;situacao\n';
+        var corpo = LEDGER.map(function(l){
+          return [l.d, l.t, '"' + l.ev + '"', l.bruto.toFixed(2), l.taxa.toFixed(2), l.v.toFixed(2), l.st]
+            .join(';');
+        }).join('\n');
+        var blob = new Blob([head + corpo], { type:'text/csv;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'saibem-extrato.csv';
+        document.body.appendChild(a); a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+        toast('Extrato exportado', 'saibem-extrato.csv');
+      });
+    }
+    /* KYC */
+    var dokyc = document.getElementById('dokyc');
+    if (dokyc){
+      var docEl = document.getElementById('kyc-doc');
+      docEl.addEventListener('blur', function(){
+        var hint = document.getElementById('kyc-doc-hint');
+        if (!docEl.value.trim()) return;
+        var ok = validaDoc(docEl.value);
+        hint.textContent = ok ? 'Documento válido.' : 'Esse CPF/CNPJ não confere — verifique os números.';
+        hint.style.color = ok ? 'var(--ok-ink)' : 'var(--danger-ink)';
+      });
+      dokyc.addEventListener('click', function(){
+        var titular = (document.getElementById('kyc-titular').value || '').trim();
+        var doc = (document.getElementById('kyc-doc').value || '').trim();
+        var chave = (document.getElementById('kyc-chave').value || '').trim();
+        var aceite = document.getElementById('kyc-ok').checked;
+        var hint = document.getElementById('kyc-hint');
+        hint.style.color = 'var(--danger-ink)';
+        if (titular.split(' ').length < 2){ hint.textContent = 'Informe o nome completo do titular.'; return; }
+        if (!validaDoc(doc)){ hint.textContent = 'CPF ou CNPJ inválido — confira os dígitos.'; return; }
+        if (!chave){ hint.textContent = 'Informe a chave PIX.'; return; }
+        if (!aceite){ hint.textContent = 'Confirme a titularidade para continuar.'; return; }
+        conta = conta || { nome: titular };
+        conta.verificado = true; conta.titular = titular; conta.doc = doc; conta.chave = chave;
+        saveConta();
+        toast('Conta verificada', 'Saque liberado');
+        nav('/app/kyc-ok');
+      });
+    }
+    var dosaque = document.getElementById('dosaque');
+    if (dosaque){
+      dosaque.addEventListener('click', function(){
+        toast('Saque solicitado', brl(carteira().disponivel) + ' a caminho da sua chave PIX');
+        nav('/app/extrato');
+      });
+    }
+    /* ----- busca por número do peito ----- */
+    var nb = document.getElementById('nbusca');
+    if (nb){
+      var campo = document.getElementById('nsearch');
+      var buscar = function(){ state.numero = (campo.value || '').replace(/\D/g, ''); render(); };
+      nb.addEventListener('click', buscar);
+      campo.addEventListener('keydown', function(e){ if (e.key === 'Enter') buscar(); });
+      document.querySelectorAll('[data-num]').forEach(function(b){
+        b.addEventListener('click', function(){ state.numero = b.dataset.num; render(); });
+      });
+    }
+
+    /* ----- marca invisível ----- */
+    var fxGerar = document.getElementById('fx-gerar');
+    if (fxGerar){
+      var fxSrc = document.querySelector('[data-fx]').dataset.fx;
+      document.querySelectorAll('[data-fx]').forEach(function(b){
+        b.addEventListener('click', function(){
+          document.querySelectorAll('[data-fx]').forEach(function(x){ x.classList.remove('in'); });
+          b.classList.add('in'); fxSrc = b.dataset.fx;
+        });
+      });
+      fxGerar.addEventListener('click', function(){
+        var out = document.getElementById('fx-out');
+        var pedidoId = document.getElementById('fx-pedido').value;
+        var cod = codigoDe(pedidoId);
+        out.innerHTML = 'Processando os blocos...';
+        var img = new Image();
+        img.onload = function(){
+          var cv = document.getElementById('fx-canvas');
+          var esc = Math.min(1, LARGURA_MARCA / img.naturalWidth);
+          cv.width = Math.round(img.naturalWidth * esc);
+          cv.height = Math.round(img.naturalHeight * esc);
+          var ctx = cv.getContext('2d', { willReadFrequently: true });
+          ctx.drawImage(img, 0, 0, cv.width, cv.height);
+          var t0 = performance.now();
+          var r = embutir(ctx, cv.width, cv.height, cod);
+          var ms = Math.round(performance.now() - t0);
+          cv.toBlob(function(blob){
+            var url = URL.createObjectURL(blob);
+            out.innerHTML = '<div class="alert success" style="margin-top:4px"><svg class="i i-lg"><use href="#ic-check"/></svg>'
+              + '<div><div class="at">Arquivo marcado com o código ' + cod + '</div>'
+              + '<div class="ad">' + r.blocos.toLocaleString('pt-BR') + ' blocos usados · a mensagem cabe '
+              + r.repeticoes + ' vezes na imagem · ' + ms + ' ms · ' + Math.round(blob.size / 1024) + ' KB<br>'
+              + 'Baixe, poste no WhatsApp ou tire um print, salve de volta e verifique ao lado.</div></div></div>'
+              + '<a class="btn btn-ghost btn-sm" style="margin-top:9px; text-decoration:none" download="saibem-' + pedidoId + '.jpg" href="' + url + '">'
+              + 'Baixar arquivo marcado</a>';
+          }, 'image/jpeg', .9);
+        };
+        img.src = fxSrc;
+      });
+
+      /* verificação */
+      var res = document.getElementById('fx-res');
+      var inputFile = document.getElementById('fx-file');
+      document.getElementById('fx-pick').addEventListener('click', function(){ inputFile.click(); });
+      var zona = document.getElementById('fx-drop');
+      ['dragover','dragenter'].forEach(function(ev){
+        zona.addEventListener(ev, function(e){ e.preventDefault(); zona.style.borderColor = 'var(--brand)'; });
+      });
+      zona.addEventListener('dragleave', function(){ zona.style.borderColor = ''; });
+      zona.addEventListener('drop', function(e){
+        e.preventDefault(); zona.style.borderColor = '';
+        if (e.dataTransfer.files[0]) verificar(e.dataTransfer.files[0]);
+      });
+      inputFile.addEventListener('change', function(){ if (inputFile.files[0]) verificar(inputFile.files[0]); });
+
+      function verificar(file){
+        res.innerHTML = '<p class="sub">Analisando os blocos da imagem...</p>';
+        var fr = new FileReader();
+        fr.onload = function(){
+          var img = new Image();
+          img.onload = function(){
+            var saida = extrair(img);
+            if (!saida.ok){
+              res.innerHTML = '<div class="alert warning"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+                + '<div><div class="at">Não deu para analisar</div><div class="ad">' + saida.motivo + '</div></div></div>';
+              return;
+            }
+            var r = saida.r;
+            var pedido = r.valido ? acharPedido(r.codigo) : null;
+            if (pedido){
+              res.innerHTML = '<div class="alert success"><svg class="i i-lg"><use href="#ic-check"/></svg>'
+                + '<div><div class="at">Origem identificada: pedido ' + pedido.id + '</div>'
+                + '<div class="ad">Código <b>' + r.codigo + '</b> · confiança ' + r.confianca + '% · ' + r.blocos.toLocaleString('pt-BR') + ' blocos lidos · escala ' + r.escala + '<br>'
+                + 'Comprado por <b>' + pedido.comprador + '</b> (' + pedido.contato + ') em ' + pedido.data + ', no evento ' + pedido.evento + '.</div></div></div>'
+                + '<div class="row" style="margin-top:10px"><button class="btn btn-sm" data-toast="Dossiê gerado|Código, pedido, comprador e data em PDF">Gerar dossiê</button>'
+                + '<button class="btn btn-ghost btn-sm" data-toast="Notificação enviada|Pedido de remoção encaminhado">Pedir remoção</button></div>';
+            } else if (r.valido){
+              res.innerHTML = '<div class="alert warning"><svg class="i i-lg"><use href="#ic-info"/></svg>'
+                + '<div><div class="at">Código ' + r.codigo + ' não está no seu registro</div>'
+                + '<div class="ad">Confiança ' + r.confianca + '%. A imagem tem marca, mas de outro fotógrafo ou de um pedido antigo.</div></div></div>';
+            } else {
+              res.innerHTML = '<div class="alert warning"><svg class="i i-lg"><use href="#ic-x"/></svg>'
+                + '<div><div class="at">Nenhuma marca legível</div>'
+                + '<div class="ad">Leitura com ' + r.confianca + '% de consistência e verificação inválida. '
+                + 'Pode ser uma foto que nunca foi marcada, um corte forte da imagem ou uma imagem regenerada por IA.</div></div></div>';
+            }
+          };
+          img.src = fr.result;
+        };
+        fr.readAsDataURL(file);
+      }
+    }
+
+    /* intensidade da marca d'água (avaliação) */
+    document.querySelectorAll('[data-wm]').forEach(function(b){
+      b.addEventListener('click', function(){
+        forca = b.dataset.wm;
+        try { localStorage.setItem('saibem.wm', forca); } catch(e){}
+        render();
+        toast('Marca ' + (forca === 'media' ? 'média' : forca), 'Compare a leitura da foto e o incômodo');
+      });
+    });
+    /* desenha as fotos protegidas desta tela */
+    pintarPendentes();
+    /* carrossel de capa */
+    if (document.getElementById('hcar')) initCarousel();
+    /* trilho com snap */
+    var rail = document.getElementById('rail');
+    if (rail){
+      document.querySelectorAll('[data-rail]').forEach(function(b){
+        b.addEventListener('click', function(){
+          var card = rail.querySelector('.ev');
+          var step = card ? card.offsetWidth + 14 : 300;
+          rail.scrollBy({ left: step * (+b.dataset.rail), behavior: 'smooth' });
+        });
+      });
+    }
+    /* progresso simulado do upload */
+    var faces = document.getElementById('faces');
+    if (faces){
+      var n = 3640;
+      var t = setInterval(function(){
+        if (!document.body.contains(faces)) return clearInterval(t);
+        n = Math.min(4812, n + 37);
+        faces.textContent = n.toLocaleString('pt-BR');
+        if (n >= 4812) clearInterval(t);
+      }, 700);
+    }
+  }
+
+  /* =========================================================
+     CARROSSEL DE CAPA
+     ========================================================= */
+  var carTimer = null;
+  function initCarousel(){
+    var car = document.getElementById('hcar'), track = document.getElementById('hcar-track');
+    if (!car || !track) return;
+    var slides = track.querySelectorAll('.hslide');
+    var bars = car.querySelectorAll('.hbar');
+    var thumbs = car.querySelectorAll('.hthumb');
+    var count = document.getElementById('hcount');
+    var n = slides.length, idx = 0;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function paint(){
+      track.style.transform = 'translateX(' + (-idx * 100) + '%)';
+      slides.forEach(function(s, k){
+        s.classList.toggle('on', k === idx);
+        s.setAttribute('aria-hidden', String(k !== idx));
+      });
+      bars.forEach(function(b, k){
+        b.classList.remove('on', 'done');
+        if (k < idx) b.classList.add('done');
+        if (k === idx){ void b.offsetWidth; b.classList.add('on'); }
+      });
+      thumbs.forEach(function(t, k){ t.classList.toggle('on', k === idx); });
+      count.textContent = ('0' + (idx + 1)).slice(-2) + ' / ' + ('0' + n).slice(-2);
+    }
+    function go(i){ idx = (i + n) % n; paint(); restart(); }
+    function restart(){
+      clearInterval(carTimer);
+      if (reduced) return;
+      carTimer = setInterval(function(){ idx = (idx + 1) % n; paint(); }, 6400);
+    }
+
+    car.querySelectorAll('[data-step]').forEach(function(b){
+      b.addEventListener('click', function(){ go(idx + (+b.dataset.step)); });
+    });
+    car.querySelectorAll('[data-go-slide]').forEach(function(b){
+      b.addEventListener('click', function(){ go(+b.dataset.goSlide); });
+    });
+
+    /* pausa quando o ponteiro está em cima ou a aba sai de foco */
+    car.addEventListener('mouseenter', function(){ car.classList.add('paused'); clearInterval(carTimer); });
+    car.addEventListener('mouseleave', function(){ car.classList.remove('paused'); restart(); });
+    car.addEventListener('focusin', function(){ car.classList.add('paused'); clearInterval(carTimer); });
+    document.addEventListener('visibilitychange', function(){
+      if (document.hidden) clearInterval(carTimer); else if (document.getElementById('hcar')) restart();
+    });
+
+    /* swipe */
+    var x0 = null, y0 = null;
+    car.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive:true });
+    car.addEventListener('touchend', function(e){
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) go(idx + (dx < 0 ? 1 : -1));
+      x0 = y0 = null;
+    }, { passive:true });
+
+    /* setas do teclado quando o foco está no carrossel */
+    car.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowRight'){ e.preventDefault(); go(idx + 1); }
+      if (e.key === 'ArrowLeft'){ e.preventDefault(); go(idx - 1); }
+    });
+
+    paint();
+    restart();
+  }
+
+  function drawChart(){
+    var svg = document.getElementById('chart'), tip = document.getElementById('tip');
+    var W = 620, H = 190, padL = 46, padR = 8, padT = 16, padB = 26;
+    var iw = W - padL - padR, ih = H - padT - padB, max = 640, ticks = [0,160,320,480,640];
+    var bw = Math.floor(iw / VENDAS.length) - 8, out = '';
+    ticks.forEach(function(t){
+      var y = padT + ih - (t / max) * ih;
+      out += '<line class="grid-line" x1="' + padL + '" y1="' + y + '" x2="' + (W - padR) + '" y2="' + y + '"/>'
+        + '<text class="axis-lbl" x="' + (padL - 8) + '" y="' + (y + 3.5) + '" text-anchor="end">' + t + '</text>';
+    });
+    out += '<text class="axis-lbl" x="' + padL + '" y="10" style="font-size:9.5px">R$ por dia</text>';
+    VENDAS.forEach(function(d, k){
+      var x = padL + k * (iw / VENDAS.length) + 4, h = Math.max(3, (d[1] / max) * ih), y = padT + ih - h;
+      out += '<rect class="bar" x="' + x + '" y="' + y + '" width="' + bw + '" height="' + h + '" rx="4" data-k="' + k + '" tabindex="0" aria-label="' + d[0] + ': R$ ' + d[1] + '"/>';
+      if (d[1] === 612) out += '<text class="axis-lbl" x="' + (x + bw / 2) + '" y="' + (y - 5) + '" text-anchor="middle" style="font-weight:700; fill:var(--ink)">R$ 612</text>';
+      if (k % 3 === 0 || k === VENDAS.length - 1)
+        out += '<text class="axis-lbl" x="' + (x + bw / 2) + '" y="' + (H - 8) + '" text-anchor="middle">' + d[0].slice(0, 2) + '</text>';
+    });
+    svg.innerHTML = out;
+    function show(e){
+      var r = e.target.closest ? e.target.closest('.bar') : null; if (!r) return;
+      var d = VENDAS[+r.dataset.k], box = svg.getBoundingClientRect(), rb = r.getBoundingClientRect();
+      tip.innerHTML = d[0] + ' · <b>R$ ' + d[1] + '</b>';
+      tip.style.left = (rb.left - box.left + rb.width / 2) + 'px';
+      tip.style.top = (rb.top - box.top) + 'px';
+      tip.style.opacity = '1';
+    }
+    svg.addEventListener('mousemove', show);
+    svg.addEventListener('focusin', show);
+    svg.addEventListener('mouseleave', function(){ tip.style.opacity = '0'; });
+    svg.addEventListener('focusout', function(){ tip.style.opacity = '0'; });
+  }
+
+  /* =========================================================
+     LIGHTBOX
+     ========================================================= */
+  var lb = document.getElementById('lb'), lbList = [], lbIdx = 0;
+  function findPhoto(id, evSlug){
+    var arr = photosOf(evSlug).concat(myPhotos(evSlug));
+    for (var k = 0; k < arr.length; k++) if (arr[k].id === id) return arr[k];
+    for (var j = 0; j < state.cart.length; j++) if (state.cart[j].id === id) return state.cart[j];
+    return null;
+  }
+  function openLb(id, evSlug){
+    var el = document.querySelector('[data-photo="' + CSS.escape(id) + '"]');
+    lbList = Array.prototype.slice.call(document.querySelectorAll('[data-photo]'));
+    lbIdx = lbList.indexOf(el);
+    paintLb();
+    lb.setAttribute('open', '');
+  }
+  function paintLb(){
+    var el = lbList[lbIdx]; if (!el) return;
+    var id = el.dataset.photo, ev = eventBySlug(el.dataset.ev);
+    var p = findPhoto(id, el.dataset.ev) || { src: el.querySelector('img').src, num: '—', hora: '—', preco: ev.preco, id: id, ev: el.dataset.ev };
+    var cv = document.getElementById('lb-canvas');
+    cv.removeAttribute('data-pronto');
+    pintar(cv, p.src, 820, p.num);
+    document.getElementById('lb-title').textContent = 'Foto ' + p.num;
+    document.getElementById('lb-ev').textContent = ev.nome + ' · ' + ev.foto;
+    document.getElementById('lb-price').textContent = brl(p.preco || ev.preco);
+    document.getElementById('lb-meta').innerHTML =
+        '<div class="r"><span>Horário</span><b>' + p.hora + '</b></div>'
+      + '<div class="r"><span>Resolução</span><b>6000 × 4000</b></div>'
+      + (p.match ? '<div class="r"><span>Semelhança com você</span><b>' + p.match + '%</b></div>' : '')
+      + '<div class="r"><span>Pacote do evento</span><b>' + brl(ev.pacote) + '</b></div>'
+      + '<div class="legalbar"><svg class="i"><use href="#ic-shield"/></svg>'
+      + '<span>Prévia identificada com o código <b style="color:var(--ink)">' + visitanteId + '</b>, só para você conferir se saiu bem. '
+      + 'Reproduzir ou publicar sem licença viola a Lei 9.610/98 — e a marca aponta de onde a cópia saiu.</span></div>';
+    var add = document.getElementById('lb-add');
+    add.textContent = inCart(id) ? 'Tirar da sacola' : 'Adicionar à sacola';
+    add.dataset.id = id; add.dataset.ev = el.dataset.ev;
+  }
+  function closeLb(){ lb.removeAttribute('open'); }
+  function stepLb(d){ lbIdx = (lbIdx + d + lbList.length) % lbList.length; paintLb(); }
+  document.getElementById('lb-x').addEventListener('click', closeLb);
+  document.getElementById('lb-prev').addEventListener('click', function(){ stepLb(-1); });
+  document.getElementById('lb-next').addEventListener('click', function(){ stepLb(1); });
+  lb.addEventListener('click', function(e){ if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', function(e){
+    if (!lb.hasAttribute('open')) return;
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowRight') stepLb(1);
+    if (e.key === 'ArrowLeft') stepLb(-1);
+  });
+  document.getElementById('lb-add').addEventListener('click', function(){
+    var id = this.dataset.id, evSlug = this.dataset.ev;
+    var p = findPhoto(id, evSlug);
+    if (!p) return;
+    var added = toggleCart(p);
+    toast(added ? 'Foto na sacola' : 'Foto removida', added ? cartTotals().n + ' na sacola · ' + brl(cartTotals().total) : 'Sacola atualizada');
+    paintLb();
+    var el = document.querySelector('[data-photo="' + CSS.escape(id) + '"]');
+    if (el){
+      el.classList.toggle('in', added);
+      var use = el.querySelector('.add use');
+      if (use) use.setAttribute('href', added ? '#ic-check' : '#ic-plus');
+    }
+    var info = document.getElementById('selinfo');
+    if (info) info.textContent = cartTotals().n + ' na sacola';
+  });
+
+  /* =========================================================
+     TOAST
+     ========================================================= */
+  function toast(title, msg){
+    var wrap = document.getElementById('toasts'), t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = '<span class="tic"><svg class="i"><use href="#ic-check"/></svg></span>'
+      + '<div><div class="tt">' + title + '</div><div class="tm">' + (msg || '') + '</div></div>';
+    wrap.appendChild(t);
+    requestAnimationFrame(function(){ t.classList.add('show'); });
+    setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 320); }, 2600);
+  }
+
+  /* =========================================================
+     EVENTOS GLOBAIS
+     ========================================================= */
+  document.addEventListener('click', function(e){
+    var addBtn = e.target.closest('[data-add]');
+    if (addBtn){
+      e.stopPropagation();
+      var fr = addBtn.closest('[data-photo]');
+      var p = findPhoto(fr.dataset.photo, fr.dataset.ev);
+      if (p){
+        var added = toggleCart(p);
+        fr.classList.toggle('in', added);
+        var use = addBtn.querySelector('use');
+        if (use) use.setAttribute('href', added ? '#ic-check' : '#ic-plus');
+        var info = document.getElementById('selinfo');
+        if (info) info.textContent = cartTotals().n + ' na sacola';
+        toast(added ? 'Foto na sacola' : 'Foto removida', added ? cartTotals().n + ' na sacola · ' + brl(cartTotals().total) : '');
+        if ((parse()[0] || '') === 'sacola') render();
+      }
+      return;
+    }
+    var fr2 = e.target.closest('[data-photo]');
+    if (fr2 && !e.target.closest('[data-nav]')){ openLb(fr2.dataset.photo, fr2.dataset.ev); return; }
+
+    var tb = e.target.closest('[data-toast]');
+    if (tb){ var parts = tb.dataset.toast.split('|'); toast(parts[0], parts[1]); }
+
+    var tab = e.target.closest('.tab');
+    if (tab && !tab.dataset.nav){
+      tab.parentNode.querySelectorAll('.tab').forEach(function(x){ x.setAttribute('aria-selected', 'false'); });
+      tab.setAttribute('aria-selected', 'true');
+    }
+    var n = e.target.closest('[data-nav]');
+    if (n){ e.preventDefault(); closeLb(); nav(n.dataset.nav); }
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var fr = e.target.closest && e.target.closest('[data-photo]');
+    if (fr){ e.preventDefault(); openLb(fr.dataset.photo, fr.dataset.ev); }
+  });
+
+  /* busca global do header */
+  var gs = document.getElementById('gsearch');
+  gs.addEventListener('keydown', function(e){
+    if (e.key === 'Enter'){ state.busca = gs.value; nav('/eventos'); gs.value = ''; }
+  });
+
+  /* menu mobile e tema */
+  document.getElementById('burger').addEventListener('click', function(){
+    var m = document.getElementById('mmenu'), open = m.classList.toggle('hide');
+    this.setAttribute('aria-expanded', String(!open));
+  });
+  function toggleTheme(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', cur ? (cur === 'dark' ? 'light' : 'dark') : (dark ? 'light' : 'dark'));
+  }
+  document.getElementById('theme-m').addEventListener('click', toggleTheme);
+  document.getElementById('theme-f').addEventListener('click', toggleTheme);
+
+  /* =========================================================
+     TRAVAS DE CÓPIA
+     Barram a cópia preguiçosa — que é a maioria. Nada aqui impede
+     print de tela: no navegador isso não existe. O que segura o
+     print é a marca queimada e a resolução baixa.
+     ========================================================= */
+  document.addEventListener('contextmenu', function(e){
+    if (e.target.closest('.shot, .shield, .lb-img, canvas, .frame')){
+      e.preventDefault();
+      toast('Foto protegida', 'Compre para baixar em alta, sem marca d\'água');
+    }
+  });
+  document.addEventListener('dragstart', function(e){
+    if (e.target.closest('.shot, .lb-img, canvas, .frame, img')) e.preventDefault();
+  });
+  document.addEventListener('selectstart', function(e){
+    if (e.target.closest('.shot, .lb-img, .frame')) e.preventDefault();
+  });
+
+  /* PrintScreen: não dá para impedir, dá para registrar e avisar */
+  document.addEventListener('keyup', function(e){
+    if (e.key === 'PrintScreen' || e.code === 'PrintScreen'){
+      toast('Captura registrada', 'A prévia sai marcada com o código ' + visitanteId);
+    }
+  });
+  /* atalhos de salvar/imprimir a página */
+  document.addEventListener('keydown', function(e){
+    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'p')){
+      e.preventDefault();
+      toast('Não dá para salvar daqui', 'A foto em alta vem depois da compra');
+    }
+  });
+
+  /* esconde a foto ampliada quando a janela perde o foco */
+  window.addEventListener('blur', function(){ lb.classList.add('masked'); });
+  window.addEventListener('focus', function(){ lb.classList.remove('masked'); });
+
+  /* =========================================================
+     PWA — service worker, instalação, offline, barra de abas
+     ========================================================= */
+  function paintConta(){
+    var b = document.getElementById('acct');
+    if (!b) return;
+    if (logado()){
+      var primeiro = (conta.nome || 'Conta').split(' ')[0];
+      b.textContent = primeiro + (conta.verificado ? ' ✓' : '');
+      b.dataset.nav = '/app/painel';
+      b.title = conta.verificado ? 'Conta verificada' : 'Conta sem verificação';
+    } else {
+      b.textContent = 'Entrar';
+      b.dataset.nav = '/entrar';
+    }
+  }
+
+  function paintTabs(){
+    var seg = parse(), page = '/' + (seg[0] || '');
+    if (seg[0] === 'e' && seg[2] === 'selfie') page = '/selfie';
+    if (seg[0] === 'app') page = '/app';
+    document.querySelectorAll('.tb').forEach(function(t){
+      t.classList.toggle('on', t.dataset.tab === page);
+    });
+    var n = state.cart.length, el = document.getElementById('tabn');
+    el.textContent = n; el.style.display = n ? 'grid' : 'none';
+  }
+  var _paintBag = paintBag;
+  paintBag = function(){ _paintBag(); paintTabs(); paintConta(); };
+  window.addEventListener('hashchange', function(){ paintTabs(); paintConta(); });
+
+  /* service worker */
+  if ('serviceWorker' in navigator){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js').then(function(reg){
+        reg.addEventListener('updatefound', function(){
+          var sw = reg.installing;
+          if (!sw) return;
+          sw.addEventListener('statechange', function(){
+            if (sw.state === 'installed' && navigator.serviceWorker.controller){
+              toast('Nova versão disponível', 'Recarregue para atualizar o app');
+            }
+          });
+        });
+      }).catch(function(){ /* protocolo file:// ou navegador sem suporte */ });
+    });
+  }
+
+  /* convite para instalar */
+  var deferred = null, bar = document.getElementById('installbar');
+  function dismissed(){ try { return localStorage.getItem('saibem.noinstall') === '1'; } catch(e){ return false; } }
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); deferred = e;
+    if (!dismissed()) setTimeout(function(){ bar.classList.add('on'); }, 2600);
+  });
+  document.getElementById('doinstall').addEventListener('click', function(){
+    bar.classList.remove('on');
+    if (!deferred) return;
+    deferred.prompt();
+    deferred.userChoice.then(function(r){
+      if (r.outcome === 'accepted') toast('Instalando o Saibem', 'O atalho vai aparecer na sua tela inicial');
+      deferred = null;
+    });
+  });
+  document.getElementById('noinstall').addEventListener('click', function(){
+    bar.classList.remove('on');
+    try { localStorage.setItem('saibem.noinstall', '1'); } catch(e){}
+  });
+  window.addEventListener('appinstalled', function(){
+    bar.classList.remove('on');
+    toast('Saibem instalado', 'Agora abre direto da tela inicial');
+  });
+
+  /* estado da conexão */
+  var chip = document.getElementById('offchip');
+  function conn(){ chip.classList.toggle('on', !navigator.onLine); }
+  window.addEventListener('online', function(){ conn(); toast('De volta à internet', 'Buscas liberadas'); });
+  window.addEventListener('offline', conn);
+  conn();
+
+  window.addEventListener('hashchange', render);
+  paintBag();
+  render();
+})();
+</script>
+
+<style>
+@media(max-width:880px){
+  .hgrid{grid-template-columns:1fr!important}
+  .sgrid{grid-template-columns:1fr!important}
+  .kgrid{grid-template-columns:1fr!important}
+  .hero .wrap{padding-block:26px 28px}
+  h1{font-size:23px}
+}
+</style>
+</body>
+</html>

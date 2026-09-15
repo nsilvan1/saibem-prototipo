@@ -21,9 +21,10 @@ mensalidade, sem taxa de upload, saque PIX no mesmo dia.
 
 | Caminho | O que é |
 |---|---|
-| `index.html` | **Site navegável** — SPA com rotas por hash, estado real e sacola persistente |
-| `prototipo/index.html` | **Protótipo de telas** — as 12 telas lado a lado, para discutir uma de cada vez |
-| `img/` | Fotos de exemplo (Wikimedia Commons, licença livre) |
+| `mock/index.html` | **Site navegável** — SPA com rotas por hash, estado real e sacola persistente |
+| `mock/prototipo/index.html` | **Protótipo de telas** — as 12 telas lado a lado, para discutir uma de cada vez |
+| `mock/img/` | Fotos de exemplo (Wikimedia Commons, licença livre) |
+| `docs/PLANO.md` | **Plano do projeto de produção** — arquitetura, etapas, métricas, riscos |
 
 Nenhuma dependência, nenhum build: HTML, CSS e JavaScript puro. Abre no navegador e roda.
 
@@ -127,16 +128,27 @@ Decisões que sustentam o custo: R2 pelo egress zero, InsightFace self-hosted em
 API por imagem, pgvector em vez de banco vetorial dedicado (a busca acontece dentro de
 um único evento), e o original nunca servido antes do pagamento.
 
-## Próximos passos
+## Estado do protótipo
+
+O mock está **completo** para o que se propõe:
 
 - [x] Login e conta do fotógrafo
 - [x] KYC no primeiro saque (CPF/CNPJ e chave PIX do mesmo titular)
 - [x] Estados do evento: rascunho → processando → no ar → encerrado → arquivado
 - [x] Extrato financeiro e saque
 - [x] Proteção de imagem: marca visível em canvas e marca invisível rastreável
-- [ ] Perfil público do fotógrafo
-- [ ] Busca por número do peito (OCR)
-- [ ] Paginação real da galeria
+- [x] Perfil público do fotógrafo
+- [x] Busca por número do peito
+- [x] Paginação real da galeria (96 fotos, 24 por página)
+
+## E agora?
+
+O protótipo cumpriu o papel: decidiu telas, fluxos, textos, paleta e regras de
+negócio. **Ele não evolui para produção** — o código de produção nasce limpo, em
+outro repositório, usando este mock como referência de interface e comportamento.
+
+O caminho está em **[`docs/PLANO.md`](docs/PLANO.md)**: arquitetura, modelo de dados,
+pipeline de ingestão, etapas de entrega, métricas, riscos e custo estimado.
 
 ## Licença e créditos
 

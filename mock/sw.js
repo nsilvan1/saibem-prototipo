@@ -4,7 +4,7 @@
    - imagens: cache primeiro (foto não muda), com teto de itens no cache de runtime
    - demais estáticos: stale-while-revalidate
 */
-var VERSION = "saibem-v4";
+var VERSION = "saibem-v5";
 var SHELL = VERSION + '-shell';
 var RUNTIME = VERSION + '-runtime';
 var MAX_RUNTIME = 90;
