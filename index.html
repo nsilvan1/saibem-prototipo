@@ -382,6 +382,27 @@ td.n{text-align:right; font-variant-numeric:tabular-nums}
 .wabubble{background:var(--brand-soft); color:var(--body); border-radius:11px 11px 11px 3px; padding:11px 13px; font-size:13px; max-width:430px}
 
 /* ==========================================================================
+   PROTEÇÃO DE IMAGEM
+   A foto do preview nunca é um <img>: é um <canvas> desenhado com a marca
+   queimada. Sobre ele vai um escudo transparente, que é o que o clique
+   direito e o arrastar alcançam.
+   ========================================================================== */
+.shot{position:relative; display:block; width:100%; line-height:0}
+.shot canvas{width:100%; height:auto; display:block; -webkit-user-drag:none; user-select:none}
+.shield{position:absolute; inset:0; z-index:2; background:transparent; cursor:pointer}
+.noselect{user-select:none; -webkit-user-select:none; -webkit-touch-callout:none}
+.lb-img canvas{max-width:100%; max-height:72vh; width:auto; height:auto; display:block; transition:filter .18s}
+.lb.masked .lb-img canvas{filter:blur(22px) saturate(.4)}
+.lb-mask{position:absolute; inset:0; z-index:4; display:none; place-items:center; text-align:center; padding:20px;
+  background:rgba(7,24,46,.86); color:#fff; font-size:13px; font-weight:600}
+.lb.masked .lb-mask{display:grid}
+.legalbar{display:flex; gap:9px; align-items:flex-start; font-size:11px; line-height:1.45; color:var(--meta);
+  border-top:1px solid var(--line); padding-top:10px}
+.legalbar .i{width:13px; height:13px; margin-top:1px; flex-shrink:0}
+.wmctl{display:flex; gap:7px; align-items:center; flex-wrap:wrap; font-size:12px; color:var(--meta)}
+.wmctl b{color:var(--ink); font-weight:600}
+
+/* ==========================================================================
    CARROSSEL DE CAPA — tratamento de landing fotográfica
    A foto manda: full-bleed, scrim para legibilidade, texto no terço inferior,
    Ken Burns lento no slide ativo e filmstrip dos próximos.
@@ -578,8 +599,9 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Foto ampliada">
   <div class="lb-box">
     <div class="lb-img">
-      <img id="lb-img" alt="Foto ampliada">
-      <span class="wm">SAIBEM</span>
+      <canvas id="lb-canvas" aria-label="Foto ampliada com marca d'água"></canvas>
+      <span class="shield"></span>
+      <div class="lb-mask">Visualização pausada<br><span style="font-weight:400;opacity:.8">A imagem volta quando esta janela estiver em foco.</span></div>
       <button class="lb-x" id="lb-x" type="button" aria-label="Fechar"><svg class="i"><use href="#ic-x"/></svg></button>
       <button class="lb-nav lb-prev" id="lb-prev" type="button" aria-label="Foto anterior"><svg class="i"><use href="#ic-left"/></svg></button>
       <button class="lb-nav lb-next" id="lb-next" type="button" aria-label="Próxima foto"><svg class="i"><use href="#ic-right"/></svg></button>
@@ -839,12 +861,95 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '<span class="sub num">' + ev.nFotos.toLocaleString('pt-BR') + ' fotos · ' + ev.cidade + '</span>'
       + '<span class="price num">a partir de ' + brl(ev.preco) + '</span></div></button>';
   }
+  /* ---------- marca d'água e proteção ---------- */
+  /* medidas relativas à largura do canvas: a marca pesa igual em qualquer tamanho */
+  var FORCAS = {
+    leve:      { op:.22, passo:.30, fonte:.028, linhas:false, rot:-20 },
+    media:     { op:.34, passo:.215, fonte:.032, linhas:true,  rot:-20 },
+    agressiva: { op:.50, passo:.145, fonte:.036, linhas:true,  rot:-22 }
+  };
+  var forca = 'media';
+  try { forca = localStorage.getItem('saibem.wm') || 'media'; } catch(e){}
+
+  /* identificador da sessão — é o que permite rastrear um vazamento */
+  var visitanteId = null;
+  try { visitanteId = localStorage.getItem('saibem.vid'); } catch(e){}
+  if (!visitanteId){
+    visitanteId = Math.random().toString(36).slice(2, 7).toUpperCase();
+    try { localStorage.setItem('saibem.vid', visitanteId); } catch(e){}
+  }
+
+  /* desenha a foto já com a marca queimada no canvas */
+  function pintar(cv, src, larguraAlvo, num){
+    var cfg = FORCAS[forca] || FORCAS.media;
+    var img = new Image();
+    img.onload = function(){
+      var esc = Math.min(1, larguraAlvo / img.naturalWidth);
+      var w = Math.round(img.naturalWidth * esc), h = Math.round(img.naturalHeight * esc);
+      cv.width = w; cv.height = h;
+      var c = cv.getContext('2d');
+      c.drawImage(img, 0, 0, w, h);
+
+      /* miniatura é exibida em metade do tamanho do canvas: a marca precisa ser
+         proporcionalmente maior, e o texto mais curto, para continuar legível */
+      var mini = w < 520;
+      var texto = mini
+        ? 'SAIBEM ' + visitanteId
+        : 'SAIBEM · saibem.com.br · #' + (num || '0000') + ' · ' + visitanteId;
+      var passo = Math.max(26, Math.round(cfg.passo * w * (mini ? 1.7 : 1)));
+      var fonte = Math.max(10, Math.round(cfg.fonte * w * (mini ? 2.4 : 1)));
+
+      c.save();
+      c.translate(w / 2, h / 2);
+      c.rotate(cfg.rot * Math.PI / 180);
+      c.translate(-w, -h);
+      var diag = w * 2 + h * 2;
+
+      if (cfg.linhas){
+        c.strokeStyle = 'rgba(255,255,255,' + (cfg.op * .45) + ')';
+        c.lineWidth = Math.max(1, w / 900);
+        c.setLineDash([9, 7]);
+        for (var y = 0; y < diag; y += passo){
+          c.beginPath(); c.moveTo(0, y); c.lineTo(diag, y); c.stroke();
+        }
+        c.setLineDash([]);
+      }
+
+      c.font = '700 ' + fonte + 'px -apple-system, "Segoe UI", Arial, sans-serif';
+      c.textBaseline = 'middle';
+      c.lineJoin = 'round';
+      c.lineWidth = Math.max(2, fonte / 5);
+      c.strokeStyle = 'rgba(7,24,46,' + (cfg.op * .85) + ')';
+      c.fillStyle = 'rgba(255,255,255,' + cfg.op + ')';
+      var larguraTexto = c.measureText(texto).width + passo;
+      var linha = 0;
+      for (var ty = passo / 2; ty < diag; ty += passo){
+        var desloca = (linha % 2) * (larguraTexto / 2);
+        for (var tx = -larguraTexto; tx < diag; tx += larguraTexto){
+          c.strokeText(texto, tx + desloca, ty);
+          c.fillText(texto, tx + desloca, ty);
+        }
+        linha++;
+      }
+      c.restore();
+    };
+    img.src = src;
+  }
+
+  /* desenha os canvases que entraram na tela */
+  function pintarPendentes(){
+    document.querySelectorAll('canvas[data-src]:not([data-pronto])').forEach(function(cv){
+      cv.setAttribute('data-pronto', '1');
+      pintar(cv, cv.dataset.src, +cv.dataset.w || 420, cv.dataset.num);
+    });
+  }
+
   function tile(p, opts){
     opts = opts || {};
     var cls = 'frame' + (inCart(p.id) ? ' in' : '');
-    return '<figure class="' + cls + '" data-photo="' + p.id + '" data-ev="' + p.ev + '" tabindex="0" role="button" aria-label="Foto ' + p.num + '">'
-      + '<img src="' + p.src + '" alt="Foto ' + p.num + '" loading="lazy">'
-      + '<span class="wm">SAIBEM</span>'
+    return '<figure class="' + cls + ' noselect" data-photo="' + p.id + '" data-ev="' + p.ev + '" tabindex="0" role="button" aria-label="Foto ' + p.num + '">'
+      + '<span class="shot"><canvas data-src="' + p.src + '" data-w="420" data-num="' + p.num + '" aria-label="Foto ' + p.num + ' com marca d\'água"></canvas>'
+      + '<span class="shield"></span></span>'
       + (p.match ? '<span class="match">' + p.match + '%</span>' : '')
       + (opts.add !== false ? '<span class="add" data-add="' + p.id + '"><svg class="i"><use href="#ic-' + (inCart(p.id) ? 'check' : 'plus') + '"/></svg></span>' : '')
       + '<figcaption><span>#' + p.num + '</span><span>' + p.hora + '</span></figcaption></figure>';
@@ -990,7 +1095,12 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
       + '<button class="tab" role="tab" aria-selected="false">Percurso</button>'
       + '<button class="tab" role="tab" aria-selected="false">Chegada</button></div>'
       + '<div class="between"><p class="sub">Clique na foto para ampliar. O <b>+</b> joga direto na sacola.</p>'
-      + '<span class="badge"><svg class="i i-sm"><use href="#ic-clock"/></svg>ordenado por horário</span></div>'
+      + '<div class="wmctl"><span>Marca d\'água:</span>'
+      + ['leve','media','agressiva'].map(function(f){
+          return '<button class="chipf" data-wm="' + f + '" aria-pressed="' + (forca === f) + '">'
+            + (f === 'media' ? 'média' : f) + '</button>';
+        }).join('')
+      + '<span class="sub">(controle de protótipo)</span></div></div>'
       + '<div class="sheet" id="sheet">' + fotos.map(function(p){ return tile(p); }).join('') + '</div>'
       + '<div class="row" style="justify-content:center; margin-top:8px"><button class="btn btn-ghost" id="more">Carregar mais fotos</button></div>'
       + '</div>';
@@ -1743,6 +1853,17 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
         nav('/app/extrato');
       });
     }
+    /* intensidade da marca d'água (avaliação) */
+    document.querySelectorAll('[data-wm]').forEach(function(b){
+      b.addEventListener('click', function(){
+        forca = b.dataset.wm;
+        try { localStorage.setItem('saibem.wm', forca); } catch(e){}
+        render();
+        toast('Marca ' + (forca === 'media' ? 'média' : forca), 'Compare a leitura da foto e o incômodo');
+      });
+    });
+    /* desenha as fotos protegidas desta tela */
+    pintarPendentes();
     /* carrossel de capa */
     if (document.getElementById('hcar')) initCarousel();
     /* trilho com snap */
@@ -1893,7 +2014,9 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
     var el = lbList[lbIdx]; if (!el) return;
     var id = el.dataset.photo, ev = eventBySlug(el.dataset.ev);
     var p = findPhoto(id, el.dataset.ev) || { src: el.querySelector('img').src, num: '—', hora: '—', preco: ev.preco, id: id, ev: el.dataset.ev };
-    document.getElementById('lb-img').src = p.src;
+    var cv = document.getElementById('lb-canvas');
+    cv.removeAttribute('data-pronto');
+    pintar(cv, p.src, 820, p.num);
     document.getElementById('lb-title').textContent = 'Foto ' + p.num;
     document.getElementById('lb-ev').textContent = ev.nome + ' · ' + ev.foto;
     document.getElementById('lb-price').textContent = brl(p.preco || ev.preco);
@@ -1901,7 +2024,10 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
         '<div class="r"><span>Horário</span><b>' + p.hora + '</b></div>'
       + '<div class="r"><span>Resolução</span><b>6000 × 4000</b></div>'
       + (p.match ? '<div class="r"><span>Semelhança com você</span><b>' + p.match + '%</b></div>' : '')
-      + '<div class="r"><span>Pacote do evento</span><b>' + brl(ev.pacote) + '</b></div>';
+      + '<div class="r"><span>Pacote do evento</span><b>' + brl(ev.pacote) + '</b></div>'
+      + '<div class="legalbar"><svg class="i"><use href="#ic-shield"/></svg>'
+      + '<span>Prévia identificada com o código <b style="color:var(--ink)">' + visitanteId + '</b>, só para você conferir se saiu bem. '
+      + 'Reproduzir ou publicar sem licença viola a Lei 9.610/98 — e a marca aponta de onde a cópia saiu.</span></div>';
     var add = document.getElementById('lb-add');
     add.textContent = inCart(id) ? 'Tirar da sacola' : 'Adicionar à sacola';
     add.dataset.id = id; add.dataset.ev = el.dataset.ev;
@@ -2007,6 +2133,43 @@ body{-webkit-tap-highlight-color:transparent; overscroll-behavior-y:contain}
   }
   document.getElementById('theme-m').addEventListener('click', toggleTheme);
   document.getElementById('theme-f').addEventListener('click', toggleTheme);
+
+  /* =========================================================
+     TRAVAS DE CÓPIA
+     Barram a cópia preguiçosa — que é a maioria. Nada aqui impede
+     print de tela: no navegador isso não existe. O que segura o
+     print é a marca queimada e a resolução baixa.
+     ========================================================= */
+  document.addEventListener('contextmenu', function(e){
+    if (e.target.closest('.shot, .shield, .lb-img, canvas, .frame')){
+      e.preventDefault();
+      toast('Foto protegida', 'Compre para baixar em alta, sem marca d\'água');
+    }
+  });
+  document.addEventListener('dragstart', function(e){
+    if (e.target.closest('.shot, .lb-img, canvas, .frame, img')) e.preventDefault();
+  });
+  document.addEventListener('selectstart', function(e){
+    if (e.target.closest('.shot, .lb-img, .frame')) e.preventDefault();
+  });
+
+  /* PrintScreen: não dá para impedir, dá para registrar e avisar */
+  document.addEventListener('keyup', function(e){
+    if (e.key === 'PrintScreen' || e.code === 'PrintScreen'){
+      toast('Captura registrada', 'A prévia sai marcada com o código ' + visitanteId);
+    }
+  });
+  /* atalhos de salvar/imprimir a página */
+  document.addEventListener('keydown', function(e){
+    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'p')){
+      e.preventDefault();
+      toast('Não dá para salvar daqui', 'A foto em alta vem depois da compra');
+    }
+  });
+
+  /* esconde a foto ampliada quando a janela perde o foco */
+  window.addEventListener('blur', function(){ lb.classList.add('masked'); });
+  window.addEventListener('focus', function(){ lb.classList.remove('masked'); });
 
   /* =========================================================
      PWA — service worker, instalação, offline, barra de abas
